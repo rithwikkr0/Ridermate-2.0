@@ -1,6 +1,3 @@
-# Large Zip Archives
-*.zip
-
 # Flutter & Dart
 .dart_tool/
 .flutter-plugins
@@ -10,19 +7,29 @@
 build/
 **/build/
 *.apk
+*.aab
 
-# Android Studio & Gradle
+# Android & Gradle
 .gradle/
 **/android/.gradle/
 **/android/app/debug/
 **/android/app/release/
 local.properties
+key.properties
+*.jks
+*.keystore
 *.iml
 
-# IDE & OS
+# IDE & Config
 .idea/
 .vscode/
 *.swp
 *.log
+*.tmp
+.env
 .DS_Store
 Thumbs.db
+
+# Archives
+*.zip
+*.tar.gz
