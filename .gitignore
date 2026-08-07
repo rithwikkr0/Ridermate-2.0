@@ -1,0 +1,28 @@
+# Large Zip Archives
+*.zip
+
+# Flutter & Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+**/build/
+*.apk
+
+# Android Studio & Gradle
+.gradle/
+**/android/.gradle/
+**/android/app/debug/
+**/android/app/release/
+local.properties
+*.iml
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.log
+.DS_Store
+Thumbs.db

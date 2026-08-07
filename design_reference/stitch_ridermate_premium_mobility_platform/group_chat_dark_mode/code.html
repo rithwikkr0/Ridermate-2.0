@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Group Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#e4e2e1",
+                      "surface-dim": "#121414",
+                      "surface-tint": "#ffb693",
+                      "outline": "#a98a7d",
+                      "surface-container-low": "#1a1c1c",
+                      "inverse-primary": "#a04100",
+                      "surface-variant": "#333535",
+                      "error": "#ffb4ab",
+                      "surface-bright": "#37393a",
+                      "primary-container": "#ff6b00",
+                      "inverse-on-surface": "#2f3131",
+                      "primary-fixed-dim": "#ffb693",
+                      "on-primary-container": "#572000",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "secondary-fixed": "#e5e2e1",
+                      "surface-container-highest": "#333535",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "inverse-surface": "#e2e2e2",
+                      "tertiary-container": "#9a9999",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "secondary-container": "#4a4949",
+                      "on-primary-fixed": "#351000",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed": "#ffdbcc",
+                      "surface-container-lowest": "#0c0f0f",
+                      "primary": "#ffb693",
+                      "outline-variant": "#5a4136",
+                      "surface-container-high": "#282a2b",
+                      "on-error": "#690005",
+                      "on-secondary-fixed-variant": "#474646",
+                      "error-container": "#93000a",
+                      "on-secondary": "#313030",
+                      "tertiary": "#c8c6c5",
+                      "on-primary": "#561f00",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "on-tertiary": "#303030",
+                      "on-secondary-container": "#bab8b7",
+                      "on-tertiary-container": "#313131",
+                      "on-surface-variant": "#e2bfb0",
+                      "secondary": "#c8c6c5",
+                      "background": "#121414",
+                      "on-surface": "#e2e2e2",
+                      "surface-container": "#1e2020",
+                      "on-background": "#e2e2e2",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "surface": "#121414"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "unit": "4px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-stat": [
+                              "Hanken Grotesk"
+                      ],
+                      "stat-label": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-stat": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "stat-label": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-bubble {
+            background: linear-gradient(135deg, #ff6b00 0%, #a04100 100%);
+            box-shadow: 0px 4px 20px rgba(255, 107, 0, 0.2);
+        }
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface h-screen flex flex-col overflow-hidden font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-white/10 dark:border-white/10 shadow-sm">
+<div class="flex items-center gap-sm">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform flex items-center justify-center p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex -space-x-2 mr-2">
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="Close up of a motorcycle helmet visor reflecting neon city lights, sleek, high-tech, cinematic lighting, dark mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW1E1H-Fumr5arLeaLKuuztNZYO9yfGbze_02IraDLZAxrNhl4KSw_06XtnIPZHsJIVapRdA2gRumSQHw8pt1KQtw4NfmdlwaWPEYFPGB3v9nhsMd6uYpmRnbWa22BC4B14wQMCPQaAiS_83xiqJa7m7W8cGNIOmvY9s134ZtMdm5lD-J7783bUSPGroYdG1WQAe7P18axM1e3Nsy3HfZ0-iYT7dH9J7MGiepR48GPUlbQ0AQzK_bzEQ"/>
+<img class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="A cyclist wearing aerodynamic gear riding through a misty mountain pass, cool tones, dynamic blur, premium athletic photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZCBOPCNp-p3QULFsKpWLfFYkug8BQ5FP8VKkj8by5Pf0FqahUGHv48wDc8XKY-3pR53cFLKuHtIeNSCbodkAQ3VSm8QDQukPp5yQUqbG8eIiy84SVxwr53LKwpjayp5MGVhor5kah2LBLRyG_bWoxfCcSDfIyJ_ucyhtqjyTC95csBDpeZISImccl6-dCuKu5rv-6PcdY4g03pw0zxuU48HD8oXozDRSnfWnVOCggec9zFwugHDrerw"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-container flex items-center justify-center text-xs font-label-caps text-on-surface-variant">+2</div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[18px] font-bold tracking-tight text-on-surface leading-tight">Weekend Warriors</span>
+<span class="font-label-caps text-label-caps text-primary opacity-80">4 Members • Online</span>
+</div>
+</div>
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</header>
+<!-- Chat Canvas -->
+<main class="flex-1 overflow-y-auto pt-20 pb-24 px-margin-mobile flex flex-col gap-4 relative">
+<!-- Background Layer -->
+<div class="absolute inset-0 z-[-1] opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 50% 0%, #ff6b00 0%, transparent 50%);"></div>
+<!-- Date Separator -->
+<div class="flex justify-center my-2">
+<span class="glass-panel px-4 py-1 rounded-full font-label-caps text-label-caps text-on-surface-variant">TODAY</span>
+</div>
+<!-- Other User Message -->
+<div class="flex items-end gap-sm max-w-[85%]">
+<img class="w-8 h-8 rounded-full object-cover shrink-0 mb-1" data-alt="Close up of a motorcycle helmet visor reflecting neon city lights, sleek, high-tech, cinematic lighting, dark mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwf6xyP4CbyRDto5wuYmWbROrlBcHJL4Hj6OUwFknf4GA1vaX2FNuzfLO7_SBvIjY-0st1A-6VChLj7B1VoI6pc7UjTb8e5aE81_vzOpTdZM4UOi-y8Ph2YlcsrXsMjSocNzIqOsVQTfeGG739hnuku6Yez_rnbYVooEUqvSU12tPwJlE12_ImsV0CaxG_aZrY4hJMZClKQOE2m3kciwzsRMxVLat5Coxmd6vJe0OCnJTQgLSxq5tjyg"/>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-label-caps text-on-surface-variant ml-1">Alex • 09:41 AM</span>
+<div class="glass-panel p-3 rounded-2xl rounded-bl-sm text-on-surface">
+<p class="font-body-md">Conditions look perfect for the Canyon run. Tarmac should be warm by 11. Who's in?</p>
+</div>
+</div>
+</div>
+<!-- System Alert / Ride Share -->
+<div class="flex justify-center my-4 w-full">
+<div class="glass-panel w-full max-w-sm rounded-xl p-4 flex items-center gap-4 relative overflow-hidden border border-primary/30">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="bg-surface-container-high p-3 rounded-full text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="route">route</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-stat-label text-stat-label text-on-surface truncate">Proposed Route: Canyon Carve</h4>
+<p class="font-body-md text-sm text-on-surface-variant">145km • Est. 2h 15m</p>
+</div>
+<button class="bg-surface-variant text-on-surface hover:bg-surface-bright transition-colors rounded-full px-3 py-1 font-label-caps text-[10px]">VIEW</button>
+</div>
+</div>
+<!-- Other User Message -->
+<div class="flex items-end gap-sm max-w-[85%]">
+<img class="w-8 h-8 rounded-full object-cover shrink-0 mb-1" data-alt="A cyclist wearing aerodynamic gear riding through a misty mountain pass, cool tones, dynamic blur, premium athletic photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnhklludEVVUxcbbNYXgLIg6lwez51uzgnSlHNDqCG58AFsTDpl_h2Sj1VqatOHGIb2zvE2PIvyJigHCfIxRkQB51fPXFe4rpKynWVGNd3TqxBWG8Ev0d5QNzNFZ0X08SqMHXrHSX8Hh1tRzohNYEMVeM8QTW87LpqoACLx4B1TeWhMJcahgoZMJuIkklV3gZvt7-KHCeBmpGllE7-E2lj5yZinW8woqioPE6oXYkmlD-0TBvZG2_tdQ"/>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-label-caps text-on-surface-variant ml-1">Sam • 09:45 AM</span>
+<div class="glass-panel p-3 rounded-2xl rounded-bl-sm text-on-surface">
+<p class="font-body-md">I'm down. Just finishing up some maintenance. Meet at the usual spot?</p>
+</div>
+</div>
+</div>
+<!-- User Message (Active) -->
+<div class="flex items-end gap-sm max-w-[85%] self-end flex-row-reverse">
+<div class="flex flex-col gap-1 items-end">
+<div class="flex items-center gap-1 mr-1">
+<span class="text-xs font-label-caps text-on-surface-variant">09:50 AM</span>
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="done_all">done_all</span>
+</div>
+<div class="user-bubble p-3 rounded-2xl rounded-br-sm text-white">
+<p class="font-body-md">Sounds like a plan. I'll bring the cameras. See you both at 10:30.</p>
+</div>
+</div>
+</div>
+<!-- Typing Indicator -->
+<div class="flex items-end gap-sm max-w-[85%] mt-2">
+<img class="w-8 h-8 rounded-full object-cover shrink-0 mb-1 opacity-70" data-alt="Close up of a motorcycle helmet visor reflecting neon city lights, sleek, high-tech, cinematic lighting, dark mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaLCu5lR63e94L_6oV48smWZxzruA1hvlOtWieka0DC8QA_DsBqhDOeQY8KXJL9UP0YLzgrLA0JqWg2hmU9WF9Ap8l7dqtYDjwEki3-Xi3tK0tz4WK3KoLbatzefK_KVQQFvI5vJHcMoAt4Bb3QnAfcGXEfHeImZqYVI6pjaEVHUTV5u8XEPdrlArdlzRJabs3IzBkQ9zHEUVy6cQ3VDOwrI5ycitJnNstrfJKnOp2zzOdSmxeDpr8bw"/>
+<div class="glass-panel py-3 px-4 rounded-2xl rounded-bl-sm flex items-center gap-1 w-16 h-10">
+<div class="w-2 h-2 rounded-full bg-on-surface-variant typing-dot"></div>
+<div class="w-2 h-2 rounded-full bg-on-surface-variant typing-dot"></div>
+<div class="w-2 h-2 rounded-full bg-on-surface-variant typing-dot"></div>
+</div>
+</div>
+<div class="h-4"></div> <!-- Spacer for scrolling -->
+</main>
+<!-- Message Input -->
+<div class="fixed bottom-0 w-full p-4 pb-safe bg-surface/80 backdrop-blur-xl border-t border-white/5 z-40">
+<div class="flex items-end gap-2 max-w-4xl mx-auto">
+<button class="p-3 text-on-surface-variant hover:text-primary transition-colors shrink-0">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<div class="flex-1 glass-panel rounded-3xl flex items-center min-h-[48px] px-2">
+<input class="w-full bg-transparent border-none text-on-surface font-body-md focus:ring-0 placeholder:text-on-surface-variant/50 py-3 px-2" placeholder="Message Weekend Warriors..." type="text"/>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-[0_4px_15px_rgba(255,107,0,0.4)] hover:bg-primary-container transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="mic" data-weight="fill">mic</span>
+</button>
+</div>
+</div>
+</body></html>

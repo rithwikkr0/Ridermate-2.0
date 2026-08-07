@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Leaderboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-dim": "#121414",
+                        "surface-tint": "#ffb693",
+                        "outline": "#a98a7d",
+                        "surface-container-low": "#1a1c1c",
+                        "inverse-primary": "#a04100",
+                        "surface-variant": "#333535",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#37393a",
+                        "primary-container": "#ff6b00",
+                        "inverse-on-surface": "#2f3131",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary-container": "#572000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#333535",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary-container": "#9a9999",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#4a4949",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdbcc",
+                        "surface-container-lowest": "#0c0f0f",
+                        "primary": "#ffb693",
+                        "outline-variant": "#5a4136",
+                        "surface-container-high": "#282a2b",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#474646",
+                        "error-container": "#93000a",
+                        "on-secondary": "#313030",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary": "#303030",
+                        "on-secondary-container": "#bab8b7",
+                        "on-tertiary-container": "#313131",
+                        "on-surface-variant": "#e2bfb0",
+                        "secondary": "#c8c6c5",
+                        "background": "#121414",
+                        "on-surface": "#e2e2e2",
+                        "surface-container": "#1e2020",
+                        "on-background": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface": "#121414"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background-color: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-shadow {
+            box-shadow: 0 12px 32px rgba(255, 107, 0, 0.15);
+        }
+        .podium-gradient-1 { background: linear-gradient(180deg, rgba(255, 107, 0, 0.2) 0%, rgba(30, 32, 32, 0) 100%); }
+        .podium-gradient-2 { background: linear-gradient(180deg, rgba(226, 226, 226, 0.1) 0%, rgba(30, 32, 32, 0) 100%); }
+        .podium-gradient-3 { background: linear-gradient(180deg, rgba(169, 138, 125, 0.15) 0%, rgba(30, 32, 32, 0) 100%); }
+        
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-white/10 dark:border-white/10 shadow-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional cyclist wearing a sleek, aerodynamic matte black helmet and tinted visor. The lighting is dramatic, highlighting the contours of the gear against a dark, moody background, reflecting the high-performance aesthetic of the Ridermate app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIM4X6R3Bj22DiIPSdr5ZI7-UQL30BGutwFI0r-yTkbleCXaUXJyXIxWpc0k-upwcojRxolRLyFQMDoJYipvimXWHLDQwcHoj6G7-s_pIXrx3-a3UYmphnj8WrPcdpDric7J8wGIdwPQP0GKlo438wdIJ1tUhjTHEp6kCindDEb8sGIPcBABQtOyNeWqfadZzoIx9dvvSZRY9Ps0aLeUX4Q2JUmn-8DGaOP-BI2UCu7SFvuhNESIcttg"/>
+</div>
+</div>
+<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary">
+            RIDERMATE
+        </div>
+<button aria-label="notifications" class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 pb-32 px-margin-mobile flex flex-col gap-lg max-w-3xl mx-auto w-full relative z-10">
+<!-- Header & Segmented Control -->
+<section class="flex flex-col gap-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Leaderboard</h1>
+<div class="flex bg-surface-container-high rounded-full p-1 border border-white/5 relative overflow-hidden">
+<button class="flex-1 py-2 font-stat-label text-stat-label text-on-primary-container bg-primary-container rounded-full shadow-[0_2px_10px_rgba(255,107,0,0.3)] transition-all z-10">Global</button>
+<button class="flex-1 py-2 font-stat-label text-stat-label text-on-surface-variant hover:text-on-surface transition-colors z-10">Friends</button>
+<button class="flex-1 py-2 font-stat-label text-stat-label text-on-surface-variant hover:text-on-surface transition-colors z-10">Squads</button>
+</div>
+</section>
+<!-- Podium Top 3 -->
+<section class="grid grid-cols-3 gap-unit items-end mt-sm h-64">
+<!-- Rank 2 -->
+<div class="flex flex-col items-center gap-xs relative">
+<div class="font-headline-md text-headline-md text-on-surface mb-2">2</div>
+<div class="w-16 h-16 rounded-full border-2 border-surface-variant relative z-10 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<img class="w-full h-full object-cover" data-alt="A portrait of an athlete in profile, wearing highly technical, reflective cycling gear. The background is a blurred cityscape at twilight. The image uses a cinematic lighting style, emphasizing speed, endurance, and premium performance equipment in a moody atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLu-Ksvln66KD-QFAMckZjJj_-hUfPHzNZzlxw4MkkIDtc3mlShfS6dKsVI5fVkGqzgfTa6LnUieEP4MbSVy7gpXilaEN-4Kzh5NBzYxXjLGVUVaVEh4DR0Wi_-qneOScOFsYq35DaRrT1lQH9TEtQJyHympFtLaFYXGnFwjkqPG8gF9VsUUAxNZbVKwm7bB7nt4rvG7t0rqyjL3uSMo0cMMSUVYWtagcIR-m52GmapLD51S0wv5T4Aw"/>
+</div>
+<div class="w-full podium-gradient-2 rounded-t-xl h-24 flex flex-col items-center justify-end pb-3 border-t border-l border-r border-white/5 relative">
+<div class="absolute inset-0 backdrop-blur-[2px] rounded-t-xl -z-10"></div>
+<span class="font-stat-label text-stat-label text-on-surface truncate w-full text-center px-1">S. Miller</span>
+<span class="font-label-caps text-label-caps text-primary truncate">12.4K PTS</span>
+</div>
+</div>
+<!-- Rank 1 -->
+<div class="flex flex-col items-center gap-xs relative -translate-y-4">
+<div class="absolute -top-10 text-primary-container drop-shadow-[0_0_15px_rgba(255,107,0,0.5)]">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="w-20 h-20 rounded-full border-2 border-primary-container relative z-10 overflow-hidden glow-shadow">
+<img class="w-full h-full object-cover" data-alt="An intense, forward-facing portrait of a professional motorcycle racer in a sleek, carbon-fiber patterned racing suit. The visor is partially open revealing focused eyes. High-contrast lighting with a dark, premium aesthetic, highlighting the textures of the technical apparel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe-ehtaSlr2ONvtVh71ucBkTykGBrNDvMjkpVLiiF8NfJYH5dDa4164xHsLJM5IGTpwtYL8atQs6VfFmyQa1b3pIiqtylOrqCCQZi6sUlG-a7RcoSZUcgVlpJ750_TSJkihaRHl9dgq1bGQp8W_wzCR26l1fsbaLhoYnoijC7kRniNNRnScYXlKgz9zRqly6r_-OqOnbGWYW3VCi4SbjO7ptwploMEGRWZoZeLT4980q3UOwA6OayGzQ"/>
+</div>
+<div class="w-full podium-gradient-1 rounded-t-xl h-32 flex flex-col items-center justify-end pb-3 border-t border-l border-r border-primary-container/30 relative">
+<div class="absolute inset-0 backdrop-blur-[4px] rounded-t-xl -z-10"></div>
+<span class="font-stat-label text-stat-label text-on-surface truncate w-full text-center px-1">J. Doe</span>
+<span class="font-label-caps text-label-caps text-primary truncate">15.2K PTS</span>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex flex-col items-center gap-xs relative">
+<div class="font-headline-md text-headline-md text-outline mb-2">3</div>
+<div class="w-16 h-16 rounded-full border-2 border-outline relative z-10 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<img class="w-full h-full object-cover" data-alt="A portrait of a long-distance touring rider viewed slightly from below, wearing a rugged, weatherproof jacket with subtle reflective accents. The environment suggests an early morning mist on a mountain pass. The image maintains a deep, rich color palette aligned with the app's dark mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS-fYx7r4d2IOv079B_j7c217E-1MLN_ras1gzBnPXgMgp8PmHgcbJ7Xmr6BF5Z5yYCVRW0O0d8E3hqpyQXraLDFDzvXmy50rbpfr7CMpFAGdfsUgtHbPWSf1Bp2l3Pe55wyRw8qOF98k1hLqzactk8SWawiAU5U5ivyYJqR-Qbc2psJZv7NBH5vowem815yb-L7ztH-GAXA2QHYClVPKAHmC0j3BMwosn9jUimWlNiiDTAgSNoImbbg"/>
+</div>
+<div class="w-full podium-gradient-3 rounded-t-xl h-20 flex flex-col items-center justify-end pb-3 border-t border-l border-r border-white/5 relative">
+<div class="absolute inset-0 backdrop-blur-[2px] rounded-t-xl -z-10"></div>
+<span class="font-stat-label text-stat-label text-on-surface truncate w-full text-center px-1">A. Chen</span>
+<span class="font-label-caps text-label-caps text-primary truncate">11.8K PTS</span>
+</div>
+</div>
+</section>
+<!-- Scrollable List -->
+<section class="flex flex-col gap-sm">
+<!-- List Item 4 -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between transition-transform hover:-translate-y-1">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md text-on-surface-variant w-8 text-center">4</span>
+<div class="w-10 h-10 rounded-full bg-surface-bright overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up avatar of a rider wearing a dark helmet." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA206RLIi79gKRHxIaMN3uxv1i8GBbWsItWGkdZkbOh_cT0mfyYTjorweNrSijwf4XGx0wycVlkph-xaEm6LKzLPvz4rS7-3qIC8Fuf5yt0GtsH14ABm_csMLzkUsudAHovbO0wK3Jp-_6TE7wgRfkDBNpMkGkr2D_aAJy5RS65NCGsMpbO9VkR6l9e1ISeJSSLJEcZFxzyACbmgl-7NbZsglqTMZsjc54pZCLgTO2rQAPyPQ2yiPjpfQ"/>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface">M. Rossi</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">ITALY</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-stat-label text-stat-label text-on-surface">11,204</span>
+<span class="font-label-caps text-label-caps text-primary">PTS</span>
+</div>
+</div>
+<!-- List Item 5 -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between transition-transform hover:-translate-y-1">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md text-on-surface-variant w-8 text-center">5</span>
+<div class="w-10 h-10 rounded-full bg-surface-bright overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up avatar of a rider wearing sunglasses." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBRvPyKJiOdpCUps5lCIoM9-k6i-RFyjzs4KIz0OjJByz80pi9ukWydjQZfzaLLGWSZbUenYojNa8ZSTeyobi1ZG_Q8laT3h6e6WMcDr5fS8FvaNYvWo_pIy2qXMJ-jFO2koq2NE7E_Xgp4U2VE5S5kZerBoqSQHZTgd3Vmx-JDPnWdrR2HjqbRJJmDLG688-TxYx8UU27lareKc-4MMpxBgbWzJhbLoDCD7Tga1kDw09BEX9PZ9XrBw"/>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface">E. Thompson</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">USA</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-stat-label text-stat-label text-on-surface">10,850</span>
+<span class="font-label-caps text-label-caps text-primary">PTS</span>
+</div>
+</div>
+<!-- List Item 6 -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between transition-transform hover:-translate-y-1 opacity-80">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md text-on-surface-variant w-8 text-center">6</span>
+<div class="w-10 h-10 rounded-full bg-surface-bright overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant w-full h-full flex items-center justify-center">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface">L. Hamilton</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">UK</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-stat-label text-stat-label text-on-surface">9,940</span>
+<span class="font-label-caps text-label-caps text-primary">PTS</span>
+</div>
+</div>
+</section>
+</main>
+<!-- User Highlight Sticky Bottom -->
+<div class="fixed bottom-24 left-0 right-0 px-margin-mobile z-40 pointer-events-none">
+<div class="max-w-3xl mx-auto">
+<div class="glass-card rounded-xl p-md flex items-center justify-between border-primary/30 glow-shadow pointer-events-auto backdrop-blur-xl bg-surface-container-high/80 relative overflow-hidden">
+<!-- Subtle pulsing background effect for active user -->
+<div class="absolute inset-0 bg-primary/5 animate-pulse"></div>
+<div class="flex items-center gap-md relative z-10">
+<span class="font-headline-md text-headline-md text-primary w-8 text-center">42</span>
+<div class="w-10 h-10 rounded-full border border-primary/50 overflow-hidden shadow-[0_0_10px_rgba(255,107,0,0.3)]">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a professional cyclist wearing a sleek, aerodynamic matte black helmet and tinted visor. The lighting is dramatic, highlighting the contours of the gear against a dark, moody background, reflecting the high-performance aesthetic of the Ridermate app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcmTcOwdJRqxMjrXUmgbqdETCn3-UVzlIWgREvcXK-R043PyY9O8n64uFHLlv1eIa7JnAL_DMkZlDs7-tiV0lWlRMa-0jXjhuZihmZnHWOeImoFJOZ5wp0DMfr0FiHn72E-0L_pzCkQG_Eo4gJmZBUvz_OSrJd-ODXPqmD3sGZ_FPFpLtQHJwI0cI9sIdFl6IiVOeK_3iCqudCGCkSb32UvSO7fZSRRq_vbkvY71cdM6UZdVBeXzIkqA"/>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface">You</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">253 MILES</span>
+</div>
+</div>
+<div class="flex flex-col items-end relative z-10">
+<span class="font-stat-label text-stat-label text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-primary">arrow_upward</span>
+                        4,210
+                    </span>
+<span class="font-label-caps text-label-caps text-primary">PTS</span>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] border border-white/10 dark:border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.05)] floating mx-margin-mobile mb-4 rounded-full">
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">navigation</span>
+</a>
+<a class="flex items-center justify-center bg-primary text-on-primary rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,182,147,0.4)] scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sports_score</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">insights</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</a>
+</nav>
+</body></html>

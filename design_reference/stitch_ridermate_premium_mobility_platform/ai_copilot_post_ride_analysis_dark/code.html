@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Post-Ride Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#5a4136",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-container": "#313131",
+                      "on-secondary-container": "#bab8b7",
+                      "secondary": "#c8c6c5",
+                      "surface-dim": "#121414",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "secondary-fixed": "#e5e2e1",
+                      "on-background": "#e2e2e2",
+                      "on-primary-fixed": "#351000",
+                      "background": "#121414",
+                      "secondary-container": "#4a4949",
+                      "surface-container-highest": "#333535",
+                      "surface-variant": "#333535",
+                      "inverse-primary": "#a04100",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "error-container": "#93000a",
+                      "tertiary-container": "#9a9999",
+                      "surface-container-lowest": "#0c0f0f",
+                      "surface": "#121414",
+                      "on-surface": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#474646",
+                      "surface-bright": "#37393a",
+                      "on-tertiary": "#303030",
+                      "inverse-surface": "#e2e2e2",
+                      "on-secondary": "#313030",
+                      "on-error": "#690005",
+                      "surface-container-low": "#1a1c1c",
+                      "surface-tint": "#ffb693",
+                      "primary": "#ffb693",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "tertiary": "#c8c6c5",
+                      "surface-container-high": "#282a2b",
+                      "outline": "#a98a7d",
+                      "surface-container": "#1e2020",
+                      "error": "#ffb4ab",
+                      "on-surface-variant": "#e2bfb0",
+                      "tertiary-fixed": "#e4e2e1",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "primary-fixed": "#ffdbcc",
+                      "primary-container": "#ff6b00",
+                      "on-primary-container": "#572000",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "primary-fixed-dim": "#ffb693",
+                      "inverse-on-surface": "#2f3131",
+                      "on-primary": "#561f00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "unit": "4px",
+                      "xl": "32px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "margin-mobile": "20px"
+              },
+              "fontFamily": {
+                      "display-stat": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "stat-label": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display-stat": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "stat-label": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .floating-action {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 32px rgba(255, 107, 0, 0.4);
+        }
+
+        .chart-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.3));
+        }
+        
+        body {
+            background-image: radial-gradient(circle at 50% -20%, #2a1100 0%, #121414 60%);
+            background-attachment: fixed;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-[100px] antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-3xl shadow-sm border-b border-white/10 flex justify-between items-center px-margin-mobile py-md">
+<div class="flex items-center gap-4">
+<button class="scale-95 active:scale-90 transition-transform text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="arrow_back" data-weight="regular">arrow_back</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary">Ride Intelligence Report</h1>
+</div>
+<div class="flex items-center gap-sm">
+<button class="scale-95 active:scale-90 transition-transform text-on-surface-variant hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined" data-icon="more_vert" data-weight="regular">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-[90px] px-margin-mobile flex flex-col gap-gutter max-w-4xl mx-auto">
+<!-- Summary Card -->
+<section class="glass-card rounded-xl p-lg relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-container/20 rounded-full blur-2xl"></div>
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary-container" data-icon="smart_toy" data-weight="fill" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">AI Coach Summary</h2>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                "Your smoothest ride yet. Braking was <span class="text-primary-container font-semibold">15% more gradual</span> than yesterday. Excellent cornering consistency."
+            </p>
+<div class="mt-md flex gap-sm">
+<div class="bg-surface-container/50 px-3 py-1 rounded-full border border-white/5 flex items-center gap-xs">
+<span class="font-label-caps text-label-caps text-secondary">RIDE SCORE</span>
+<span class="font-stat-label text-stat-label text-primary">94/100</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Analytics -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Radar Chart Section -->
+<section class="glass-card rounded-xl p-lg flex flex-col h-full">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary-container" data-icon="radar" data-weight="regular">radar</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Safety Analytics</h2>
+</div>
+<div class="flex-1 flex items-center justify-center relative min-h-[200px]">
+<!-- Simulated Radar Chart -->
+<div class="relative w-48 h-48 chart-glow">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 100">
+<!-- Grid Lines -->
+<polygon fill="none" points="50,10 90,50 50,90 10,50" stroke="rgba(255,255,255,0.1)" stroke-width="1"></polygon>
+<polygon fill="none" points="50,25 75,50 50,75 25,50" stroke="rgba(255,255,255,0.1)" stroke-width="1"></polygon>
+<polygon fill="none" points="50,40 60,50 50,60 40,50" stroke="rgba(255,255,255,0.1)" stroke-width="1"></polygon>
+<!-- Axes -->
+<line stroke="rgba(255,255,255,0.1)" stroke-width="1" x1="50" x2="50" y1="0" y2="100"></line>
+<line stroke="rgba(255,255,255,0.1)" stroke-width="1" x1="0" x2="100" y1="50" y2="50"></line>
+<!-- Data Polygon -->
+<polygon fill="rgba(255, 107, 0, 0.2)" points="50,15 85,50 50,80 20,50" stroke="#ff6b00" stroke-width="2"></polygon>
+<!-- Points -->
+<circle cx="50" cy="15" fill="#ffb693" r="3"></circle>
+<circle cx="85" cy="50" fill="#ffb693" r="3"></circle>
+<circle cx="50" cy="80" fill="#ffb693" r="3"></circle>
+<circle cx="20" cy="50" fill="#ffb693" r="3"></circle>
+</svg>
+<!-- Labels -->
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-on-surface-variant">Smoothness</span>
+<span class="absolute top-1/2 -right-16 -translate-y-1/2 font-label-caps text-label-caps text-on-surface-variant">Consistency</span>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 font-label-caps text-label-caps text-on-surface-variant">Pace</span>
+<span class="absolute top-1/2 -left-20 -translate-y-1/2 font-label-caps text-label-caps text-on-surface-variant">Anticipation</span>
+</div>
+</div>
+</section>
+<!-- Key Improvements Section -->
+<section class="glass-card rounded-xl p-lg flex flex-col h-full">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary-container" data-icon="model_training" data-weight="regular">model_training</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Key Improvements</h2>
+</div>
+<ul class="flex flex-col gap-md">
+<li class="flex gap-md bg-surface-container/30 p-md rounded-lg border border-white/5 relative overflow-hidden group hover:bg-surface-container/50 transition-colors">
+<div class="w-1 h-full bg-primary-container absolute left-0 top-0"></div>
+<div class="flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-primary" data-icon="swap_vert" data-weight="regular">swap_vert</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+                            Try to reduce downshifts before the apex of <span class="text-primary font-medium">hairpin 3</span>.
+                        </p>
+</li>
+<li class="flex gap-md bg-surface-container/30 p-md rounded-lg border border-white/5 relative overflow-hidden group hover:bg-surface-container/50 transition-colors">
+<div class="w-1 h-full bg-outline-variant absolute left-0 top-0"></div>
+<div class="flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sports_motorsports" data-weight="regular">sports_motorsports</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">
+                            Body position shift detected on left turns.
+                        </p>
+</li>
+</ul>
+</section>
+</div>
+</main>
+<!-- Floating Action Buttons -->
+<div class="fixed bottom-24 left-margin-mobile right-margin-mobile md:left-auto md:right-margin-mobile flex gap-md justify-center z-40">
+<button class="flex-1 md:flex-none glass-card rounded-full px-lg py-sm flex items-center justify-center gap-sm font-label-caps text-label-caps text-on-surface hover:bg-white/10 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="share" data-weight="regular">share</span>
+            Share Insights
+        </button>
+<button class="flex-1 md:flex-none bg-primary-container text-white rounded-full px-lg py-sm flex items-center justify-center gap-sm font-label-caps text-label-caps shadow-[0_12px_32px_rgba(255,107,0,0.4)] hover:opacity-90 transition-opacity active:scale-95 bg-gradient-to-b from-white/10 to-transparent">
+<span class="material-symbols-outlined text-sm" data-icon="bookmark" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+            Save to Journal
+        </button>
+</div>
+<!-- BottomNavBar (Hidden on md as per mandate) -->
+<nav class="fixed bottom-4 left-margin-mobile right-margin-mobile rounded-full z-50 flex justify-around items-center py-sm bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-[30px] border border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.4)] md:hidden">
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="regular">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore" data-weight="regular">explore</span>
+<span class="font-label-caps text-label-caps mt-1">Nav</span>
+</a>
+<!-- Active Tab: Coach -->
+<a class="flex flex-col items-center justify-center text-primary font-bold bg-primary/10 rounded-full px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="psychology" data-weight="fill" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-caps text-label-caps mt-1">Coach</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="insights" data-weight="regular">insights</span>
+<span class="font-label-caps text-label-caps mt-1">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="regular">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

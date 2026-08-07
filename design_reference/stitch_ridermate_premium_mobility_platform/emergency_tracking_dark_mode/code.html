@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Emergency Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ffb4ab",
+                        "on-secondary": "#313030",
+                        "tertiary-container": "#9a9999",
+                        "inverse-primary": "#a04100",
+                        "secondary-container": "#4a4949",
+                        "on-tertiary": "#303030",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-dim": "#121414",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#333535",
+                        "primary-container": "#ff6b00",
+                        "secondary": "#c8c6c5",
+                        "on-surface": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "background": "#121414",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-bright": "#37393a",
+                        "surface-container-lowest": "#0c0f0f",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-tertiary-container": "#313131",
+                        "surface-variant": "#333535",
+                        "on-secondary-container": "#bab8b7",
+                        "primary-fixed-dim": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-container": "#572000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container": "#1e2020",
+                        "primary-fixed": "#ffdbcc",
+                        "on-background": "#e2e2e2",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline": "#a98a7d",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-tint": "#ffb693",
+                        "primary": "#ffb693",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "outline-variant": "#5a4136",
+                        "surface": "#121414"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "stat-label": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background-color: rgba(18, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pulse-ring {
+            animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(2); opacity: 0; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen w-full overflow-hidden flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Map -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-surface-dim" data-alt="A dark, high-contrast digital map interface showing city streets. The map style is minimalist and technological, featuring deep blacks, dark grays, and subtle grid lines. An intense orange route line cuts through the center. Floating glowing markers indicate points of interest. The aesthetic is reminiscent of a high-end aviation or military tactical display, emphasizing precision and performance." data-location="Los Angeles" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZ1tMzQvKvackiR2UJYO1Rlam9SmpwF8PbLFUIMmI6R9pbR3WbZ-tf40dhRqQgtq0lWx8dcDucm2H9uA_SghYGImONcL2_rosLZYvW1Ki6rc65nx1hY1nHFTRTWSoW4FUYVoEX4moy78goShrjoPiuzZK7pWVbQympuRlrJzq5Q_RUreudlkCfTxunpVwlN7Hy5U6l47_ZN7jDbEu9piehbw9cntT0W53CYEbY-eLIKvonUNgFd8004A')"></div>
+<!-- Pulse Marker -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-16 h-16 bg-error rounded-full opacity-30 pulse-ring"></div>
+<div class="w-4 h-4 bg-error rounded-full shadow-[0px_0px_12px_rgba(255,180,171,0.8)] z-20"></div>
+</div>
+</div>
+<!-- Hospital Marker -->
+<div class="absolute top-1/3 left-1/4 z-10 glass-panel rounded-lg p-2 flex items-center gap-2 shadow-[0px_12px_32px_rgba(255,107,0,0.15)]">
+<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">local_hospital</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface">MERCY GENERAL</p>
+<p class="text-[10px] text-tertiary">3 MIN AWAY</p>
+</div>
+</div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] border-b border-white/10 shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<h1 class="font-label-caps text-label-caps tracking-[0.2em] text-primary dark:text-primary">LIVE TRACKING</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-error hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emergency</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area (Overlay) -->
+<main class="relative z-20 flex-1 flex flex-col justify-end p-margin-mobile pt-24 pb-safe gap-gutter pointer-events-none">
+<!-- Shared Contacts Pill -->
+<div class="self-end glass-panel rounded-full px-4 py-2 flex items-center gap-3 pointer-events-auto shadow-[0px_4px_20px_rgba(0,0,0,0.2)] mb-auto">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-surface-container border border-white/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small, stylized profile portrait of a person wearing a motorcycle helmet, highly contrast lighting, dramatic mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1Xh6MWFhTL85mozUU95fvIeKsMc1Qw-P_jh7aGzz_xa33O94JRIJwkIJYn1RYxAFzSzfUHE7oOZqW1zBI0JYc_LZMe8JGUBD91xEp5wod4HeyaSEhJUT2tVmh1NujG6L2ZpLbVZSnNTar-Bc4x6mx1vjlUu_bu2KefxXBpk-dPfykZ6zZ1RS8RVfERuIp-xy3lh72R3TO-NFhGn_3SWXI-J9-ICfMUlC60Zm2jyfejMlVf4Yc4uJ7jA"/>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container border border-white/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small, stylized profile portrait of a person with goggles, sleek technological feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBonRqZ1tcJ5eTECHNlOsqui1Tt0SgsFuZfMPBuJyK11Ils8Zi2bvSnzobTmSinXyOfue-bAwFIMu-CSkrWH7vBnHJ_BckqzpTiitvTBzGNj2_jK4lS90MTekgALtI6ZX-3OZTXIA3uMKRd-dJ2Hckz4OI5K8d_uYUDSmwXej-253K0bwvPfXwW8877M4kjEtNmRaqgYKjqi52uCRCKLVrUqSihvI__e62az3WLi49TL8SoEIenHQpeAg"/>
+</div>
+</div>
+<span class="font-stat-label text-stat-label text-on-surface">Shared with 4 Contacts</span>
+</div>
+<!-- Emergency Status Card -->
+<div class="glass-panel rounded-xl p-6 pointer-events-auto shadow-[0px_12px_32px_rgba(0,0,0,0.4)] w-full max-w-lg mx-auto relative overflow-hidden">
+<!-- decorative accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-error"></div>
+<div class="flex items-start justify-between mb-6">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Services Dispatched</h2>
+<p class="font-body-md text-body-md text-tertiary">Police &amp; EMS en route</p>
+</div>
+<div class="text-right">
+<p class="font-label-caps text-label-caps text-error mb-1">ETA</p>
+<p class="font-display-stat text-display-stat text-on-surface">7<span class="font-headline-md text-headline-md text-tertiary">MIN</span></p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-sm">
+<button class="bg-error/10 hover:bg-error/20 border border-error/30 text-error rounded-full py-4 px-6 font-stat-label text-stat-label flex items-center justify-center gap-2 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">phone_in_talk</span>
+                    CALL 911
+                </button>
+<button class="bg-surface-container hover:bg-surface-bright border border-white/10 text-on-surface rounded-full py-4 px-6 font-stat-label text-stat-label flex items-center justify-center gap-2 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">volume_off</span>
+                    SILENT MODE
+                </button>
+</div>
+<div class="mt-4">
+<button class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-tertiary rounded-full py-3 px-6 font-label-caps text-label-caps tracking-widest transition-colors active:scale-95 duration-200">
+                    END EMERGENCY
+                </button>
+</div>
+</div>
+</main>
+</body></html>

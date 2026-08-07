@@ -1,0 +1,8 @@
+{
+  "name": "RiderMate",
+  "description": "Your AI-powered ride safety and coaching companion for two-wheeler riders. Track rides, monitor speed, and get personalized safety coaching.",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ]
+}

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RiderMate - Activity List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#bab8b7",
+                        "outline-variant": "#5a4136",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#4a4949",
+                        "inverse-surface": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#474646",
+                        "secondary": "#c8c6c5",
+                        "on-primary-container": "#572000",
+                        "inverse-primary": "#a04100",
+                        "surface-container": "#1e2020",
+                        "on-secondary": "#313030",
+                        "primary-fixed": "#ffdbcc",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-tertiary-container": "#313131",
+                        "on-surface": "#e2e2e2",
+                        "surface-bright": "#37393a",
+                        "surface": "#121414",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed": "#351000",
+                        "on-primary": "#561f00",
+                        "on-background": "#e2e2e2",
+                        "primary-container": "#ff6b00",
+                        "surface-container-low": "#1a1c1c",
+                        "primary-fixed-dim": "#ffb693",
+                        "tertiary-container": "#9a9999",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-tint": "#ffb693",
+                        "surface-variant": "#333535",
+                        "tertiary-fixed": "#e4e2e1",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-container-highest": "#333535",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary": "#c8c6c5",
+                        "error-container": "#93000a",
+                        "primary": "#ffb693",
+                        "error": "#ffb4ab",
+                        "outline": "#a98a7d",
+                        "background": "#121414",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-dim": "#121414",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-high": "#282a2b",
+                        "on-tertiary": "#303030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": [
+                            "JetBrains Mono"
+                        ],
+                        "stat-label": [
+                            "Inter"
+                        ],
+                        "display-stat": [
+                            "Hanken Grotesk"
+                        ],
+                        "body-md": [
+                            "Inter"
+                        ],
+                        "body-lg": [
+                            "Inter"
+                        ],
+                        "headline-md": [
+                            "Hanken Grotesk"
+                        ],
+                        "headline-lg": [
+                            "Hanken Grotesk"
+                        ]
+                    },
+                    "fontSize": {
+                        "label-caps": [
+                            "12px",
+                            {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "stat-label": [
+                            "14px",
+                            {
+                                "lineHeight": "20px",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "display-stat": [
+                            "48px",
+                            {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "headline-md": [
+                            "24px",
+                            {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "headline-lg": [
+                            "32px",
+                            {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background-color: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen font-body-md pb-[100px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-3xl shadow-sm">
+<div class="flex justify-between items-center px-margin-mobile py-md w-full border-b border-white/10">
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular avatar portrait of a cyclist wearing a helmet and sunglasses, stylized with high contrast dark mode aesthetics. Deep shadows with subtle orange rim lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR8hTx5pQb3y5Ow3i2skkH7f28uWxhagJ2DPj0aFVq5CdKSJ0lCXuxbnDk6xeIku4ofC8nr7z9HO006XxBsnVyNHnEslG50aOPAFmO7FCFp49mJKEGW8KFimDOWfePcAOg5XNjHXG6KHqHZIf5_YBvlKLeeqINDVKLGS-2HPOhGzrH-Bz8tCdMTKOpACbpy6Ww2PYQVKli25aFiOISKJ_F0zRNg187zdkYKTw30QF37qznZaU5FoTpPg"/>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary scale-95 active:scale-90 transition-transform">RiderMate</h1>
+<div class="flex items-center gap-sm">
+<button class="hover:opacity-80 transition-opacity text-primary dark:text-primary scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-[88px] px-margin-mobile">
+<!-- Header & Stats Summary -->
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm">Activity History</h2>
+<div class="flex gap-gutter">
+<div class="glass-card rounded-lg p-sm flex-1">
+<div class="font-label-caps text-label-caps text-secondary mb-xs">TOTAL DISTANCE</div>
+<div class="font-stat-label text-stat-label text-on-surface"><span class="text-primary">1,248</span> KM</div>
+</div>
+<div class="glass-card rounded-lg p-sm flex-1">
+<div class="font-label-caps text-label-caps text-secondary mb-xs">RIDES</div>
+<div class="font-stat-label text-stat-label text-on-surface"><span class="text-primary">42</span></div>
+</div>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar mb-lg pb-xs">
+<button class="px-4 py-2 rounded-full border border-primary-container bg-primary-container/20 text-primary font-stat-label text-stat-label whitespace-nowrap backdrop-blur-md">
+                All Rides
+            </button>
+<button class="px-4 py-2 rounded-full border border-white/10 glass-card text-secondary hover:text-on-surface font-stat-label text-stat-label whitespace-nowrap transition-colors">
+                Road
+            </button>
+<button class="px-4 py-2 rounded-full border border-white/10 glass-card text-secondary hover:text-on-surface font-stat-label text-stat-label whitespace-nowrap transition-colors">
+                MTB
+            </button>
+<button class="px-4 py-2 rounded-full border border-white/10 glass-card text-secondary hover:text-on-surface font-stat-label text-stat-label whitespace-nowrap transition-colors">
+                Commute
+            </button>
+</div>
+<!-- Activity List -->
+<div class="space-y-lg">
+<!-- Date Section -->
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-sm pl-xs">THIS WEEK</h3>
+<!-- Ride Card 1 -->
+<div class="glass-card rounded-xl p-sm mb-gutter flex gap-md items-center cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-[80px] h-[80px] rounded-lg overflow-hidden shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover opacity-80" data-alt="A minimalist top-down map view of a cycling route winding through a mountainous region, styled in high-contrast dark mode with neon orange route lines. Deep blacks, crisp white UI elements." data-location="Alps" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvUURuWSzwLvXeOdL16A1f5IP2F1av98JmwHllRwnwFDtBB5UJrTIxCJHzYirdgEMVaIRpXEp8AgDmgChwAXkG5GttbuCO8VvCdJgBx2P7hQHqUYlLXEawIdlr9wB-KMYYINLDCjTSW6FYr9Z7CwJiTBOjAarV4PB73sv2Jk0YmGvEbjvh9CFgU4BxcLM_TXd8rrkjYedBZVZqSeAf54XaQTzX7Hn01RiQwaWR1Y890ik8b0v9PggvFg"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-stat-label text-stat-label text-on-surface truncate">Morning Ascent</h4>
+<div class="flex items-center gap-xs mt-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-sm">Today, 06:30</span>
+</div>
+<div class="flex items-center gap-md mt-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="route">route</span>
+<span class="font-stat-label text-stat-label">45.2 km</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="timer">timer</span>
+<span class="font-stat-label text-stat-label">1h 45m</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Ride Card 2 -->
+<div class="glass-card rounded-xl p-sm flex gap-md items-center cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-[80px] h-[80px] rounded-lg overflow-hidden shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover opacity-80" data-alt="A dark, abstract topographic map thumbnail showing an urban street grid overlay with a bright orange path indicating a commute route. High-tech, stealth styling." data-location="London" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR7Lv5Oe-tIGGo3n4-sQ9L_Co4Uw3kUSkUD-6crOgNmPEoM8EdDaWCqY2BIVR_vJdrZvAIHpnPAT2yJhhazUzFo7mCSsaqJekDSZKn6-uKykSBvXFOrA402MpgzN5QLpcvVKxjKqP6N6eIIXcFtC1mMh6kxauQoYrl1qIBAMdGD11mqL-sWcy6xL2pL3zBfRCwKvngboB7zXWEezvnp5GMVO6jGYLgd9t4jQwE193UFAW2m6b-9tuJGg"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-stat-label text-stat-label text-on-surface truncate">City Sprint</h4>
+<div class="flex items-center gap-xs mt-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-sm">Yesterday, 18:15</span>
+</div>
+<div class="flex items-center gap-md mt-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="route">route</span>
+<span class="font-stat-label text-stat-label">12.8 km</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="timer">timer</span>
+<span class="font-stat-label text-stat-label">32m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Date Section -->
+<div>
+<h3 class="font-label-caps text-label-caps text-secondary mb-sm pl-xs">LAST WEEK</h3>
+<!-- Ride Card 3 -->
+<div class="glass-card rounded-xl p-sm flex gap-md items-center cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-[80px] h-[80px] rounded-lg overflow-hidden shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover opacity-80" data-alt="A dark mode map snippet showing a complex, winding forest trail route highlighted in neon orange. Subtle glowing nodes indicate waypoints on the path." data-location="Black Forest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmtadoq6WMXFZ6FJCJWOZqnoAVlzuoYRSYDN5XoQU-FgAyMgvd5af577Z6ryIcnke3A98MRUZyQt49-eWTfBtc7rIrLzGCCtBbX5bIqv-XBwtprZ222E5bzjvxzHQcLGlQeVINvEXu7XQHWc4rDu7z2tzHi7JbNOjvwkZjr5JXSgJttv-BIMgG5leqlCguQ45rTEZ5TAtNfInMRej1pAqkkXVVx6sw_qbWTnlwbdRFBLj4rVfJe6uEbQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-stat-label text-stat-label text-on-surface truncate">Weekend Trail</h4>
+<div class="flex items-center gap-xs mt-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-body-md text-body-md text-sm">Oct 14, 09:00</span>
+</div>
+<div class="flex items-center gap-md mt-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="route">route</span>
+<span class="font-stat-label text-stat-label">32.5 km</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="timer">timer</span>
+<span class="font-stat-label text-stat-label">2h 10m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-4 left-margin-mobile right-margin-mobile z-50 flex justify-around items-center py-sm bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-[30px] rounded-full border border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.4)]">
+<button class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold bg-primary/10 rounded-full px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="explore" data-weight="fill" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-caps text-label-caps">Nav</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="psychology">psychology</span>
+<span class="font-label-caps text-label-caps">Coach</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="insights">insights</span>
+<span class="font-label-caps text-label-caps">Stats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</button>
+</nav>
+</body></html>

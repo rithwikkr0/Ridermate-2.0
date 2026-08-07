@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Insights Hub - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#c8c6c5",
+                      "outline": "#a98a7d",
+                      "on-surface-variant": "#e2bfb0",
+                      "surface-container": "#1e2020",
+                      "outline-variant": "#5a4136",
+                      "surface-dim": "#121414",
+                      "on-primary": "#561f00",
+                      "on-tertiary": "#303030",
+                      "inverse-primary": "#a04100",
+                      "primary-fixed-dim": "#ffb693",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "background": "#121414",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "primary-container": "#ff6b00",
+                      "surface-bright": "#37393a",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "surface-variant": "#333535",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "on-secondary": "#313030",
+                      "tertiary": "#c8c6c5",
+                      "on-primary-container": "#572000",
+                      "primary": "#ffb693",
+                      "surface-tint": "#ffb693",
+                      "tertiary-container": "#9a9999",
+                      "error-container": "#93000a",
+                      "on-surface": "#e2e2e2",
+                      "secondary-fixed": "#e5e2e1",
+                      "surface-container-high": "#282a2b",
+                      "surface-container-highest": "#333535",
+                      "on-error": "#690005",
+                      "on-secondary-container": "#bab8b7",
+                      "on-tertiary-container": "#313131",
+                      "on-primary-fixed": "#351000",
+                      "primary-fixed": "#ffdbcc",
+                      "on-secondary-fixed-variant": "#474646",
+                      "surface-container-lowest": "#0c0f0f",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "tertiary-fixed": "#e4e2e1",
+                      "secondary-container": "#4a4949",
+                      "surface-container-low": "#1a1c1c",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "inverse-on-surface": "#2f3131",
+                      "surface": "#121414",
+                      "on-background": "#e2e2e2",
+                      "inverse-surface": "#e2e2e2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "xl": "32px",
+                      "gutter": "16px",
+                      "margin-mobile": "20px",
+                      "unit": "4px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "stat-label": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "display-stat": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "stat-label": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-stat": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-card {
+            background-color: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .level-2-shadow {
+            box-shadow: 0 12px 32px rgba(255, 107, 0, 0.4);
+        }
+        .glow-dark {
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-3xl border-b border-white/10 shadow-sm flex justify-between items-center px-margin-mobile py-md w-full">
+<div class="flex items-center gap-sm scale-95 active:scale-90 transition-transform">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A close up, high contrast profile photo of a cyclist wearing a matte black helmet and reflective sunglasses, shot against a dark studio background with subtle orange rim lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnd2IZC3Kao8bpbT0UeADbdJRForprh_7KIQU6VZhFU2DRPFwyGzhA5XuR3ymecT_QQJm26LUeTTLY96t7l10U9uqkW5jgt2YG5xjpyj7NK_6qnag80lKPLAs8pnJurojhnpzNR6MMu564m9VKel5lbp3eTkfIwRE64qzOFepLxH-wKQZfDl1dA1GLSfZvRcVJ1L9Ei4MZP4BJSWHii9l2iQ3ID7CeSOM2QFWXRZ1qS6SyZmUPwuHAiw"/>
+</div>
+</div>
+<div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary">RiderMate</div>
+<button class="text-primary dark:text-primary hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-mobile max-w-3xl mx-auto space-y-gutter">
+<!-- AI Welcome Section -->
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">AI Coach</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Insights &amp; recommendations for your next ride.</p>
+</div>
+<!-- Bento Grid for AI Insights -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Weather/Route Suggestion -->
+<div class="glass-card rounded-xl p-md glow-dark flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined">route</span>
+<span class="font-stat-label text-stat-label">Optimal Route</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Coastal Loop</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Tailwind expected on the return leg. Avoids heavy traffic zones.</p>
+</div>
+<div class="flex gap-sm">
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-surface-variant border border-white/10 font-label-caps text-label-caps text-on-surface">
+<span class="material-symbols-outlined text-[14px]">sunny</span> 22°C
+                    </span>
+<span class="inline-flex items-center gap-xs px-2 py-1 rounded-full bg-surface-variant border border-white/10 font-label-caps text-label-caps text-on-surface">
+<span class="material-symbols-outlined text-[14px]">distance</span> 45km
+                    </span>
+</div>
+</div>
+<!-- Safety Warning -->
+<div class="glass-card rounded-xl p-md glow-dark flex flex-col justify-between border-error/30 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-error/10 blur-2xl rounded-full -mr-16 -mt-16"></div>
+<div>
+<div class="flex items-center gap-xs text-error mb-sm relative z-10">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-stat-label text-stat-label">Safety Alert</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs relative z-10">Wet Conditions</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md relative z-10">Recent rain detected on Northern descent. Reduce speed and increase braking distance.</p>
+</div>
+</div>
+<!-- Battery/Performance Optimization -->
+<div class="glass-card rounded-xl p-md glow-dark md:col-span-2">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined">battery_charging_full</span>
+<span class="font-stat-label text-stat-label">System Optimization</span>
+</div>
+</div>
+<div class="flex items-end gap-gutter">
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Eco Mode Recommended</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Switch to Eco mode for the first 15km to ensure sufficient charge for the final climb.</p>
+</div>
+<div class="text-right">
+<div class="font-display-stat text-display-stat text-on-surface leading-none">68<span class="font-headline-md text-headline-md text-on-surface-variant">%</span></div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mt-xs">EST. BATTERY</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-4 left-margin-mobile right-margin-mobile z-50 flex justify-around items-center py-sm bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-[30px] rounded-full border border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.4)]">
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="font-label-caps text-label-caps">Nav</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold bg-primary/10 rounded-full px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-caps text-label-caps">Coach</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-label-caps text-label-caps">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+</body></html>

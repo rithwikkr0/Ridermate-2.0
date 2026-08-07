@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#474646",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "surface-container-low": "#1a1c1c",
+                      "on-error": "#690005",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "outline": "#a98a7d",
+                      "on-primary-container": "#572000",
+                      "on-surface": "#e2e2e2",
+                      "outline-variant": "#5a4136",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "error-container": "#93000a",
+                      "secondary": "#c8c6c5",
+                      "tertiary": "#c8c6c5",
+                      "surface-container-highest": "#333535",
+                      "secondary-fixed": "#e5e2e1",
+                      "surface-container-lowest": "#0c0f0f",
+                      "on-tertiary": "#303030",
+                      "on-secondary": "#313030",
+                      "inverse-on-surface": "#2f3131",
+                      "on-background": "#e2e2e2",
+                      "background": "#121414",
+                      "surface-dim": "#121414",
+                      "secondary-container": "#4a4949",
+                      "primary": "#ffb693",
+                      "on-secondary-container": "#bab8b7",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "surface": "#121414",
+                      "on-primary": "#561f00",
+                      "primary-container": "#ff6b00",
+                      "primary-fixed-dim": "#ffb693",
+                      "primary-fixed": "#ffdbcc",
+                      "tertiary-container": "#9a9999",
+                      "inverse-primary": "#a04100",
+                      "error": "#ffb4ab",
+                      "surface-container-high": "#282a2b",
+                      "surface-container": "#1e2020",
+                      "on-tertiary-container": "#313131",
+                      "tertiary-fixed": "#e4e2e1",
+                      "surface-tint": "#ffb693",
+                      "inverse-surface": "#e2e2e2",
+                      "on-error-container": "#ffdad6",
+                      "surface-bright": "#37393a",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "on-surface-variant": "#e2bfb0",
+                      "surface-variant": "#333535",
+                      "on-primary-fixed": "#351000"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "margin-mobile": "20px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "stat-label": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-stat": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "stat-label": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-stat": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0A0A0A; /* Level 0 Base */
+        }
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6); /* surface-container with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-avatar {
+            box-shadow: 0 0 30px rgba(255, 107, 0, 0.3); /* Circuit Orange glow */
+        }
+        .form-input-premium {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .form-input-premium:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ff6b00;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.2);
+            outline: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased overflow-x-hidden min-h-screen relative">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] border-b border-white/10 shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-label-caps text-label-caps tracking-[0.2em] text-primary dark:text-primary">EDIT PROFILE</h1>
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200 font-label-caps text-label-caps">
+                SAVE
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile max-w-2xl mx-auto space-y-gutter">
+<!-- Profile Photo Section -->
+<section class="flex flex-col items-center justify-center py-md">
+<div class="relative group cursor-pointer">
+<div class="w-32 h-32 rounded-full overflow-hidden glow-avatar border-2 border-primary/50 relative">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a motorcyclist wearing a sleek, matte black helmet with a tinted visor reflecting neon city lights. The lighting is cinematic and dramatic, emphasizing the high-tech, premium minimalist aesthetic of the app. Dark background with subtle orange glowing accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCBK0vD7FVyBCCX25oXkF_IVWF8YcgLhydNsrbKSnLb8KmhC2anFj32PwDhsX9_qLntkp99lM3iNeC7XXTdW0614r3qirv2mHC8yt5dGYXoa85PlZdvdf2cM5RdsaQ7c09aIFnn0i5HQIOcdODMxLKahaqQP1WEGUniAYwzh8vLHKk3wZ7MV15WRSlqDRT5UEeJoRU_ZjIdn5V12sla5tI8B03-kYw8ziSbkFnA-PeD9vnzncIQn_aiw"/>
+<!-- Overlay on hover -->
+<div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="photo_camera">photo_camera</span>
+</div>
+</div>
+<div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-surface-container border border-white/10 rounded-full px-4 py-1 flex items-center space-x-2 shadow-lg">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="edit">edit</span>
+<span class="font-label-caps text-label-caps text-on-surface">CHANGE</span>
+</div>
+</div>
+</section>
+<!-- Form Sections (Bento-ish layout for larger screens, stacked on mobile) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Basic Info Card -->
+<div class="glass-card rounded-xl p-md space-y-md md:col-span-2 shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<h2 class="font-stat-label text-stat-label text-on-surface-variant flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+<span>PERSONAL DETAILS</span>
+</h2>
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">FULL NAME</label>
+<input class="w-full form-input-premium rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface" type="text" value="Alex Mercer"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">RIDER BIO</label>
+<textarea class="w-full form-input-premium rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface resize-none" rows="3">Weekend warrior. Track day enthusiast. Always chasing the perfect apex.</textarea>
+</div>
+</div>
+</div>
+<!-- Medical Info Card -->
+<div class="glass-card rounded-xl p-md space-y-md shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<h2 class="font-stat-label text-stat-label text-error flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm" data-icon="medical_information">medical_information</span>
+<span>MEDICAL ID</span>
+</h2>
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">BLOOD GROUP</label>
+<select class="w-full form-input-premium rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface appearance-none">
+<option value="O+">O Positive (O+)</option>
+<option value="O-">O Negative (O-)</option>
+<option selected="" value="A+">A Positive (A+)</option>
+<option value="A-">A Negative (A-)</option>
+</select>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">ALLERGIES</label>
+<input class="w-full form-input-premium rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface" type="text" value="Penicillin"/>
+</div>
+</div>
+</div>
+<!-- Emergency Contacts Card -->
+<div class="glass-card rounded-xl p-md space-y-md shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<div class="flex justify-between items-center">
+<h2 class="font-stat-label text-stat-label text-on-surface-variant flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm" data-icon="contacts">contacts</span>
+<span>EMERGENCY CONTACTS</span>
+</h2>
+<button class="text-primary hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface">
+<span class="font-stat-label text-stat-label">S</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Sarah Mercer</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">SPOUSE</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface">
+<span class="font-stat-label text-stat-label">D</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface">Dr. Evans</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">PHYSICIAN</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="mt-xl pt-lg border-t border-error/20 text-center">
+<button class="text-error hover:text-error-container transition-colors font-label-caps text-label-caps flex items-center justify-center space-x-2 mx-auto">
+<span class="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+<span>DELETE ACCOUNT</span>
+</button>
+</div>
+</main>
+</body></html>

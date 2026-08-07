@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ride Summary - RiderMate</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#bab8b7",
+                        "outline-variant": "#5a4136",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#4a4949",
+                        "inverse-surface": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#474646",
+                        "secondary": "#c8c6c5",
+                        "on-primary-container": "#572000",
+                        "inverse-primary": "#a04100",
+                        "surface-container": "#1e2020",
+                        "on-secondary": "#313030",
+                        "primary-fixed": "#ffdbcc",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-tertiary-container": "#313131",
+                        "on-surface": "#e2e2e2",
+                        "surface-bright": "#37393a",
+                        "surface": "#121414",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed": "#351000",
+                        "on-primary": "#561f00",
+                        "on-background": "#e2e2e2",
+                        "primary-container": "#ff6b00",
+                        "surface-container-low": "#1a1c1c",
+                        "primary-fixed-dim": "#ffb693",
+                        "tertiary-container": "#9a9999",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-tint": "#ffb693",
+                        "surface-variant": "#333535",
+                        "tertiary-fixed": "#e4e2e1",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-container-highest": "#333535",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary": "#c8c6c5",
+                        "error-container": "#93000a",
+                        "primary": "#ffb693",
+                        "error": "#ffb4ab",
+                        "outline": "#a98a7d",
+                        "background": "#121414",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-dim": "#121414",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-high": "#282a2b",
+                        "on-tertiary": "#303030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "stat-label": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glow-shadow {
+            box-shadow: 0px 4px 20px rgba(255, 107, 0, 0.05);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(180deg, rgba(255,107,0,1) 0%, rgba(220,90,0,1) 100%);
+            box-shadow: 0px 4px 20px rgba(255, 107, 0, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-xl antialiased">
+<!-- Note: TopAppBar and BottomNavBar suppressed due to linear/transactional intent of a summary screen -->
+<main class="px-margin-mobile pt-xl max-w-2xl mx-auto space-y-gutter">
+<!-- Header -->
+<header class="text-center mb-lg pt-md">
+<h1 class="font-headline-lg text-headline-lg text-primary">Ride Complete!</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Morning Canyon Loop</p>
+</header>
+<!-- Map Card -->
+<div class="glass-card rounded-xl overflow-hidden glow-shadow relative group">
+<div class="h-64 w-full bg-surface-container-high relative">
+<img class="w-full h-full object-cover opacity-80" data-alt="A stylized, dark mode high-contrast map view showing a complex, winding cycling route through canyon terrain. The route is highlighted in a vibrant glowing orange line over deep grey and black topography. The aesthetic is premium, minimalistic, and futuristic." data-location="Grand Canyon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHzlWxhcytwTRAkPUpKL-F2zeVM5Z1Bg1fSvSExSu-kz96u3KtMRWZo9xf31lbLCtu9L4TryPXT0AFwKUcEFy4VY8qUFer7x5JxGm3H9pJjJD0p5J83C9t66it3oVxfs0x2zHZfl_CEasykdbnTAT6skw9qRyRhiP4IFdGf6Z9RfniBtsM1RM0QbsjIYb_-z1v6T_xDsrv4cq0CC5pl6YkFQ9iTNHUupCciGRfyd9i_aV-RlFzYuSODA"/>
+<!-- Route Overlay (Faux) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<svg fill="none" height="150" viewbox="0 0 200 150" width="200" xmlns="http://www.w3.org/2000/svg">
+<path class="drop-shadow-[0_0_8px_rgba(255,107,0,0.8)]" d="M10 140 C 40 100, 80 120, 100 80 S 140 20, 190 10" stroke="#ff6b00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<circle cx="10" cy="140" fill="#121414" r="6" stroke="#ff6b00" stroke-width="2"></circle>
+<circle cx="190" cy="10" fill="#ff6b00" r="6"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Metrics Bento Grid -->
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Distance -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">route</span> Distance
+                </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display-stat text-display-stat text-on-surface">42.5</span>
+<span class="font-stat-label text-stat-label text-on-surface-variant">km</span>
+</div>
+</div>
+<!-- Time -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">timer</span> Time
+                </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display-stat text-display-stat text-on-surface">1<span class="text-3xl">h</span>22<span class="text-3xl">m</span></span>
+</div>
+</div>
+<!-- Power -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">bolt</span> Avg Power
+                </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display-stat text-display-stat text-on-surface">215</span>
+<span class="font-stat-label text-stat-label text-on-surface-variant">W</span>
+</div>
+</div>
+<!-- Elevation -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">terrain</span> Elevation
+                </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display-stat text-display-stat text-on-surface">620</span>
+<span class="font-stat-label text-stat-label text-on-surface-variant">m</span>
+</div>
+</div>
+</div>
+<!-- AI Summary Card -->
+<div class="glass-card rounded-xl p-md flex flex-col gap-sm relative overflow-hidden border border-primary/20">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex items-center gap-2 mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-stat-label text-stat-label text-primary">Coach Insights</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic leading-relaxed">
+                "Great effort on the climbs! You set a new PR on the Canyon segment. Keep focusing on that steady cadence during the steeper pitches."
+            </p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-sm pt-md">
+<button class="w-full btn-primary text-white rounded-full py-md font-stat-label text-stat-label flex justify-center items-center gap-2 hover:opacity-90 transition-opacity active:scale-[0.98]">
+<span class="material-symbols-outlined">save</span>
+                Save &amp; Close
+            </button>
+<button class="w-full glass-card rounded-full py-md font-stat-label text-stat-label text-on-surface flex justify-center items-center gap-2 hover:bg-white/5 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">share</span>
+                Share Activity
+            </button>
+</div>
+</main>
+</body></html>

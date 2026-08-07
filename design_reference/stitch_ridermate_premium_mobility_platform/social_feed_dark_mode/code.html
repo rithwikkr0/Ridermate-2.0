@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RiderMate - Social Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-dim": "#121414",
+                        "surface-tint": "#ffb693",
+                        "outline": "#a98a7d",
+                        "surface-container-low": "#1a1c1c",
+                        "inverse-primary": "#a04100",
+                        "surface-variant": "#333535",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#37393a",
+                        "primary-container": "#ff6b00",
+                        "inverse-on-surface": "#2f3131",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary-container": "#572000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#333535",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary-container": "#9a9999",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#4a4949",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdbcc",
+                        "surface-container-lowest": "#0c0f0f",
+                        "primary": "#ffb693",
+                        "outline-variant": "#5a4136",
+                        "surface-container-high": "#282a2b",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#474646",
+                        "error-container": "#93000a",
+                        "on-secondary": "#313030",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary": "#303030",
+                        "on-secondary-container": "#bab8b7",
+                        "on-tertiary-container": "#313131",
+                        "on-surface-variant": "#e2bfb0",
+                        "secondary": "#c8c6c5",
+                        "background": "#121414",
+                        "on-surface": "#e2e2e2",
+                        "surface-container": "#1e2020",
+                        "on-background": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface": "#121414"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased min-h-screen flex flex-col relative pb-safe">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-white/10 dark:border-white/10 shadow-sm text-primary">
+<div class="flex items-center gap-sm cursor-pointer hover:opacity-80 transition-opacity">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A close-up profile portrait of a confident cyclist wearing sleek, dark aerodynamic riding glasses. The lighting is moody and dramatic with a stark black background, emphasizing high-end athletic gear and a premium, focused lifestyle aesthetic perfectly suited for a dark mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvOutAOu-mriCo03NMDdVEdbJsxGzDy_W2kZuzQwjaZ_maJn_wgRetNs2FamLKPqIUOnGY9YtWFX-8D4veVA1OKfiQawwdHQHk9zT6LiaBEywygV3FlENrwmpKPKc-uzEje4ApmeO106AOmdoRixzYzvw6rO_6f_1y8Vdtao6xrCbFq4YXUQvEcUPkUX6dHGtJDeiuo7OtDK3Gb95ukpsBzuR4ORKTCYwdcQH8GgmQIX6I_Djn9Ge67w"/>
+</div>
+</div>
+<div class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary">
+            RIDERMATE
+        </div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors cursor-pointer text-primary hover:opacity-80">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 pb-32 px-margin-mobile flex flex-col gap-gutter max-w-2xl mx-auto w-full">
+<!-- Feed Card 1: Ride Memory -->
+<article class="bg-surface-container/80 backdrop-blur-[12px] border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.2)] rounded-[32px] overflow-hidden flex flex-col group relative">
+<!-- Header -->
+<div class="flex items-center gap-sm p-4">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A moody, stylized headshot of a motorcyclist wearing a premium matte black full-face helmet. The dark visor slightly reflects a neon sunset. Minimalist background, crisp details, emphasizing a high-tech, enthusiast lifestyle ideal for a luxury dark-themed interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYxVg65kwAYByhUKWVvz82sVAjQCpgkFYQKVXyzrpzgp3tarfbGob9Iy5R2ZtCZzjzhcHz_kt5j2HDuc-9hZr-8PJuzV0XlrwYXs9gLsOOdEjnBYu5mHXqoyP3XA7RaXPWGjgi_u2NqAUzjdH4gMPz8qjp65-jnxOKXN8wSIJEsLvfiTrFlBsXYgElJvFzsRhe-m-1lSe9Caj4lzms0Dwt4y3bL4DB86ru_h5AP3edkXIF3cz5zYtswQ"/>
+</div>
+<div class="flex-1 flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface">Alex Mercer</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Morning Attack • 2h ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<!-- Media Section with Floating Map -->
+<div class="relative w-full aspect-[4/3] bg-surface-dim">
+<img class="w-full h-full object-cover" data-alt="A high-performance road cyclist leaning into a sharp corner on a winding mountain road at twilight. The mood is intense and focused, shot from a low angle. Cinematic lighting with deep shadows and vibrant sunset orange highlights reflecting off the sleek carbon fiber bike frame, perfectly complementing a premium dark mode UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTk8Mu3Gteu3t8-ehlFQtBjAuilCaeAuR0OAeaF0_LU0eeZ0Yry3OPgJgl6EHEU1rvBeeP-MjhZZi35jNV3d2ph2fXv06iKRr8TTkFBqX5yZcFX0jLKkQGU825HSOreYb1x3wgI_BZoye_3BqLUsawkFBQMW2_eUu9shFh1xChCBVKizeGIAdtvYyFFDb3SlDd61NcZthYFgwmOb-JIraw3RpgqLjwUDd9VUgT_rz3Jnut8rWFAOp6og"/>
+<!-- Floating Map Thumbnail Overlay -->
+<div class="absolute bottom-4 right-4 w-32 h-32 rounded-xl border border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.6)] overflow-hidden bg-surface backdrop-blur-md">
+<img class="w-full h-full object-cover opacity-80" data-alt="A minimalist, stylized digital map of a winding mountain pass route in dark mode. The map background is deep charcoal grey with subtle topographical contour lines. The GPS track is highlighted in a vibrant, glowing neon orange line, signifying a high-energy ride telemetry." data-location="Stelvio Pass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtLpCBHwi6wQt_Vcu_7kBWDPvqMtkab6i5hXo9cTLe3knuvlVX4s73K4kxtfYPIcDA_8S7swLOdZ4awE_qO5eDFWtAE__athBXgk3GzWxvtnEBgedg9YIBS9y6Q7iLbHddg_-QlKXKQP1MkEO8nWgb-ZM-bTw-Clt1d8DtXtzsLsFALnF7UgO0xEktAMrXbYXW3P0fFlz5nCJobMvmGus4lN6abqSP9n_cdfjmq0zCMLfx6T9J2JFPdA"/>
+</div>
+<!-- Telemetry Chips Overlay -->
+<div class="absolute top-4 left-4 flex flex-col gap-xs">
+<div class="bg-surface-container/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 flex items-baseline gap-2 w-max shadow-sm">
+<span class="font-headline-md text-headline-md text-on-surface">84.2</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">KM</span>
+</div>
+<div class="bg-surface-container/60 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 flex items-baseline gap-2 w-max shadow-sm">
+<span class="font-headline-md text-headline-md text-on-surface">1,240</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">M ELEV</span>
+</div>
+</div>
+</div>
+<!-- Content -->
+<div class="p-4 flex flex-col gap-sm">
+<p class="font-body-md text-body-md text-on-surface/90">
+                    Pushed hard on the climb today. The new setup feels incredible out of the corners. 🏔️🔥
+                </p>
+<!-- Interaction Bar -->
+<div class="flex items-center justify-between pt-4 border-t border-white/5 mt-2">
+<div class="flex gap-4">
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+<span class="font-stat-label text-stat-label">128</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">chat_bubble</span>
+<span class="font-stat-label text-stat-label">24</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Feed Card 2: Achievement -->
+<article class="bg-surface-container/80 backdrop-blur-[12px] border border-primary/20 shadow-[0_4px_20px_rgba(255,107,0,0.05)] rounded-[32px] overflow-hidden flex flex-col group relative">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+<!-- Header -->
+<div class="flex items-center gap-sm p-4 relative z-10">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A striking portrait of a female endurance rider at dawn. She is looking off-camera with a sense of accomplishment, silhouetted against a soft, dark gradient sky. The styling is minimal, focusing on the texture of her technical riding gear and a subtle glow highlighting her features." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3rR9GOfXMLzBB7et4YBpRTy1_phIlH_r7OOlfxfDfhP9cO53CCojh5220_6DWs79hRpwKXPfGoAoJchYrwe0XkvITR4LF9yLKS2yHYZNh7Uo1metQ4Yxee-iCl-hD_0Mb3owTFaCWv-xPFKbLblWn1JHU9_tBxhqlFPtkD0WyUohzefoEXNo0-f6vWvQnYTEONVJkBRJUd3oiKS3z8-zylT1KtcS5HcbTWxyBStsLokQrr2URGrDJbw"/>
+</div>
+<div class="flex-1 flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface flex items-center gap-2">
+                        Sarah Jenkins
+                        <span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">New Milestone • 5h ago</span>
+</div>
+</div>
+<!-- Achievement Content -->
+<div class="px-6 pb-6 pt-2 flex flex-col items-center text-center relative z-10">
+<div class="w-24 h-24 rounded-full bg-surface-container-high border border-primary/30 flex items-center justify-center shadow-[0_0_30px_rgba(255,107,0,0.15)] mb-4">
+<span class="material-symbols-outlined text-[48px] text-primary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">100 Day Streak</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Consistency is key. Unlocked the Centurion badge for riding 100 consecutive days!</p>
+<!-- Interaction Bar -->
+<div class="w-full flex items-center justify-between pt-6 mt-4 border-t border-white/5">
+<div class="flex gap-4">
+<button class="flex items-center gap-xs text-primary transition-colors group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-stat-label text-stat-label text-on-surface">342</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-on-surface transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">chat_bubble</span>
+<span class="font-stat-label text-stat-label">56</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] mx-margin-mobile mb-4 rounded-full border border-white/10 dark:border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.05)] md:hidden">
+<!-- Active: Home (Feed) -->
+<button class="flex items-center justify-center bg-primary text-on-primary rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,182,147,0.4)] scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</button>
+<!-- Inactive items -->
+<button class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">navigation</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">sports_score</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">insights</span>
+</button>
+<button class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</button>
+</nav>
+</body></html>

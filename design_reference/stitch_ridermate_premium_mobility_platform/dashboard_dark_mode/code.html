@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>RiderMate Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#572000",
+                      "primary": "#ffb693",
+                      "inverse-on-surface": "#2f3131",
+                      "on-secondary-fixed-variant": "#474646",
+                      "error": "#ffb4ab",
+                      "surface-bright": "#37393a",
+                      "tertiary-container": "#9a9999",
+                      "outline": "#a98a7d",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "primary-fixed-dim": "#ffb693",
+                      "on-error": "#690005",
+                      "inverse-surface": "#e2e2e2",
+                      "on-surface": "#e2e2e2",
+                      "surface-container-low": "#1a1c1c",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "inverse-primary": "#a04100",
+                      "on-error-container": "#ffdad6",
+                      "on-background": "#e2e2e2",
+                      "surface-tint": "#ffb693",
+                      "primary-container": "#ff6b00",
+                      "error-container": "#93000a",
+                      "on-surface-variant": "#e2bfb0",
+                      "on-primary": "#561f00",
+                      "surface": "#121414",
+                      "surface-container-lowest": "#0c0f0f",
+                      "on-tertiary": "#303030",
+                      "surface-variant": "#333535",
+                      "primary-fixed": "#ffdbcc",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "secondary": "#c8c6c5",
+                      "surface-container-highest": "#333535",
+                      "surface-dim": "#121414",
+                      "on-tertiary-container": "#313131",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "on-primary-fixed": "#351000",
+                      "secondary-container": "#4a4949",
+                      "tertiary": "#c8c6c5",
+                      "surface-container-high": "#282a2b",
+                      "secondary-fixed": "#e5e2e1",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "on-secondary": "#313030",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "tertiary-fixed": "#e4e2e1",
+                      "surface-container": "#1e2020",
+                      "outline-variant": "#5a4136",
+                      "background": "#121414",
+                      "on-secondary-container": "#bab8b7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "unit": "4px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "stat-label": [
+                              "Inter"
+                      ],
+                      "display-stat": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "stat-label": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-stat": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0A;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 107, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            background-attachment: fixed;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .glass-panel {
+            background: rgba(18, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-panel-elevated {
+            background: rgba(18, 20, 20, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 32px rgba(255, 107, 0, 0.05), 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Ambient Glow Animation for active components */
+        @keyframes subtle-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.1); }
+            50% { box-shadow: 0 0 20px 0 rgba(255, 107, 0, 0.2); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.1); }
+        }
+        .glow-active {
+            animation: subtle-pulse 3s infinite ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased overflow-x-hidden pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-3xl shadow-sm pb-[1px] bg-gradient-to-b from-transparent to-white/10">
+<div class="flex justify-between items-center px-margin-mobile py-md w-full border-b border-white/10">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up profile portrait of a modern cyclist wearing sleek, premium dark grey riding gear. Moody, cinematic lighting with strong contrast. Dark, high-end athletic aesthetic. Soft focus background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD-bMz2_zP7t3AiDAYHx3jLZDHD3Hr9wHOkciZYMphcYSebHFFrr3jaKudSjiwufSZn2WnSWxlkemaOLyzt1hJ5zmTXlHsUzsTOKfZl2z8N54nsrepPjfd9mg0lxFo3GZL4XRJlv91EZtaPmiD4zOnjhbA-x5OsNq4FL5_yQB8U7URvqS97uFJHYpqR_-rDkUQ91BdEm6vSqRF8PRIkGkkP2XJ-qCBgpJ9x9UCuGBBoR9cxeVKmLNOjw"/>
+</div>
+</div>
+<div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary">
+                RiderMate
+            </div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-variant/50 border border-white/10 text-on-surface-variant hover:opacity-80 transition-opacity scale-95 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[90px] px-margin-mobile flex flex-col gap-gutter max-w-2xl mx-auto">
+<!-- Greeting & Status Row -->
+<section class="flex justify-between items-end mt-4 mb-2">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">GOOD MORNING</p>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Hello, Rider</h1>
+</div>
+<div class="flex gap-2">
+<div class="glass-panel rounded-full px-3 py-1.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+<span class="font-stat-label text-stat-label">24°</span>
+</div>
+<div class="glass-panel rounded-full px-3 py-1.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface" style="font-variation-settings: 'FILL' 1;">battery_charging_80</span>
+<span class="font-stat-label text-stat-label">88%</span>
+</div>
+</div>
+</section>
+<!-- Quick Ride FAB/Card -->
+<section class="relative w-full aspect-[2/1] rounded-xl overflow-hidden glass-panel-elevated group cursor-pointer mb-2">
+<!-- Map Background Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity group-hover:opacity-60 transition-opacity duration-500" data-alt="A dark, moody satellite map view of twisting mountain roads. The roads are highlighted with subtle, glowing orange telemetry lines indicating a route. High-tech, premium minimalist UI aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCsp8Xf--vjMO7kazlvE84iss8d1aBh4dhUYh7Z3OTRQz6IDJ4VE-XF80JVgxfWRDN2yXlEvBQGEsxyU83bgXtnHyBjCChmri-zcpRTZMRIcfX1wDuMmRdPt3lf8ryPL-sW7bAKL4tcwateKDtUMxPUOfmkOJeSDkU04wnUuPrJKvyy1AriFQ9xjG_aIwowmIcrHE8qW9Fbfjw_ud9BAeQhu-9_ej5QmX_qelk6E9Tz37A6MGJkyT02wQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim/90 via-surface-dim/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-4 flex justify-between items-end">
+<div>
+<p class="font-label-caps text-label-caps text-primary mb-1">READY TO ROLL</p>
+<h2 class="font-headline-md text-headline-md text-white">Start Quick Ride</h2>
+</div>
+<div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shadow-[0_12px_32px_rgba(255,107,0,0.4)] glow-active group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</section>
+<!-- AI Coach Bento -->
+<section class="glass-panel rounded-xl p-5 flex flex-col gap-4">
+<div class="flex items-center gap-2 border-b border-white/10 pb-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<h3 class="font-headline-md text-headline-md text-[18px]">AI Coach Insights</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">READINESS</p>
+<div class="flex items-baseline gap-1">
+<span class="font-display-stat text-display-stat text-[32px] text-primary">92</span>
+<span class="font-stat-label text-stat-label text-on-surface-variant">%</span>
+</div>
+<p class="font-body-md text-body-md text-[13px] text-on-surface mt-1">Optimal recovery detected. Push for a PR today.</p>
+</div>
+<div class="flex flex-col">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">CONDITIONS</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">air</span>
+</div>
+<span class="font-stat-label text-stat-label">Tailwind E 15km/h</span>
+</div>
+<p class="font-body-md text-body-md text-[13px] text-on-surface mt-2">Favorable for coastal routes.</p>
+</div>
+</div>
+</section>
+<!-- Recent Rides Horizontal Scroll -->
+<section class="mt-2">
+<h3 class="font-headline-md text-headline-md text-[18px] mb-3 px-1">Recent Rides</h3>
+<div class="flex overflow-x-auto hide-scrollbar gap-gutter pb-4 -mx-margin-mobile px-margin-mobile snap-x">
+<!-- Ride Card 1 -->
+<div class="glass-panel rounded-lg min-w-[240px] flex-shrink-0 p-4 snap-center relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-bottom opacity-20" data-alt="Abstract, minimal graphic representing a digital elevation profile of a mountain climb. Rendered in dark charcoal and subtle neon orange lines. High-end data visualization aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuIuTQEvXn08fdVTNMWgU3m8UBHpk25ePijOCICUOEO4Wusa2ZEo-y_DZfSQ5FQV-buYUvxtQBuA1dy4cGTSn9XIYqc_RPLZPSHB6p8TvZpypZB1CYugyH0YZ4_un2XC4dEzuvO72YF5hk4ImdFx18pMGjJVqffx_piX6TTG5JuvqIokG_YqwYblBIJZG-NToLltj8ToRVSyqG_SklCvEKC8a8tjYkGk20SyZ_5IP_5S3udDFdho1aCA')"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<p class="font-stat-label text-stat-label text-white">Morning Ascent</p>
+<span class="font-label-caps text-label-caps text-on-surface-variant">YESTERDAY</span>
+</div>
+<div class="flex gap-4">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-0.5">DIST</p>
+<p class="font-stat-label text-stat-label">42.5 <span class="text-[10px]">KM</span></p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-0.5">AVG</p>
+<p class="font-stat-label text-stat-label">28.2 <span class="text-[10px]">KM/H</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Ride Card 2 -->
+<div class="glass-panel rounded-lg min-w-[240px] flex-shrink-0 p-4 snap-center relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<p class="font-stat-label text-stat-label text-white">City Loop</p>
+<span class="font-label-caps text-label-caps text-on-surface-variant">WEDNESDAY</span>
+</div>
+<div class="flex gap-4">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-0.5">DIST</p>
+<p class="font-stat-label text-stat-label">15.0 <span class="text-[10px]">KM</span></p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-0.5">AVG</p>
+<p class="font-stat-label text-stat-label">22.4 <span class="text-[10px]">KM/H</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-4 left-margin-mobile right-margin-mobile z-50 flex justify-around items-center py-sm bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-[30px] rounded-full border border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.4)] md:hidden">
+<!-- Active Tab: Home -->
+<div class="flex flex-col items-center justify-center text-primary font-bold bg-primary/10 rounded-full px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">explore</span>
+<span class="font-label-caps text-label-caps mt-1">Nav</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">psychology</span>
+<span class="font-label-caps text-label-caps mt-1">Coach</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">insights</span>
+<span class="font-label-caps text-label-caps mt-1">Stats</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container/60 px-4 py-2 hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

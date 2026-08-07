@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ridermate - Community Challenges</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e2e2e2",
+                        "primary": "#ffb693",
+                        "surface-tint": "#ffb693",
+                        "on-surface-variant": "#e2bfb0",
+                        "background": "#121414",
+                        "on-secondary-fixed-variant": "#474646",
+                        "primary-fixed-dim": "#ffb693",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-tertiary-container": "#313131",
+                        "surface-dim": "#121414",
+                        "on-secondary-container": "#bab8b7",
+                        "inverse-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "primary-fixed": "#ffdbcc",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1e2020",
+                        "on-primary-container": "#572000",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-fixed": "#351000",
+                        "secondary-fixed": "#e5e2e1",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-container-highest": "#333535",
+                        "tertiary-container": "#9a9999",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#282a2b",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline-variant": "#5a4136",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "secondary": "#c8c6c5",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-error": "#690005",
+                        "outline": "#a98a7d",
+                        "secondary-container": "#4a4949",
+                        "inverse-on-surface": "#2f3131",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-tertiary": "#303030",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#ff6b00",
+                        "on-secondary": "#313030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "20px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "safe": "env(safe-area-inset-bottom)"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "stat-label": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0A;
+            color: #e2e2e2;
+        }
+        .glass-card {
+            background: rgba(18, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .glass-card-elevated {
+            background: rgba(18, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 12px 32px rgba(255, 107, 0, 0.05); /* Subtle orange glow in shadow */
+        }
+        
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 8px;
+            width: 100%;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #ff6b00 0%, #ffb693 100%);
+            height: 100%;
+            border-radius: 9999px;
+        }
+        
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(90deg, rgba(255,255,255, 0) 0, rgba(255,255,255, 0.05) 20%, rgba(255,255,255, 0.1) 60%, rgba(255,255,255, 0));
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body-md text-on-surface antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-white/10 dark:border-white/10 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Close up profile picture of a motorcyclist wearing a sleek black helmet with a tinted visor reflecting neon city lights. Cyberpunk aesthetic, dark background, high contrast, cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCoA9JKhoRiuI_e2ZcVna3eL8sHWwEn7uh4f1li7hg5bz6qzNjAzTSFjOYApmHtrSWOpOPB0M6wb5VYhMLDj625_GMRU2I0y2s1rBcZnTAizplYsolJvMrgqbDv8Xe97cTPDR_YLH8Kgvxb_5XGMIWa9fPnk3-k9h66NwhFFDoCbVpO5q6fnniaU4Dg827qYgsmIPCH9WLHCguVXMQ2s_0YMsM25OZDgdg5CaT0hsvOH6N4nLEDrJHjg"/>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold tracking-tighter text-primary">RIDERMATE</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:opacity-80 transition-opacity text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-margin-mobile max-w-4xl mx-auto space-y-8">
+<!-- Header Section -->
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Community Challenges</h2>
+<p class="font-body-md text-on-surface-variant">Push your limits. Earn unique rewards.</p>
+</div>
+<!-- Active Challenges Grid -->
+<section>
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Active Now</h3>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider">2 Enrolled</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Challenge Card 1 -->
+<div class="glass-card-elevated rounded-3xl p-6 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div>
+<span class="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary font-label-caps text-label-caps mb-3 border border-primary/30">SPRINT</span>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight mb-1">October 500km Sprint</h4>
+<p class="font-body-md text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 12 Days Left
+                            </p>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center border border-white/10 shadow-lg relative overflow-hidden shimmer">
+<!-- Digital Badge Preview -->
+<div class="absolute inset-0 bg-gradient-to-tr from-primary to-purple-600 opacity-20"></div>
+<span class="material-symbols-outlined text-primary text-3xl z-10" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+</div>
+<div class="mb-4 relative z-10">
+<div class="flex justify-between font-stat-label text-stat-label text-on-surface-variant mb-2">
+<span>Progress</span>
+<span class="text-on-surface">342 / 500 km</span>
+</div>
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" style="width: 68%;"></div>
+</div>
+</div>
+<div class="flex justify-between items-center relative z-10 pt-2">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border border-background bg-surface-container overflow-hidden"><img class="w-full h-full object-cover" data-alt="Small circular avatar showing a generic smiling person in cycling gear, soft lighting, dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6K5eZTQsw2zWDeis6UsfX7A55Tj9MEiRI4ifhSEUB5Zg7CeWMIOuvWGDMNBg7hXeAi2rKUIZ98OlawJEmxMb8-un4KFvoOEfTi5ryIl0Q71zmZpxBKDZ_9OCEpPX2G8GB9XmfqBUFAgvFdT2tVKU2Ve3I_5hRczxWD-5Iczh3fKCUKZukzB4__Trx7jk8jSIv55hyHC8JAhdLMoxPYa1zVR5zyOtM-t_B7I4z4sBnkb8IeVw8lFXpKg"/></div>
+<div class="w-8 h-8 rounded-full border border-background bg-surface-container overflow-hidden"><img class="w-full h-full object-cover" data-alt="Small circular avatar showing a generic person with a motorcycle helmet under arm, dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5KCs4KJpu2Wl0QO51UEMeNCpAf3etVi9LxVPiSoENxDSYgz_hebTdD-XpalG5Oo7rSzrRkYVRIwNhpNcdOveAPorUXgQoTAHZEaNJHOhmN_Asid2kCljdX1w7W1d3AFphs_GtXPnBJaNR-5KFmXLbmV5j9ema8WnscHkOLaqg-rtKguZC_d6nrXJZ9tclOzY9elNlEbhVL6ZaVcAzfGACVV-IFLuF7eo9cycfzh9EWaMsxWbeqGbC0w"/></div>
+<div class="w-8 h-8 rounded-full border border-background bg-surface-container overflow-hidden"><img class="w-full h-full object-cover" data-alt="Small circular avatar showing a generic person wearing sunglasses outdoors, dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_m4i-N6EuRB5QsqAyFLgh_aS3YkB4SFD-pIfwAWAxzOBIB_AyHlETk2_LFbsbOpOTFFEOKH4jOSgHk2hM21GE5mGuhFcUq4xQNlVHmoCfOn6r4ItHu4GcInydIWJ-mc2lrN61J08lOnChR6ape5btzxMteKtsgd3cn3gLUVa4iXT2kEhzAtN0mm_5N3p5OJb9DAjIEC1cKfNkIkqLRRcCBfybx57xMQqVCLX6WHzhR0XWkgwOXKGuSg"/></div>
+<div class="w-8 h-8 rounded-full border border-background bg-surface-container flex items-center justify-center font-label-caps text-[10px] text-on-surface-variant">+4k</div>
+</div>
+<button class="font-stat-label text-stat-label text-primary hover:text-primary-fixed transition-colors">Details</button>
+</div>
+</div>
+<!-- Challenge Card 2 -->
+<div class="glass-card-elevated rounded-3xl p-6 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div>
+<span class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 font-label-caps text-label-caps mb-3 border border-blue-500/30">CLIMB</span>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight mb-1">Vertical Assault</h4>
+<p class="font-body-md text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 5 Days Left
+                            </p>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center border border-white/10 shadow-lg relative overflow-hidden shimmer">
+<!-- Digital Badge Preview -->
+<div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-cyan-300 opacity-20"></div>
+<span class="material-symbols-outlined text-blue-400 text-3xl z-10" style="font-variation-settings: 'FILL' 1;">terrain</span>
+</div>
+</div>
+<div class="mb-4 relative z-10">
+<div class="flex justify-between font-stat-label text-stat-label text-on-surface-variant mb-2">
+<span>Elevation</span>
+<span class="text-on-surface">8,400 / 10,000 m</span>
+</div>
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" style="width: 84%; background: linear-gradient(90deg, #3b82f6 0%, #67e8f9 100%);"></div>
+</div>
+</div>
+<div class="flex justify-between items-center relative z-10 pt-2">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border border-background bg-surface-container flex items-center justify-center font-label-caps text-[10px] text-on-surface-variant">1.2k</div>
+</div>
+<button class="font-stat-label text-stat-label text-blue-400 hover:text-blue-300 transition-colors">Details</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Challenges List -->
+<section>
+<div class="flex justify-between items-end mb-4 mt-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Upcoming</h3>
+</div>
+<div class="space-y-4">
+<!-- Upcoming Item 1 -->
+<div class="glass-card rounded-2xl p-4 flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center border border-white/5 flex-shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">dark_mode</span>
+</div>
+<div class="flex-grow">
+<h5 class="font-stat-label text-stat-label text-on-surface">Night Rider Series</h5>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Starts Nov 1 • 100km Dark Riding</p>
+</div>
+<button class="px-4 py-2 rounded-full border border-white/20 text-on-surface font-stat-label text-stat-label hover:bg-white/5 transition-colors">Join</button>
+</div>
+<!-- Upcoming Item 2 -->
+<div class="glass-card rounded-2xl p-4 flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center border border-white/5 flex-shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">groups</span>
+</div>
+<div class="flex-grow">
+<h5 class="font-stat-label text-stat-label text-on-surface">Weekend Century Group</h5>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Starts Nov 15 • Team Distance</p>
+</div>
+<button class="px-4 py-2 rounded-full border border-white/20 text-on-surface font-stat-label text-stat-label hover:bg-white/5 transition-colors">Join</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] mx-margin-mobile mb-4 rounded-full border border-white/10 dark:border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.05)] md:hidden">
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="navigation">navigation</span>
+</a>
+<a class="flex items-center justify-center bg-primary text-on-primary rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,182,147,0.4)] scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="sports_score" style="font-variation-settings: 'FILL' 1;">sports_score</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</a>
+<a class="flex items-center justify-center text-on-surface-variant w-12 h-12 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+</body></html>

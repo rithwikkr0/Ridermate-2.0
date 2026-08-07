@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Analytics Dashboard - RiderMate</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e2e2e2",
+                        "primary": "#ffb693",
+                        "surface-tint": "#ffb693",
+                        "on-surface-variant": "#e2bfb0",
+                        "background": "#121414",
+                        "on-secondary-fixed-variant": "#474646",
+                        "primary-fixed-dim": "#ffb693",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-tertiary-container": "#313131",
+                        "surface-dim": "#121414",
+                        "on-secondary-container": "#bab8b7",
+                        "inverse-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "primary-fixed": "#ffdbcc",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1e2020",
+                        "on-primary-container": "#572000",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-fixed": "#351000",
+                        "secondary-fixed": "#e5e2e1",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-container-highest": "#333535",
+                        "tertiary-container": "#9a9999",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#282a2b",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline-variant": "#5a4136",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "secondary": "#c8c6c5",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-error": "#690005",
+                        "outline": "#a98a7d",
+                        "secondary-container": "#4a4949",
+                        "inverse-on-surface": "#2f3131",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-tertiary": "#303030",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#ff6b00",
+                        "on-secondary": "#313030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "20px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "stat-label": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            /* Light mode overrides for this specific prompt */
+            background-color: #F8F9FA;
+            color: #121414;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .light-text-primary { color: #121414; }
+        .light-text-secondary { color: #666666; }
+        .accent-text { color: #ff6b00; }
+        
+        /* Area Chart Styles */
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .chart-area { fill: url(#chart-gradient); opacity: 0.8; }
+        .chart-line { fill: none; stroke: #ff6b00; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-point { fill: #ffffff; stroke: #ff6b00; stroke-width: 2; r: 4; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased pb-24 md:pb-0 pt-16">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-white/80 backdrop-blur-xl border-b border-black/5 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="Close up professional headshot of a cyclist wearing a sleek aero helmet and reflective sunglasses, bright natural lighting, modern high-end aesthetic, subtle motion blur background, bright white and gray tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO95DhTfrUYDsIfV8FYVf9hTpgQdFK-aeGoXkVgG7fLGLjcdOrcHe0Y-u0rlvuODz4wXEEzIJ7lJBKE_05Q7oK1WVCq00_-TT6KaUd6oW2-xzN-vRq8EwNlDCIv4vnbpN5EkIm9BFCZEPiNomM2MIN1xKZBw16Qiq4Kb1EHGh4uqe-_KenLpXDr5WRX0msu4wXHRqWa0E4z427UPFYkoP3L6CsE3cwvz-AU-gzAphkm-I_RySWVK9pXg"/>
+</div>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold tracking-tighter accent-text">RIDERMATE</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors">
+<span class="material-symbols-outlined light-text-primary">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="px-margin-mobile pt-6 md:pl-24 md:pr-8 max-w-7xl mx-auto space-y-gutter">
+<!-- Header -->
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md light-text-primary">Analytics</h2>
+<p class="font-body-md text-body-md light-text-secondary">Weekly Summary</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Chart Area (Hero) -->
+<div class="glass-card rounded-xl p-md md:col-span-8 flex flex-col justify-between min-h-[320px]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="font-label-caps text-label-caps light-text-secondary uppercase tracking-wider mb-1">Total Distance</p>
+<h3 class="font-display-stat text-display-stat light-text-primary">342<span class="text-2xl font-headline-md text-gray-400 ml-1">km</span></h3>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-label-caps text-label-caps flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
+                        </span>
+</div>
+</div>
+<div class="flex-grow w-full relative">
+<svg class="chart-svg" preserveaspectratio="none" viewbox="0 0 400 150">
+<defs>
+<lineargradient id="chart-gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#ffb693" stop-opacity="0.6"></stop>
+<stop offset="100%" stop-color="#ffb693" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Fake Data Line -->
+<path class="chart-area" d="M0,150 L0,100 Q50,120 100,80 T200,60 T300,90 T400,30 L400,150 Z"></path>
+<path class="chart-line" d="M0,100 Q50,120 100,80 T200,60 T300,90 T400,30"></path>
+<!-- Points -->
+<circle class="chart-point" cx="100" cy="80"></circle>
+<circle class="chart-point" cx="200" cy="60"></circle>
+<circle class="chart-point" cx="300" cy="90"></circle>
+<circle class="chart-point" cx="400" cy="30"></circle>
+</svg>
+</div>
+<div class="flex justify-between mt-4 font-label-caps text-label-caps light-text-secondary border-t border-black/5 pt-2">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</div>
+<!-- Stat Grid (Side) -->
+<div class="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-gutter">
+<!-- Stat 1 -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+<span class="material-symbols-outlined accent-text text-sm">timer</span>
+</div>
+<span class="font-label-caps text-label-caps light-text-secondary">Time</span>
+</div>
+<p class="font-headline-md text-headline-md light-text-primary">14<span class="text-sm font-normal text-gray-500">h</span> 22<span class="text-sm font-normal text-gray-500">m</span></p>
+</div>
+<!-- Stat 2 -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-500 text-sm">speed</span>
+</div>
+<span class="font-label-caps text-label-caps light-text-secondary">Avg Spd</span>
+</div>
+<p class="font-headline-md text-headline-md light-text-primary">28.4 <span class="text-sm font-normal text-gray-500">km/h</span></p>
+</div>
+<!-- Stat 3 -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-center col-span-2 md:col-span-1">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-red-500 text-sm">favorite</span>
+</div>
+<span class="font-label-caps text-label-caps light-text-secondary">Avg HR</span>
+</div>
+<p class="font-headline-md text-headline-md light-text-primary">142 <span class="text-sm font-normal text-gray-500">bpm</span></p>
+</div>
+</div>
+<!-- Heatmap / Map Preview -->
+<div class="glass-card rounded-xl p-1 md:col-span-12 h-64 relative overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-70 group-hover:opacity-100 transition-opacity duration-500" data-alt="A highly detailed, stylized minimalist map view showing a complex cycling route in bright daylight. The map uses a light mode aesthetic with pale grey roads, white terrain, and a vibrant, glowing orange line tracing a winding mountainous path. The lighting is soft and flat, emphasizing the bright, clean, premium tech interface style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD9OvJX7kSYFFbelaMEMQiARHU4MF7SugDG863Vu-Vvt7NVDC5prwe8UId6Wk6k8Q3QUay05J9Du5Op4SyUuitqgb2Z-787xsxhe2FfwGTYdaoCeYmAm7546UiGxE5smnzZqUhdYB_TbDHoHY_liTWvHJxMUhil6gTF0pQuPWuKqbRtqMBUUqPMeKpY1HCjQbeMesCprvGQBCRX12J0ZXdm0_lI6VBReoGFUfoQx-a5hC0w_WCJ8cXCgA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+<div>
+<span class="px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-[10px] font-bold tracking-wider light-text-primary mb-1 inline-block border border-black/5">MOST FREQUENT ROUTE</span>
+<h4 class="font-headline-md text-headline-md light-text-primary">Alpine Loop</h4>
+</div>
+<button class="w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center hover:bg-gray-50">
+<span class="material-symbols-outlined accent-text">open_in_full</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/80 backdrop-blur-[30px] border-t border-black/5 md:hidden shadow-[0_-12px_32px_rgba(0,0,0,0.05)]">
+<a class="flex items-center justify-center text-gray-400 w-12 h-12" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="flex items-center justify-center text-gray-400 w-12 h-12" href="#">
+<span class="material-symbols-outlined" data-icon="navigation">navigation</span>
+</a>
+<!-- FAB Center (optional based on rules, but keeping for visual balance as requested by structure) -->
+<div class="relative -top-6">
+<a class="flex items-center justify-center bg-[#ff6b00] text-white rounded-full w-14 h-14 shadow-[0_12px_24px_rgba(255,107,0,0.4)] hover:scale-105 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="sports_score">sports_score</span>
+</a>
+</div>
+<a class="flex items-center justify-center bg-[#ff6b00] text-white rounded-full w-12 h-12 shadow-[0_0_15px_rgba(255,182,147,0.4)] scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</a>
+<a class="flex items-center justify-center text-gray-400 w-12 h-12" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+<!-- Side Nav for Desktop (Hidden on mobile) -->
+<nav class="hidden md:flex fixed left-0 top-16 bottom-0 w-20 flex-col items-center py-8 gap-8 bg-white/80 backdrop-blur-xl border-r border-black/5 z-40">
+<a class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="navigation">navigation</span>
+</a>
+<a class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#ffb693]/20 text-[#ff6b00] shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</a>
+<a class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+</body></html>

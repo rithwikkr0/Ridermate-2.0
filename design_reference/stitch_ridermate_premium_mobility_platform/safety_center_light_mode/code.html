@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safety Center</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ffb4ab",
+                        "on-secondary": "#313030",
+                        "tertiary-container": "#9a9999",
+                        "inverse-primary": "#a04100",
+                        "secondary-container": "#4a4949",
+                        "on-tertiary": "#303030",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-dim": "#121414",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#333535",
+                        "primary-container": "#ff6b00",
+                        "secondary": "#c8c6c5",
+                        "on-surface": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "background": "#121414",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-bright": "#37393a",
+                        "surface-container-lowest": "#0c0f0f",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-tertiary-container": "#313131",
+                        "surface-variant": "#333535",
+                        "on-secondary-container": "#bab8b7",
+                        "primary-fixed-dim": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-container": "#572000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container": "#1e2020",
+                        "primary-fixed": "#ffdbcc",
+                        "on-background": "#e2e2e2",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline": "#a98a7d",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-tint": "#ffb693",
+                        "primary": "#ffb693",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "outline-variant": "#5a4136",
+                        "surface": "#121414"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "stat-label": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 182, 147, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-on-primary-container pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] border-b border-white/10 shadow-[0px_4px_20px_rgba(0,0,0,0.2)]">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full max-w-2xl mx-auto">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md tracking-tight text-primary dark:text-primary">SAFETY CENTER</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">emergency</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile max-w-2xl mx-auto flex flex-col gap-gutter">
+<!-- Safety Status Banner -->
+<section class="glass-card rounded-xl p-md flex items-center justify-between">
+<div>
+<h2 class="font-stat-label text-stat-label text-on-surface-variant uppercase tracking-wider mb-xs">System Status</h2>
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-[#4ADE80] shadow-[0_0_8px_#4ADE80] animate-pulse"></div>
+<span class="font-headline-md text-headline-md text-[#4ADE80]">SECURE</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-[#4ADE80]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+</section>
+<!-- Telemetry Grid -->
+<section class="grid grid-cols-2 gap-gutter">
+<!-- Impact Detection -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">vibration</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SENSOR</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface text-glow">Armed</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">Impact Det.</div>
+</div>
+</div>
+<!-- GPS Signal -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">satellite_alt</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">SAT</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface text-glow">High</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">GPS Signal</div>
+</div>
+</div>
+<!-- Battery Life -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">battery_5_bar</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">PWR</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface text-glow">84%</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">Device Batt.</div>
+</div>
+</div>
+<!-- Mobile Data -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">cell_tower</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">NET</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface text-glow">5G</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">Connection</div>
+</div>
+</div>
+</section>
+<!-- Priority Contacts -->
+<section class="mt-sm">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-md px-xs">PRIORITY CONTACTS</h3>
+<div class="glass-card rounded-xl divide-y divide-white/5">
+<div class="p-md flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<img class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-high" data-alt="A detailed close-up portrait of a mature woman with kind eyes, wearing a simple elegant dark top, softly lit with dramatic high-contrast studio lighting, styled for a premium modern app interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvIoeL116xYNPVic2estBnIZhCeLvcnr5U9EIMK-6EnNfsoR4beEOiyMJOfUVWYz-BVx1wi0Tipo5aLnP8G8_NHAeGcoM95lG0lC5ddYbBw8x9K8YQSK4oFA4Lh26B-LE2_DMnkaaBb3453L7kkyTivn9930kLUUHclpfb1moWYOWvZII78v6weCA_cOuCcQ4w9kakJz3si8tijcJ0vNjDindXIiahqA6oj_3AQats28BPo5U7VnEOpg"/>
+<div>
+<div class="font-stat-label text-stat-label text-on-surface">Sarah Connor</div>
+<div class="font-body-md text-body-md text-primary text-sm flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">favorite</span> Emergency Contact
+                            </div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+<div class="p-md flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<img class="w-12 h-12 rounded-full object-cover border-2 border-surface-container-high" data-alt="A detailed portrait of a young man with short dark hair, wearing a high-tech athletic jacket, shot against a dark neutral background with subtle orange rim lighting, fitting a premium sports aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoMApB-PaPZ0qZ_PTFwCBig60Hf_oPAL1ZdQwb8EBGn_HhUvHc7m85ZcTuVgU85OSyAYSRXWP3HfLJ_wLnmvRC7gbZ06enz5xjaxARR3WkkQSX2rnz5xC5grC__eFpx0npLvr7NtyAqi6zxM1pyAEHpgqHt7mFZVDBRC8kolDLHEfY-iUbSWR16NsTdClWBPRIPNR87WhVhim4B3Qgovtk4p8dZjNFnp2Q6OWue4xhhvaf9Sprhwbmbg"/>
+<div>
+<div class="font-stat-label text-stat-label text-on-surface">Alex Mercer</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm mt-0.5">Riding Partner</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+</section>
+<!-- SOS Button -->
+<section class="mt-lg">
+<button class="w-full bg-primary-container text-on-primary-container rounded-full py-4 flex items-center justify-center gap-sm font-headline-md text-headline-md shadow-[0_0_30px_rgba(255,107,0,0.3)] hover:scale-[0.98] active:scale-95 transition-all duration-200 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<span class="material-symbols-outlined text-[28px] relative z-10" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="relative z-10 tracking-widest">S O S</span>
+</button>
+<p class="text-center font-body-md text-body-md text-on-surface-variant text-sm mt-3 opacity-70">Hold for 3 seconds to trigger emergency protocol</p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-4 left-margin-mobile right-margin-mobile max-w-2xl mx-auto md:left-auto md:right-auto md:w-[calc(100%-40px)] rounded-full z-50 bg-surface/60 dark:bg-surface/60 backdrop-blur-[30px] border border-white/10 shadow-[0px_12px_32px_rgba(255,107,0,0.15)] flex justify-around items-center h-16 px-4">
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary hover:text-primary-container transition-colors active:scale-90 transition-all duration-300 w-16">
+<span class="material-symbols-outlined">motorcycle</span>
+<span class="font-label-caps text-label-caps mt-1">Ride</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary scale-110 active:scale-90 transition-all duration-300 w-16">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="font-label-caps text-label-caps mt-1">Safety</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary hover:text-primary-container transition-colors active:scale-90 transition-all duration-300 w-16">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps mt-1">Contacts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary hover:text-primary-container transition-colors active:scale-90 transition-all duration-300 w-16">
+<span class="material-symbols-outlined">distance</span>
+<span class="font-label-caps text-label-caps mt-1">Map</span>
+</button>
+</nav>
+</body></html>

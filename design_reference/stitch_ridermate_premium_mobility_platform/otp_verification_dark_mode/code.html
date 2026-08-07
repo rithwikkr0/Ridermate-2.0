@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RiderMate - Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#ffb693",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary-fixed": "#e4e2e1",
+                        "secondary": "#c8c6c5",
+                        "on-background": "#e2e2e2",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-variant": "#333535",
+                        "surface-container-high": "#282a2b",
+                        "tertiary-container": "#9a9999",
+                        "surface-bright": "#37393a",
+                        "surface-container": "#1e2020",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary": "#303030",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#a04100",
+                        "surface-dim": "#121414",
+                        "on-surface-variant": "#e2bfb0",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-tertiary-container": "#313131",
+                        "surface-container-highest": "#333535",
+                        "on-primary-container": "#572000",
+                        "tertiary": "#c8c6c5",
+                        "secondary-container": "#4a4949",
+                        "on-surface": "#e2e2e2",
+                        "on-secondary": "#313030",
+                        "on-primary-fixed": "#351000",
+                        "surface-container-low": "#1a1c1c",
+                        "error": "#ffb4ab",
+                        "outline": "#a98a7d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface": "#121414",
+                        "on-secondary-container": "#bab8b7",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "primary-fixed": "#ffdbcc",
+                        "on-primary": "#561f00",
+                        "background": "#121414",
+                        "primary": "#ffb693",
+                        "inverse-on-surface": "#2f3131",
+                        "primary-container": "#ff6b00",
+                        "secondary-fixed": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "outline-variant": "#5a4136"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "margin-mobile": "20px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background-color: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .otp-input::-webkit-outer-spin-button,
+        .otp-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .otp-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .kinetic-bg {
+            background: radial-gradient(circle at top right, rgba(255, 107, 0, 0.15), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(255, 107, 0, 0.05), transparent 60%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-center relative overflow-hidden font-body-md kinetic-bg p-margin-mobile">
+<!-- Background abstract map/lines for kinetic feel -->
+<div class="absolute inset-0 opacity-20 pointer-events-none" data-alt="A dark, abstract topographic map with subtle, glowing Circuit Orange data lines connecting nodes, representing high-speed digital telemetry. The style is premium minimalism with deep blacks and sharp, high-contrast energetic accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB25ufIsTG0kZjqYHruek_deVqxM1ilG1XxJCbcr2Qfw1PtrZWWFCLU4jN7szQ-EVTKcLyfPMKLBmkCtbSbedDn7gEjhsdZphXpL70lyDsg1avxw4ruXmMc_CEFlpwczj15Hv3DwARz4gmg5iunnUVvp1WyHKk93Xj8dttyup7d--4ZvmtJYQpzX-f6uw0x9qZjq5wt-Ezs0bgqi8rAZO68MEDA3SZs7n-iRmsPr-kgUDw8wKsd0LWoxg')"></div>
+<main class="w-full max-w-md relative z-10 flex flex-col items-center">
+<!-- Header -->
+<div class="text-center mb-xl w-full">
+<span class="material-symbols-outlined text-primary-container text-[48px] mb-lg block mx-auto" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+<h1 class="font-headline-lg text-headline-lg text-on-background mb-sm">Verification</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">We've sent a 6-digit code to your device.</p>
+</div>
+<!-- OTP Form Panel -->
+<div class="glass-panel rounded-xl p-lg w-full shadow-[0_12px_32px_rgba(0,0,0,0.5)]">
+<form class="flex flex-col gap-lg items-center w-full" id="otp-form">
+<!-- OTP Inputs (6 digits for higher precision feel) -->
+<div class="flex gap-sm justify-between w-full" id="otp-container">
+<input autofocus="" class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+<input class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+<input class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+<input class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+<input class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+<input class="otp-input w-12 h-14 bg-surface-variant/50 border border-white/10 rounded-lg text-center font-display-stat text-headline-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none" maxlength="1" type="number"/>
+</div>
+<!-- Resend Timer -->
+<div class="flex items-center gap-2 mt-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">timer</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant" id="timer">00:59</span>
+<button class="font-label-caps text-label-caps text-primary-container hidden hover:opacity-80 transition-opacity ml-2" id="resend-btn" type="button">RESEND CODE</button>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary-container text-white font-headline-md text-[18px] py-4 rounded-full mt-md hover:bg-[#e66000] active:scale-95 transition-all shadow-[0_4px_20px_rgba(255,107,0,0.3)] relative overflow-hidden group" type="button">
+<span class="relative z-10 flex items-center justify-center gap-2">
+                        Verify <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</span>
+<div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</form>
+</div>
+<!-- Back action (secondary) -->
+<button class="mt-lg font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors">
+            CHANGE PHONE NUMBER
+        </button>
+</main>
+<script>
+        // OTP Input Logic
+        const inputs = document.querySelectorAll('.otp-input');
+        
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length > 1) {
+                    e.target.value = e.target.value.slice(0, 1);
+                }
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Simple Timer Logic
+        let timeLeft = 59;
+        const timerEl = document.getElementById('timer');
+        const resendBtn = document.getElementById('resend-btn');
+
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerEl.textContent = `00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerEl.classList.add('hidden');
+                resendBtn.classList.remove('hidden');
+            }
+        }, 1000);
+    </script>
+</body></html>

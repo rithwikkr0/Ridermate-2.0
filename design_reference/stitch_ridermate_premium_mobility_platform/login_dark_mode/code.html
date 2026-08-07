@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RiderMate - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#ffb693",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary-fixed": "#e4e2e1",
+                        "secondary": "#c8c6c5",
+                        "on-background": "#e2e2e2",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-variant": "#333535",
+                        "surface-container-high": "#282a2b",
+                        "tertiary-container": "#9a9999",
+                        "surface-bright": "#37393a",
+                        "surface-container": "#1e2020",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "on-tertiary": "#303030",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#a04100",
+                        "surface-dim": "#121414",
+                        "on-surface-variant": "#e2bfb0",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-tertiary-container": "#313131",
+                        "surface-container-highest": "#333535",
+                        "on-primary-container": "#572000",
+                        "tertiary": "#c8c6c5",
+                        "secondary-container": "#4a4949",
+                        "on-surface": "#e2e2e2",
+                        "on-secondary": "#313030",
+                        "on-primary-fixed": "#351000",
+                        "surface-container-low": "#1a1c1c",
+                        "error": "#ffb4ab",
+                        "outline": "#a98a7d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface": "#121414",
+                        "on-secondary-container": "#bab8b7",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "primary-fixed": "#ffdbcc",
+                        "on-primary": "#561f00",
+                        "background": "#121414",
+                        "primary": "#ffb693",
+                        "inverse-on-surface": "#2f3131",
+                        "primary-container": "#ff6b00",
+                        "secondary-fixed": "#e5e2e1",
+                        "error-container": "#93000a",
+                        "outline-variant": "#5a4136"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "margin-mobile": "20px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0A;
+            color: #e2e2e2;
+        }
+        
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 32px rgba(255, 107, 0, 0.05);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .glass-input:focus {
+            border-color: #ff6b00;
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #ff8533 0%, #ff6b00 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn-social {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+        }
+        
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,107,0,0.15) 0%, rgba(10,10,10,0) 70%);
+            top: -200px;
+            right: -200px;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen relative overflow-hidden flex items-center justify-center p-margin-mobile">
+<!-- Background Elements -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-[url('placeholder')] bg-cover bg-center opacity-30" data-alt="A moody, high-contrast photograph of a sleek carbon-fiber road bike wheel and gearing mechanism, taken in a dimly lit studio with a single intense spotlight highlighting the precision engineering. The overall tone is dark, technical, and premium, utilizing deep blacks, charcoal greys, and subtle hints of warm metallic reflections to convey a sense of high-performance machinery." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBFPv-kewQ_09Z9yK1r0MxyaRzZgHKlv-M_tRaXyjHjl3hRcLmkyzQAgvwqIkZr3-lrD6rLnsVvf166o7XZjVTcYrOHWvF_9R_2kzOlJokSyWeTHxUM8aj1vzi7WhM3q_yySRq5ent9hzm-r8wijJ6DopVNB8fayXmk3djOViw8ZunBLyHL0pM8XZhvzmR7N92FS_BCcINn2EWfhAfVeNLdPX5lnEjnPz0SQ7VrbvRZY6EKGQEhonyP3A')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+<div class="bg-glow"></div>
+</div>
+<!-- Login Container -->
+<div class="relative z-10 w-full max-w-md">
+<!-- Header -->
+<div class="text-center mb-xl">
+<h1 class="font-headline-lg text-headline-lg text-white mb-sm tracking-tight">RiderMate</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your performance cockpit.</p>
+</div>
+<!-- Glassmorphic Card -->
+<div class="glass-card rounded-xl p-lg space-y-lg relative overflow-hidden">
+<!-- Subtle internal glow -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-primary-container/30 to-transparent blur-sm"></div>
+<form class="space-y-md">
+<!-- Email Input -->
+<div class="space-y-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant/60">mail</span>
+<input class="glass-input w-full rounded-lg py-sm pl-[40px] pr-sm text-white font-body-md text-body-md transition-all duration-200 placeholder:text-on-surface-variant/40" id="email" placeholder="rider@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="password">Password</label>
+<a class="font-label-caps text-label-caps text-primary hover:text-primary-container transition-colors" href="#">Forgot?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant/60">lock</span>
+<input class="glass-input w-full rounded-lg py-sm pl-[40px] pr-sm text-white font-body-md text-body-md transition-all duration-200 placeholder:text-on-surface-variant/40" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Login Action -->
+<button class="btn-primary w-full rounded-full py-md text-white font-stat-label text-stat-label tracking-wide uppercase mt-lg transition-transform active:scale-95 hover:brightness-110" type="button">
+                    Initialize Login
+                </button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-sm py-sm">
+<div class="flex-1 h-px bg-white/10"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant/50 uppercase">Or connect with</span>
+<div class="flex-1 h-px bg-white/10"></div>
+</div>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-sm">
+<button class="btn-social rounded-lg py-sm flex items-center justify-center gap-xs hover:bg-white/10 transition-colors active:scale-95 text-white font-stat-label text-stat-label" type="button">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+                    Apple
+                </button>
+<button class="btn-social rounded-lg py-sm flex items-center justify-center gap-xs hover:bg-white/10 transition-colors active:scale-95 text-white font-stat-label text-stat-label" type="button">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+                    Google
+                </button>
+</div>
+</div>
+<!-- Footer link -->
+<div class="mt-lg text-center">
+<p class="font-body-md text-body-md text-on-surface-variant/70">
+                New pilot? <a class="text-white hover:text-primary transition-colors font-medium" href="#">Create an account</a>
+</p>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,51 @@
+name: ridermate
+description: "RiderMate 2.0 — Premium Mobility Platform"
+publish_to: 'none'
+
+version: 2.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Navigation
+  go_router: ^14.6.3
+
+  # Animations
+  flutter_animate: ^4.5.2
+
+  # Images
+  cached_network_image: ^3.4.1
+
+  # State (for theme toggle)
+  provider: ^6.1.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/ridermate_icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#FF6B00"
+  adaptive_icon_foreground: "assets/images/ridermate_icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/animations/

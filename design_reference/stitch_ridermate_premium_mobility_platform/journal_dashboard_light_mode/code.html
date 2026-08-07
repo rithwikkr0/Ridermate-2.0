@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Journal Dashboard - RiderMate</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#303030",
+                    "on-tertiary-container": "#313131",
+                    "on-primary-fixed": "#351000",
+                    "tertiary-container": "#9a9999",
+                    "tertiary": "#c8c6c5",
+                    "primary-fixed-dim": "#ffb693",
+                    "on-primary": "#561f00",
+                    "inverse-on-surface": "#2f3131",
+                    "on-secondary-container": "#bab8b7",
+                    "error-container": "#93000a",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-surface": "#121414",
+                    "inverse-primary": "#a04100",
+                    "tertiary-fixed": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "surface-tint": "#ffb693",
+                    "background": "#ffffff",
+                    "on-background": "#121414",
+                    "surface": "#ffffff",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "primary-container": "#ff6b00",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-primary-fixed-variant": "#7a3000",
+                    "secondary-container": "#e5e2e1",
+                    "surface-container": "#f0f0f0",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#e8e8e8",
+                    "primary": "#ff6b00",
+                    "surface-container-low": "#f8f8f8",
+                    "on-surface-variant": "#333535",
+                    "on-secondary": "#313030",
+                    "on-primary-container": "#ffffff",
+                    "surface-variant": "#e2e2e2",
+                    "surface-bright": "#ffffff",
+                    "inverse-surface": "#333535",
+                    "surface-dim": "#d9d9d9",
+                    "secondary": "#333535",
+                    "on-secondary-fixed-variant": "#474646",
+                    "outline-variant": "#5a4136",
+                    "outline": "#a98a7d",
+                    "primary-fixed": "#ffdbcc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "margin-mobile": "20px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-caps": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "display-stat": [
+                            "Hanken Grotesk"
+                    ],
+                    "stat-label": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-stat": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "stat-label": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .glass-fab {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0px 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen font-body-md text-body-md pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-md shadow-primary-container/5 border-b border-black/5 md:px-8">
+<button class="p-2 -ml-2 text-primary dark:text-primary hover:bg-black/5 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg tracking-tighter text-primary dark:text-primary uppercase hidden md:block">JOURNAL</h1>
+<h1 class="font-headline-md text-headline-md tracking-tighter text-primary dark:text-primary uppercase md:hidden">JOURNAL</h1>
+<button class="w-8 h-8 rounded-full overflow-hidden hover:opacity-80 transition-opacity active:scale-95 duration-200 shadow-sm border border-black/10">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A close up, highly detailed portrait of a motorcycle rider wearing a sleek, modern, white and orange helmet. The background is a blurred, bright mountain road on a sunny day. The style is hyper-realistic and high contrast, fitting a premium ride-tracking app profile avatar in a light mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCq6Cx0k-XXAruTrGIORqCgMRJAda4D73_TuFBQ3Id4ZGCg7SWayl4oIk_A1m16l3e0CqPB0HWkXmuU72ycDkgAropTkDNq7GmCZ6T4r--mXmg3vvOqXtiBUmj5w76uWV-pa_LDPPgPE9gTUoQPz6zB-Sh4HqUxDetgpYev4LlT0o6nZ3QGrf5lNcyCPRCF4Mo77FPKxOyqab3_UfuEaC-sKt3n-JrjFT8RROpm-rDNqM9GHwxz2v5HmQ"/>
+</button>
+</header>
+<!-- Navigation Drawer (Desktop Hidden, shown via menu button in real app) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 w-80 z-[60] p-6 bg-surface-container-lowest dark:bg-surface-container-lowest flex-col rounded-r-xl border-r border-black/5 shadow-2xl shadow-black/10 transform -translate-x-full transition-transform duration-300">
+<!-- Header -->
+<div class="flex items-center space-x-4 mb-8">
+<img alt="Rider Avatar" class="w-16 h-16 rounded-full object-cover border-2 border-primary" data-alt="A close up, highly detailed portrait of a motorcycle rider wearing a sleek, modern, white and orange helmet. The background is a blurred, bright mountain road on a sunny day. The style is hyper-realistic and high contrast, fitting a premium ride-tracking app profile avatar in a light mode setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ_v6c4ynEPYDs4Pke-yph8P4WOIYXy0y0w0AEeJ-gJ17Pl082UDgufKmB_qRdjuCtX9wb5f886CJ4dfdUQC4DhmwFwbcNtzslKGYaX28atgFA4J4yPpjCif8Vi8V7pvTA0vWZV7TMzyMH6PY1WU_ZFNaTEGII4SOSGT6rxp1ip4WI9J5twvdaas4GTH2yyPYAFVukOudv8S-r5iCnr-WmIa8emWz6shJ6Cwsh7p1m_pFzUEuQge-DRg"/>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary dark:text-primary">Rider One</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Pro Member</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">12,450 KM</p>
+</div>
+</div>
+<!-- Links -->
+<nav class="flex-1 space-y-2">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-lg text-on-surface hover:bg-surface-variant transition-all hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">motorcycle</span>
+<span class="font-body-md text-body-md">My Garage</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-lg text-on-surface hover:bg-surface-variant transition-all hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-body-md text-body-md">Route Planner</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-lg text-on-surface hover:bg-surface-variant transition-all hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">speed</span>
+<span class="font-body-md text-body-md">Performance Hub</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-lg text-on-surface hover:bg-surface-variant transition-all hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-lg text-on-surface hover:bg-surface-variant transition-all hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Help</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="pt-24 px-margin-mobile md:px-8 max-w-5xl mx-auto space-y-12">
+<!-- Hero: Latest Adventure -->
+<section>
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-headline-md text-headline-md text-on-background">Latest Adventure</h2>
+<a class="font-label-caps text-label-caps text-primary hover:opacity-80 uppercase tracking-widest" href="#">View All</a>
+</div>
+<div class="glass-card rounded-2xl overflow-hidden relative group cursor-pointer">
+<!-- Map Background Placeholder -->
+<div class="h-64 w-full bg-surface-container relative" data-alt="A bright, high-contrast, minimalist topographical map of a winding mountain road in the Swiss Alps. The map is designed in a light mode aesthetic, featuring soft white and light grey terrain lines with a vivid, glowing circuit orange path tracing the route. The style is clean, modern, and high-tech, resembling a premium GPS interface." data-location="Swiss Alps" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDp7wtUNzWYTcLzdWvmtpxOUoMeyPElJ8YdEuNcuJGFChP-fNXWO21lquOKM2932Mk7zk450an5kGjKuiJbUwLlvpZqU9GhDuoy-0se-TuVsw8Ru2jxXyuzowdKCw6QzFuTH5DvYQg2MBtggx80Z5mt3Uh6GqsNmMSGBjoq3H9uVW5ya1ucTE70Qxx0RZwSt3lAL6x_ljdDLiqu2o3BUVBeNlCglaXB4081YC8SCa6L_IwmvI9y5xSbwQ')">
+<!-- Gradient Overlay for legibility -->
+<div class="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent"></div>
+</div>
+<!-- Floating Route Info -->
+<div class="absolute top-4 left-4 right-4 flex justify-between items-start">
+<div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-black/5 shadow-sm">
+<span class="font-label-caps text-label-caps text-on-background flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">route</span>
+                            Alpine Pass
+                        </span>
+</div>
+<div class="bg-white/90 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center border border-black/5 shadow-sm text-on-background opacity-80 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</div>
+</div>
+<!-- Telemetry Bar -->
+<div class="absolute bottom-0 left-0 w-full p-4 flex gap-2 overflow-x-auto no-scrollbar">
+<div class="bg-white/80 backdrop-blur-lg px-4 py-2 rounded-xl border border-black/5 shadow-sm min-w-[100px] flex-shrink-0">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-1">DISTANCE</div>
+<div class="font-headline-md text-[20px] text-on-background">142 <span class="text-xs text-on-surface-variant font-normal">KM</span></div>
+</div>
+<div class="bg-white/80 backdrop-blur-lg px-4 py-2 rounded-xl border border-black/5 shadow-sm min-w-[100px] flex-shrink-0">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-1">TIME</div>
+<div class="font-headline-md text-[20px] text-on-background">2:15 <span class="text-xs text-on-surface-variant font-normal">HR</span></div>
+</div>
+<div class="bg-white/80 backdrop-blur-lg px-4 py-2 rounded-xl border border-black/5 shadow-sm min-w-[100px] flex-shrink-0">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-1">AVG SPEED</div>
+<div class="font-headline-md text-[20px] text-on-background">68 <span class="text-xs text-on-surface-variant font-normal">KM/H</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Horizontal Scroll: Recent Memories -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-background mb-4">Recent Memories</h2>
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
+<!-- Card 1 -->
+<div class="glass-card w-48 flex-shrink-0 rounded-2xl overflow-hidden group cursor-pointer">
+<div class="h-32 w-full relative">
+<img alt="Coastal Ride" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A stunning, high-resolution photograph of a sleek, modern sports motorcycle parked on the side of a coastal highway. The scene is brightly lit by the mid-day sun, with clear blue skies and sparkling ocean water in the background. The style is premium lifestyle photography, clean and vibrant, fitting a light mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAlzFp0K-rRReYmG0EDujvGmavuRg6sNo-K8izJpYlBUb1jnX6T2gIQXnEz8YYE4qIoRP21JsxpwB0MLrbYqqve1Nyyp55Fe9ay7ZuKQFdg1eQHc-pq_QBnSGdY3XBo3qXTTQ_FWQlaCeP_f5Foa30_iCFk91_SPYPmu1Ck0pOpbg4w2_wf79XehPQb0D5osdN7wUWXC3__cv7McQ9zQPFJprPkpXA9jUZl6dP2VIxZFg8OSnwGP6zsQ"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="p-3">
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-1">OCT 12 • COASTAL</p>
+<h3 class="font-body-md font-semibold text-on-background leading-tight truncate">Pacific Coast Run</h3>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card w-48 flex-shrink-0 rounded-2xl overflow-hidden group cursor-pointer">
+<div class="h-32 w-full relative bg-surface-container">
+<!-- Map Placeholder instead of photo -->
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A detailed, minimalist light-mode map of a dense urban city grid. The roads are depicted in subtle greys and whites, with a bold circuit orange line tracking a complex route through the downtown area. The aesthetic is clean, precise, and tech-forward." data-location="City Center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9c2XPUZRBRMNTzLYEdPcy4UTId7-V6cetXlf7hvuzrWI8FTBUN8-2PlDqvCLUugDK-Q_9B1H5Q0fDTqboxMEshxXHxYognK00r6B-lKvBut9HUgfX_zSZMLWd1X8QkPvr8vKBtQJvLHOzg3l3HcyUwIoTdTEYwYCKrhjbeU2zcgJNqsyJDtIuP-iUISMNeRxrabWG7HNa91yXdJgYg66qmMjzRxHxyFAe29R5b_7GCG58J37hbc7ueA')"></div>
+</div>
+<div class="p-3">
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-1">OCT 08 • URBAN</p>
+<h3 class="font-body-md font-semibold text-on-background leading-tight truncate">Downtown Sprint</h3>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card w-48 flex-shrink-0 rounded-2xl overflow-hidden group cursor-pointer">
+<div class="h-32 w-full relative">
+<img alt="Forest Group Ride" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A beautiful, bright, wide-angle shot of a group of motorcycles riding in formation through a sun-dappled forest road. The light is filtering through the green canopy, creating a fresh, airy atmosphere. The style is high-end editorial photography, suitable for a premium app's light mode theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLQmHcA4OjrFGBco_BSzgYX4470sceW-uH_xUQLs_j9uJSVCqHxf-Fvpkh7GIoLb1NbKPHdhUqcoBNnKhskL3xyuBBO-RzgUpcSmnGA9uiv7CgdOdf5nALY1CKdrMYoL640vvQ-8FujVr46tuO-A63ku47w1y1t2WEzQ7NQrXKoBQdh5oD22kZRiaTGPixSbzjH9ZV1znU2ctNVLwIjUUpI_YYONam9rjurFKBsP9o6mlEKOLN85RUlg"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="p-3">
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-1">SEP 29 • GROUP</p>
+<h3 class="font-body-md font-semibold text-on-background leading-tight truncate">Forest Loop</h3>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-margin-mobile left-margin-mobile right-margin-mobile z-50 flex justify-around items-center h-20 px-6 bg-surface-container/60 dark:bg-surface-container/60 rounded-full backdrop-blur-2xl border border-black/5 shadow-xl shadow-black/10">
+<!-- Active: Journal -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold scale-110 duration-300 ease-out group">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">book_5</span>
+<span class="font-label-caps text-[10px]">Journal</span>
+<div class="w-1 h-1 bg-primary rounded-full mt-1"></div>
+</button>
+<!-- Inactive: Photos -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1">image</span>
+<span class="font-label-caps text-[10px]">Photos</span>
+</button>
+<!-- Inactive: Collections -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1">auto_awesome_motion</span>
+<span class="font-label-caps text-[10px]">Collections</span>
+</button>
+<!-- Inactive: Search -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined mb-1">search</span>
+<span class="font-label-caps text-[10px]">Search</span>
+</button>
+</nav>
+<!-- Desktop Navigation Cluster (hidden on mobile) -->
+<div class="hidden md:flex fixed top-0 right-8 h-16 z-50 items-center gap-6">
+<a class="font-label-caps text-label-caps text-primary border-b-2 border-primary pb-1" href="#">JOURNAL</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-background transition-colors pb-1" href="#">PHOTOS</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-background transition-colors pb-1" href="#">COLLECTIONS</a>
+<button class="text-on-surface-variant hover:text-on-background transition-colors p-2 rounded-full hover:bg-black/5">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+<!-- Floating Action Button (FAB) - Add new entry -->
+<button class="fixed bottom-32 right-6 md:bottom-12 md:right-12 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center glass-fab hover:scale-105 active:scale-95 transition-transform z-40 group overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent"></div>
+<span class="material-symbols-outlined relative z-10 text-[28px] group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+</body></html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safety Timeline &amp; History</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ffb4ab",
+                        "on-secondary": "#313030",
+                        "tertiary-container": "#9a9999",
+                        "inverse-primary": "#a04100",
+                        "secondary-container": "#4a4949",
+                        "on-tertiary": "#303030",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-dim": "#121414",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-highest": "#333535",
+                        "primary-container": "#ff6b00",
+                        "secondary": "#c8c6c5",
+                        "on-surface": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "background": "#121414",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-bright": "#37393a",
+                        "surface-container-lowest": "#0c0f0f",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-tertiary-container": "#313131",
+                        "surface-variant": "#333535",
+                        "on-secondary-container": "#bab8b7",
+                        "primary-fixed-dim": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-container": "#572000",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container": "#1e2020",
+                        "primary-fixed": "#ffdbcc",
+                        "on-background": "#e2e2e2",
+                        "inverse-surface": "#e2e2e2",
+                        "tertiary": "#c8c6c5",
+                        "on-primary": "#561f00",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline": "#a98a7d",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-tint": "#ffb693",
+                        "primary": "#ffb693",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-primary-fixed": "#351000",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "outline-variant": "#5a4136",
+                        "surface": "#121414"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "margin-mobile": "20px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "stat-label": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for web */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333535; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4a4949; }
+        
+        /* Subtle scanline effect for that high-tech cockpit feel */
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 20, 20, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 10;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md h-screen w-full flex overflow-hidden selection:bg-primary-container selection:text-white">
+<!-- Ambient Background Layer (Simulating a map/dark environment) -->
+<div class="fixed inset-0 z-0 bg-surface-dim opacity-80 pointer-events-none flex items-center justify-center">
+<!-- Abstract gradient blob to give some depth -->
+<div class="w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] rounded-full bg-primary-container/5 blur-[120px]"></div>
+</div>
+<!-- WEB NAVIGATION DRAWER (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-full w-80 rounded-r-xl divide-y divide-white/5 shadow-2xl bg-surface-container dark:bg-surface-container py-lg z-40 relative">
+<!-- Header -->
+<div class="px-6 pb-6 flex items-center gap-4">
+<img class="w-12 h-12 rounded-full border border-white/10 object-cover" data-alt="A futuristic, high-contrast, minimalist portrait avatar of a motorcyclist wearing a sleek matte black helmet with subtle neon orange accents, set against a dark studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGFJWkrAC0MD5XYFgL4WCMxwJfb6ANd5tpcZ4VXsqVXY8hqfGAwca-bAac7UR3wxWZDYEN_JmH1tQ0_3R3SPv8wg3kfdvdRuZOhBRBqHWEKOudmWZufl9LK2aOpL6jAPAGXuzy4NsmvnKZh73n9LnwSqwMNY69A-231Is_EynmXseCJwbR1C1ENw4V51ETG8P-R27cdKG1WngMzPcxgYLe1GWy7af1uhS8ejwtMyydswihGYjJEbIuoA"/>
+<div>
+<h2 class="font-headline-lg text-[20px] leading-tight text-primary">Rider One</h2>
+<p class="font-label-caps text-secondary mt-1">Premium Member</p>
+</div>
+</div>
+<!-- Links -->
+<div class="flex-1 pt-4 space-y-2 px-4">
+<!-- Inactive -->
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-stat-label">My Profile</span>
+</button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">history</span>
+<span class="font-stat-label">Ride History</span>
+</button>
+<!-- Active (Emergency Settings aligns best with Safety History context in Drawer) -->
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg bg-primary-container/20 text-primary font-bold transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">autorenew</span>
+<span class="font-stat-label">Emergency Settings</span>
+</button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">medical_services</span>
+<span class="font-stat-label">Health ID</span>
+</button>
+<button class="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">support_agent</span>
+<span class="font-stat-label">Support</span>
+</button>
+</div>
+<div class="px-6 pt-6">
+<p class="font-label-caps text-secondary text-center">Safety Status: Protected</p>
+</div>
+</nav>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 flex flex-col relative z-10 w-full h-full">
+<!-- TOP APP BAR -->
+<header class="fixed top-0 w-full md:w-[calc(100%-20rem)] z-50 bg-surface/60 backdrop-blur-[30px] border-b border-white/10 shadow-[0px_4px_20px_rgba(0,0,0,0.2)] flex items-center justify-between px-margin-mobile h-16 transition-all">
+<!-- Leading Icon -->
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200 md:hidden">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+<!-- Headline / Brand -->
+<h1 class="font-label-caps text-label-caps tracking-[0.2em] text-primary absolute left-1/2 -translate-x-1/2">SAFETY CENTER</h1>
+<!-- Trailing Icon -->
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200 ml-auto">
+<span class="material-symbols-outlined text-2xl">emergency</span>
+</button>
+</header>
+<!-- SCROLLABLE CANVAS -->
+<div class="flex-1 overflow-y-auto pt-24 pb-32 md:pb-12 px-margin-mobile space-y-8 max-w-4xl mx-auto w-full">
+<!-- Filter / Tab Row (Contextual extension of TopBar intent) -->
+<div class="flex gap-4 border-b border-white/10 pb-4 overflow-x-auto no-scrollbar">
+<button class="font-stat-label text-primary border-b-2 border-primary pb-2 px-2 whitespace-nowrap">Timeline</button>
+<button class="font-stat-label text-on-surface-variant hover:text-on-surface transition-colors pb-2 px-2 whitespace-nowrap">Incident Reports</button>
+<button class="font-stat-label text-on-surface-variant hover:text-on-surface transition-colors pb-2 px-2 whitespace-nowrap">Analytics</button>
+</div>
+<!-- SUMMARY CARD (Level 1 Elevation / Glassmorphic) -->
+<section class="relative rounded-xl overflow-hidden bg-surface/60 backdrop-blur-[12px] border border-white/10 shadow-[0px_4px_20px_rgba(0,0,0,0.2)] p-6 group cursor-default">
+<!-- Subtle background glow -->
+<div class="absolute -right-12 -top-12 w-32 h-32 bg-primary-container/20 rounded-full blur-[40px] group-hover:bg-primary-container/30 transition-colors duration-500"></div>
+<div class="flex justify-between items-start relative z-10">
+<div>
+<h3 class="font-label-caps text-secondary mb-2 uppercase tracking-wider">Monthly Safety Report</h3>
+<div class="flex items-baseline gap-2">
+<span class="font-display-stat text-on-surface">98<span class="text-primary">%</span></span>
+</div>
+<p class="font-body-md text-on-surface-variant mt-2 max-w-xs">System diagnostics and ride telemetry indicate a highly secure operational status.</p>
+</div>
+<div class="w-16 h-16 rounded-full border-[3px] border-primary-container/30 border-t-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">shield_locked</span>
+</div>
+</div>
+</section>
+<!-- TIMELINE LIST -->
+<section class="relative">
+<!-- Vertical Track -->
+<div class="absolute left-6 top-4 bottom-4 w-px bg-white/10 hidden sm:block"></div>
+<div class="space-y-6">
+<!-- Event Item 1: High Priority (SOS) -->
+<article class="relative flex flex-col sm:flex-row gap-4 group cursor-pointer active:scale-[0.98] transition-transform duration-200">
+<!-- Node / Icon -->
+<div class="sm:w-12 flex flex-col items-center z-10 relative mt-1">
+<div class="w-12 h-12 rounded-full bg-error-container/20 border border-error/30 shadow-[0px_0px_15px_rgba(255,180,171,0.1)] flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">sos</span>
+</div>
+</div>
+<!-- Content Card -->
+<div class="flex-1 bg-surface-container-low/80 backdrop-blur-[12px] border border-white/5 rounded-lg p-4 shadow-sm hover:border-error/30 transition-colors duration-300">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline-md text-[18px] text-error">SOS Signal Sent</h4>
+<span class="font-label-caps text-secondary">Oct 12, 14:32</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-3">Manual override triggered. Emergency contacts notified via satellite fallback.</p>
+<div class="flex items-center gap-2 font-stat-label text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Pacific Coast Highway, Mile 42</span>
+</div>
+</div>
+</article>
+<!-- Event Item 2: Warning (Weather) -->
+<article class="relative flex flex-col sm:flex-row gap-4 group cursor-pointer active:scale-[0.98] transition-transform duration-200">
+<div class="sm:w-12 flex flex-col items-center z-10 relative mt-1">
+<div class="w-12 h-12 rounded-full bg-surface-bright border border-white/10 flex items-center justify-center backdrop-blur-md text-tertiary-container group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">thunderstorm</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low/40 backdrop-blur-[12px] border border-white/5 rounded-lg p-4 shadow-sm hover:bg-surface-container-low/60 transition-colors duration-300">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-stat-label text-on-surface text-[16px]">Heavy Rain Warning</h4>
+<span class="font-label-caps text-secondary">Oct 10, 09:15</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm mb-3">Route hazard detected. Traction control intervention logged.</p>
+<div class="flex items-center gap-2 font-stat-label text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">distance</span>
+<span>City Center - Downtown Grid</span>
+</div>
+</div>
+</article>
+<!-- Event Item 3: Routine Success -->
+<article class="relative flex flex-col sm:flex-row gap-4 group cursor-pointer active:scale-[0.98] transition-transform duration-200">
+<div class="sm:w-12 flex flex-col items-center z-10 relative mt-1">
+<div class="w-12 h-12 rounded-full bg-surface-bright border border-white/10 flex items-center justify-center backdrop-blur-md text-tertiary-container group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">verified</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low/40 backdrop-blur-[12px] border border-white/5 rounded-lg p-4 shadow-sm hover:bg-surface-container-low/60 transition-colors duration-300">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-stat-label text-on-surface text-[16px]">Safety Check-in: Success</h4>
+<span class="font-label-caps text-secondary">Oct 08, 18:00</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm mb-3">Automated arrival confirmation broadcasted to trusted contacts.</p>
+<div class="flex items-center gap-2 font-stat-label text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">home</span>
+<span>Home Base</span>
+</div>
+</div>
+</article>
+<!-- Event Item 4: Hardware Diagnostic -->
+<article class="relative flex flex-col sm:flex-row gap-4 group cursor-pointer active:scale-[0.98] transition-transform duration-200">
+<div class="sm:w-12 flex flex-col items-center z-10 relative mt-1">
+<div class="w-12 h-12 rounded-full bg-surface-bright border border-white/10 flex items-center justify-center backdrop-blur-md text-tertiary-container group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">memory</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low/40 backdrop-blur-[12px] border border-white/5 rounded-lg p-4 shadow-sm hover:bg-surface-container-low/60 transition-colors duration-300">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-stat-label text-on-surface text-[16px]">Telemetry Sync</h4>
+<span class="font-label-caps text-secondary">Oct 05, 12:00</span>
+</div>
+<p class="font-body-md text-on-surface-variant text-sm mb-3">Routine hardware diagnostic completed. All systems nominal.</p>
+<div class="flex items-center gap-2 font-stat-label text-secondary text-sm">
+<span class="material-symbols-outlined text-[16px]">wifi_tethering</span>
+<span>Cloud Sync Server</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- End of list spacer -->
+<div class="h-8 flex justify-center items-center">
+<div class="w-1 h-1 rounded-full bg-white/20"></div>
+<div class="w-1 h-1 rounded-full bg-white/20 mx-2"></div>
+<div class="w-1 h-1 rounded-full bg-white/20"></div>
+</div>
+</div>
+</main>
+<!-- MOBILE BOTTOM NAVIGATION BAR -->
+<nav class="md:hidden fixed bottom-4 left-margin-mobile right-margin-mobile rounded-full z-50 bg-surface/60 backdrop-blur-[30px] border border-white/10 shadow-[0px_12px_32px_rgba(255,107,0,0.15)] flex justify-around items-center h-16 px-4">
+<!-- Ride -->
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-colors active:scale-90 duration-300 w-16">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 0;">motorcycle</span>
+<span class="font-label-caps text-[10px]">Ride</span>
+</button>
+<!-- Safety (Active) -->
+<button class="flex flex-col items-center justify-center text-primary scale-110 active:scale-90 transition-all duration-300 w-16">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="font-label-caps text-[10px] font-bold">Safety</span>
+</button>
+<!-- Contacts -->
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-colors active:scale-90 duration-300 w-16">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 0;">group</span>
+<span class="font-label-caps text-[10px]">Contacts</span>
+</button>
+<!-- Map -->
+<button class="flex flex-col items-center justify-center text-secondary hover:text-primary-container transition-colors active:scale-90 duration-300 w-16">
+<span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 0;">distance</span>
+<span class="font-label-caps text-[10px]">Map</span>
+</button>
+</nav>
+</body></html>

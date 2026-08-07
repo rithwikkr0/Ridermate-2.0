@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ride Story - Detailed View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "error": "#ffb4ab",
+                    "on-tertiary": "#303030",
+                    "on-tertiary-container": "#313131",
+                    "on-primary-fixed": "#351000",
+                    "tertiary-container": "#9a9999",
+                    "tertiary": "#c8c6c5",
+                    "primary-fixed-dim": "#ffb693",
+                    "on-primary": "#561f00",
+                    "inverse-on-surface": "#2f3131",
+                    "on-secondary-container": "#bab8b7",
+                    "error-container": "#93000a",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-surface": "#e2e2e2",
+                    "inverse-primary": "#a04100",
+                    "tertiary-fixed": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "surface-tint": "#ffb693",
+                    "background": "#121414",
+                    "on-background": "#e2e2e2",
+                    "surface": "#121414",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "primary-container": "#ff6b00",
+                    "surface-container-lowest": "#0c0f0f",
+                    "surface-container-highest": "#333535",
+                    "on-primary-fixed-variant": "#7a3000",
+                    "secondary-container": "#4a4949",
+                    "surface-container": "#1e2020",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#282a2b",
+                    "primary": "#ffb693",
+                    "surface-container-low": "#1a1c1c",
+                    "on-surface-variant": "#e2bfb0",
+                    "on-secondary": "#313030",
+                    "on-primary-container": "#572000",
+                    "surface-variant": "#333535",
+                    "surface-bright": "#37393a",
+                    "inverse-surface": "#e2e2e2",
+                    "surface-dim": "#121414",
+                    "secondary": "#c8c6c5",
+                    "on-secondary-fixed-variant": "#474646",
+                    "outline-variant": "#5a4136",
+                    "outline": "#a98a7d",
+                    "primary-fixed": "#ffdbcc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "margin-mobile": "20px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-caps": ["JetBrains Mono"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Inter"],
+                    "display-stat": ["Hanken Grotesk"],
+                    "stat-label": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-stat": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "stat-label": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar hiding for clean UI */
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased pb-32">
+<!-- Hero Image Section -->
+<div class="relative w-full h-[530px] min-h-[450px]">
+<img class="w-full h-full object-cover" data-alt="A breathtaking, cinematic wide shot of a winding alpine mountain pass at dawn. The scene is bathed in a moody, low-light atmosphere typical of dark-mode aesthetics, with deep shadow contrast. Sharp, rugged mountain peaks loom in the background, partially obscured by mist. The road reflects the faint, dramatic light of early morning. Premium minimalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCATQeg8h1U74GgLJITM8N4FFKW-2lfu1W8WfActEbNwpT7KF6qKCfT1a3qp7Nfed1Zh4yHBH0Qbfi6XuWhRsDghTFeCt9zf5jmwlUsQf9BEwnqNKG0R8pR5vVxGOLIeUrpETbcz2p0rfJ5p78xo04mjl-andfKmp3SCNjBaz990-DF-Xf9LEvBwLgqK9Wkvb-QP4IGFXqMLytsO5VQKjOvJ7bfaGpCivCPSYIT_ZXK3EknvH2IHxAA9g"/>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background"></div>
+<!-- Back Button (Floating, Glassmorphic) -->
+<button class="absolute top-12 left-margin-mobile w-12 h-12 rounded-full backdrop-blur-xl bg-surface-container-high/40 border border-white/10 flex items-center justify-center text-on-background shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:bg-surface-container-high/60 transition-colors z-20">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<!-- Title & Date -->
+<div class="absolute bottom-8 left-margin-mobile right-margin-mobile z-10">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-widest block mb-2 opacity-90">Oct 12, 2023</span>
+<h1 class="font-headline-lg text-headline-lg text-on-background drop-shadow-lg">Alpine Ascent</h1>
+</div>
+</div>
+<main class="relative z-10 -mt-2">
+<!-- AI Summary Card (Glassmorphic) -->
+<div class="mx-margin-mobile mb-10 rounded-[2rem] backdrop-blur-xl bg-surface-container-low/60 border border-white/10 p-6 shadow-[0_12px_32px_rgba(0,0,0,0.3)] relative overflow-hidden">
+<!-- Subtle glow accent -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary-container text-xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">AI Ride Analysis</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                A technically demanding ascent characterized by sustained high-gradient switchbacks. Apex precision was exceptional in the middle sector, maintaining optimal trajectory. The descent showcased controlled braking zones and exceptionally smooth throttle transitions.
+            </p>
+</div>
+<!-- Stat Grid (Bento Style) -->
+<div class="mx-margin-mobile grid grid-cols-2 gap-4 mb-12">
+<!-- Elevation -->
+<div class="rounded-3xl backdrop-blur-md bg-surface-container/40 border border-white/5 p-5 flex flex-col justify-between h-32 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<span class="material-symbols-outlined text-primary-container opacity-90">trending_up</span>
+<div>
+<div class="font-display-stat text-display-stat text-on-background tracking-tight">1,420</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1">Elevation (M)</div>
+</div>
+</div>
+<!-- Top Speed -->
+<div class="rounded-3xl backdrop-blur-md bg-surface-container/40 border border-white/5 p-5 flex flex-col justify-between h-32 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<span class="material-symbols-outlined text-primary-container opacity-90">speed</span>
+<div>
+<div class="font-display-stat text-display-stat text-on-background tracking-tight">184</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1">Top Speed (KM/H)</div>
+</div>
+</div>
+<!-- Distance -->
+<div class="rounded-3xl backdrop-blur-md bg-surface-container/40 border border-white/5 p-5 flex flex-col justify-between h-32 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<span class="material-symbols-outlined text-primary-container opacity-90">route</span>
+<div>
+<div class="font-display-stat text-display-stat text-on-background tracking-tight">142.5</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1">Distance (KM)</div>
+</div>
+</div>
+<!-- Duration -->
+<div class="rounded-3xl backdrop-blur-md bg-surface-container/40 border border-white/5 p-5 flex flex-col justify-between h-32 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
+<span class="material-symbols-outlined text-primary-container opacity-90">timer</span>
+<div>
+<div class="font-display-stat text-display-stat text-on-background tracking-tight">03:45</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1">Duration (H:M)</div>
+</div>
+</div>
+</div>
+<!-- Photo Highlights Gallery -->
+<div class="px-margin-mobile mb-12">
+<h3 class="font-headline-md text-headline-md text-on-background mb-6">Photo Highlights</h3>
+<div class="grid grid-cols-2 gap-4">
+<!-- Photo 1 -->
+<div class="aspect-[4/5] rounded-3xl overflow-hidden relative group shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" data-alt="A close-up, high-contrast shot of a sleek motorcycle dashboard displaying telemetry data. Shot in a dark, moody environment with sharp reflections on the glossy carbon fiber surfaces. The aesthetic highlights precision engineering and high-end tech in a dark-mode luxury context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4a5K_iWkRJxFfX6DVGcxsoUHLhvDxh_TbOhj94qj7tO08jlh7PwbtVe0QsrYeFUpXC_3GCOZuqbjbPj4fIgrOOulIPCQ2GGQbzSud92YhAAfqJzPnTgEHrsDwncBfxEISeCWBx_ttXS3ZHXPUv-qlHlTWkA9bvKodNeaQNGDr-K7rRavNqie8fGpkxDS6VzMPA5qGZvP0ZqC-23cELZQVx1KtE39bGGYtquDeSkDOmGEkM1h1sVdkZw"/>
+<div class="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none"></div>
+</div>
+<!-- Photo 2 -->
+<div class="aspect-[4/5] rounded-3xl overflow-hidden relative group shadow-lg mt-8">
+<img class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" data-alt="A dramatic wide shot of a dark asphalt road curving through a dense, shadowy pine forest. A single streak of bright orange light trails through the curve, implying speed and motion. The lighting is low and atmospheric, emphasizing the premium minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC701gRR077rJM_m74UEdpqhLDCX4B0o0HQ2kGnpo_dr3PtPHOSqdIi7ix1HwyWHCcwLAmtOoJMAU0ZAQPE4-0g4uS-htR-fu1Iy3bA-MVxYJbAJJlxHi09Xk4WGOxt3tUhOEEKyqXuvq9xnOTpxOaGQq5rkiW5HJt1lX289e4RhTf09O2KvBZWRSc20zdVg8zyWZYMGPBasa7Bc4dJbnDZ6olPMBgQv66iNibwHV_DIblxLUcehRmPLg"/>
+<div class="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none"></div>
+</div>
+<!-- Photo 3 -->
+<div class="aspect-[4/5] rounded-3xl overflow-hidden relative group shadow-lg -mt-8">
+<img class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" data-alt="A macro detail shot of a high-performance tire resting on rough mountain gravel. The image is strictly monochromatic with deep blacks and sharp textures, accented only by a faint, warm glint of light on the wheel rim. Highly tactile and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqpsXU9Aj3Fl3pVdOCo5ho-sdpVvIAyaNSHDY1CAv2yhX1SrwZLgoXixNs1QXBRz1Nh_Gdga-SxjPHlpBhoEoxZNfUehoKK7MA3WxB6XDvJBoU5QIrSSjCsIziyLFL6GjoHVaivIIKulEFckq6yNmu4rmR6YKWOLahM_LCdv4BSNgc0Pou7FcDLTZjbB3mbMwiM-JsH7sTGabhQ_cw8sWqjn7DiD6YCw1pWlC91KyrGM-rFq3F2Np4bA"/>
+<div class="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none"></div>
+</div>
+<!-- Photo 4 -->
+<div class="aspect-[4/5] rounded-3xl overflow-hidden relative group shadow-lg">
+<img class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" data-alt="A panoramic view from a high mountain overlook, looking down into a deep, shadow-filled valley. The sky is a deep, dark grey, and the jagged rock formations are starkly defined. The overall mood is vast, isolating, and powerfully raw, fitting a high-end luxury aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCORRe5jI1Fe7ZnLE-JeEq_4KEGKa5YHkLN6wzjAAOenGyAtvROq-niOkzGRN-A827zmm5nIuBSQ0u-Gp_XgPNoZykpiTJU4sIRLFhUdBnBj3MbE7UgIJOJtPZ-ViYhC0HLa1rfqGuFa6v95s2-pUlD61oDigfN1dabQ_1S5_ITLHPZsdrY_s342nooHaSm0-ouMUABtQGsWIK_dnScRcO7qtkNlHgDRTdbbuXvBaXMpRbq7T0YmDvUEA"/>
+<div class="absolute inset-0 border border-white/10 rounded-3xl pointer-events-none"></div>
+</div>
+</div>
+</div>
+<!-- Map Snapshot -->
+<div class="px-margin-mobile mb-10">
+<h3 class="font-headline-md text-headline-md text-on-background mb-6">Route Snapshot</h3>
+<div class="w-full h-72 rounded-[2rem] overflow-hidden relative border border-white/10 shadow-[0_12px_32px_rgba(255,107,0,0.05)] group">
+<!-- Simulated dark map image -->
+<img class="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-90 transition-opacity duration-500" data-alt="A highly stylized, minimalist digital map interface showing a winding mountain route. The map is rendered in dark mode with a deep black background and subtle dark grey terrain lines. The actual route is highlighted in a vibrant, glowing circuit orange path. The overall style resembles a high-end aviation or telemetry display." data-location="Swiss Alps Route" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLfON4_SIdWG-q2Iqup16XGIcleR2mFBq676ZHXtP-wJ2ezb-tLyB-5q-tbRUZ1EpA28Iq_AVPJC733o6FjT_gcMLeKn1X8jWjOv7NZ9mbxbH_Xkd0WB60BXNKUkTlekxxNwm5-hqAUAO6qovRrR06DUxrKFVsQz9YQdXFa08hrTkHXDFosfqMBET66KVpcBwUUUBe3Te7ZfK8AktKUvLKRG0oXfg12enQvQTzxmczZRsif7fGpeHalQ"/>
+<!-- Map Overlay Glass Pill -->
+<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none">
+<div class="backdrop-blur-xl bg-surface-container-high/80 border border-white/10 px-5 py-3 rounded-full flex items-center gap-2 shadow-lg">
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,107,0,0.8)]"></span>
+<span class="font-stat-label text-stat-label text-on-background">Furka Pass Sector</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Floating Action Bar -->
+<div class="fixed bottom-margin-mobile left-margin-mobile right-margin-mobile z-50 flex gap-4">
+<!-- Share Story (Secondary/Frosted) -->
+<button class="flex-1 h-14 rounded-full backdrop-blur-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-2 font-stat-label text-stat-label text-on-background shadow-[0_12px_32px_rgba(0,0,0,0.4)] hover:bg-white/10 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+            Share Story
+        </button>
+<!-- Save to Collection (Primary/Elevated) -->
+<button class="flex-1 h-14 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center gap-2 font-stat-label text-stat-label shadow-[0_12px_32px_rgba(255,107,0,0.25)] hover:brightness-110 transition-all bg-gradient-to-b from-white/20 to-transparent active:scale-95 duration-200 border border-white/20">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+            Save to Collection
+        </button>
+</div>
+</body></html>

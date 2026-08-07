@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ride Story - Detailed View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#303030",
+                        "on-tertiary-container": "#313131",
+                        "on-primary-fixed": "#351000",
+                        "tertiary-container": "#9a9999",
+                        "tertiary": "#c8c6c5",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#561f00",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-container": "#bab8b7",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-tint": "#ffb693",
+                        "background": "#121414",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary-container": "#ff6b00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "secondary-container": "#4a4949",
+                        "surface-container": "#1e2020",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2b",
+                        "primary": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#572000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed-variant": "#474646",
+                        "outline-variant": "#5a4136",
+                        "outline": "#a98a7d",
+                        "primary-fixed": "#ffdbcc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Light Mode Overrides for clean, bright aesthetic as requested, overriding dark mode default */
+        .light {
+            --tw-bg-opacity: 1;
+            background-color: #f8f9fa; /* Light background */
+            color: #121414; /* Dark text */
+        }
+        .light .bg-surface-container { background-color: #ffffff; }
+        .light .text-on-surface { color: #121414; }
+        .light .border-white\/10 { border-color: rgba(0,0,0,0.05); }
+        .light .shadow-black\/40 { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025); }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#f8f9fa] text-[#121414] antialiased overflow-x-hidden min-h-screen pb-32">
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-white/80 backdrop-blur-xl border-b border-black/5 shadow-sm shadow-primary-container/5 transition-all">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors">
+<span class="material-symbols-outlined text-[#121414]">arrow_back</span>
+</button>
+<div class="font-headline-lg text-headline-lg tracking-tighter text-[#121414]">JOURNAL</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors">
+<span class="material-symbols-outlined text-[#121414]">more_vert</span>
+</button>
+</header>
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="relative h-[353px] md:h-[442px] w-full">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A breathtaking view from a mountain pass road, winding upwards through rugged terrain. The sun is shining brightly, casting strong shadows on the asphalt. A sleek sports motorcycle is parked on the side of the road, facing the view. The image is high contrast, vibrant, and evokes a sense of adventure and freedom, shot in a bright, modern light-mode style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuALysqlF65L8XxtJ79nUrLzDelWANbbdBxR4NH2AfPwGZDQGtinC8NIIY-Qek8QpajdS-P5g3Lq6VxelCsU3Z19HmItG9Bbg0VqvylPF9aF2w7lhs6qtn0SjYZ0olxe4gF_sia60_dSr9aAHZ9kSbf9xoCP22DXKuLYaU47GVHxdyjoo0vs5O0XsF9HkVy0GtaCUCyvEhj7tQ5qKAKQ9Rkc9cILrvAsHU45IiMYwOH5VcfntUunvLKhqQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#f8f9fa] via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-margin-mobile">
+<div class="flex items-center space-x-2 mb-2">
+<span class="font-label-caps text-label-caps bg-primary-container text-white px-2 py-1 rounded-sm">EPIC RIDE</span>
+<span class="font-label-caps text-label-caps text-secondary-container">SEP 24, 2023</span>
+</div>
+<h1 class="font-headline-lg text-[40px] leading-[48px] font-bold text-[#121414] mb-2 tracking-tight">Alpine Ascent</h1>
+<div class="flex items-center space-x-4">
+<div class="flex items-center text-secondary-container">
+<span class="material-symbols-outlined text-[16px] mr-1">location_on</span>
+<span class="font-stat-label text-stat-label">Stelvio Pass, Italy</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content -->
+<div class="px-margin-mobile mt-gutter space-y-gutter max-w-4xl mx-auto">
+<!-- AI Summary Card -->
+<div class="glass-card rounded-xl p-md">
+<div class="flex items-start space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary-container text-[18px]">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-stat-label text-stat-label text-[#121414] mb-1">Ride Insights</h3>
+<p class="font-body-md text-body-md text-secondary-container">
+                            A challenging climb characterized by relentless switchbacks and significant elevation gain. Pace was consistent through the lower sections, with a notable push near the summit. The descent was handled smoothly with excellent cornering consistency.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Stat Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-secondary-container">DISTANCE</span>
+<div class="font-display-stat text-display-stat text-[#121414]">
+                        142<span class="text-[24px] text-secondary-container">km</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-secondary-container">ELEVATION</span>
+<div class="font-display-stat text-display-stat text-[#121414]">
+                        2.7k<span class="text-[24px] text-secondary-container">m</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-secondary-container">MOVING TIME</span>
+<div class="font-display-stat text-display-stat text-[#121414]">
+                        4:12<span class="text-[24px] text-secondary-container">h</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-32">
+<span class="font-label-caps text-label-caps text-secondary-container">AVG SPEED</span>
+<div class="font-display-stat text-display-stat text-[#121414]">
+                        33<span class="text-[24px] text-secondary-container">km/h</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation from Shared Components -->
+<nav class="fixed bottom-margin-mobile left-margin-mobile right-margin-mobile z-50 flex justify-around items-center h-20 px-6 bg-white/90 backdrop-blur-2xl border border-black/5 shadow-xl shadow-black/10 rounded-full md:hidden">
+<a class="flex flex-col items-center justify-center text-primary-container font-bold scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined fill">book_5</span>
+<span class="font-label-caps text-label-caps mt-1">Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#9a9999] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">image</span>
+<span class="font-label-caps text-label-caps mt-1">Photos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#9a9999] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">auto_awesome_motion</span>
+<span class="font-label-caps text-label-caps mt-1">Collections</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#9a9999] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-caps text-label-caps mt-1">Search</span>
+</a>
+</nav>
+</body></html>

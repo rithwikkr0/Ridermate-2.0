@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ride Timeline - Calendar</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#303030",
+                        "on-tertiary-container": "#313131",
+                        "on-primary-fixed": "#351000",
+                        "tertiary-container": "#9a9999",
+                        "tertiary": "#c8c6c5",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#561f00",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-container": "#bab8b7",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-tint": "#ffb693",
+                        "background": "#121414",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary-container": "#ff6b00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "secondary-container": "#4a4949",
+                        "surface-container": "#1e2020",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2b",
+                        "primary": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#572000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed-variant": "#474646",
+                        "outline-variant": "#5a4136",
+                        "outline": "#a98a7d",
+                        "primary-fixed": "#ffdbcc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md min-h-screen relative overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar JSON Component -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-md shadow-primary-container/5">
+<button class="text-primary dark:text-primary hover:bg-white/5 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg tracking-tighter text-primary dark:text-primary">JOURNAL</h1>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-sm flex items-center justify-center bg-surface-container">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A tightly cropped, high-resolution portrait photograph of a rider wearing a modern, matte black carbon fiber helmet. The lighting is cinematic and moody, matching a high-end luxury dark mode aesthetic, with a subtle rim light defining the shape of the helmet against a deep charcoal background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-HIqoCbjQ1ssyxOL_DOJwTlVyd3z3RzVE643gaHVZkCsqGTmV-sJ6UPwOQ3cbfZ1Ravec9xo38HJcDxBbwNb2T8vlSewGCzt1X_ufEcrXuISpyZPWWGXJCjZ8Da-J5kqbrI7wABef_ZyUNGskHSKcvUrRC3pFQ_5ypkKHhtasPR00w4c8PYp0XvWEH2KUHgsRgq1NYUayIvSDZKPhWjWaUUa1g2Wn6iH3lixEuF1OhUbmT70df_Se5g"/>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-24 pb-32 px-margin-mobile max-w-lg mx-auto relative z-10">
+<!-- Page Title Context -->
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-unit">Ride Calendar</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Review your past journeys.</p>
+</div>
+<!-- Calendar Container (Glassmorphic) -->
+<div class="bg-surface-container/40 backdrop-blur-[12px] border border-white/10 rounded-xl p-md shadow-xl shadow-black/20 mb-lg">
+<!-- Calendar Header -->
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">October 2023</h3>
+<div class="flex gap-sm">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+</div>
+</div>
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-y-4 gap-x-2 text-center mb-sm">
+<!-- Weekdays -->
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">S</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">M</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">T</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">W</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">T</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">F</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant opacity-70">S</div>
+<!-- Days (Simplified structure for rendering visually) -->
+<!-- Week 1 -->
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">1</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">2</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">
+                    3
+                    <span class="absolute bottom-1 w-1 h-1 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,107,0,0.6)]"></span>
+</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">4</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">5</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">6</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">
+                    7
+                    <span class="absolute bottom-1 w-1 h-1 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,107,0,0.6)]"></span>
+</div>
+<!-- Week 2 -->
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">8</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">9</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">10</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">11</div>
+<!-- SELECTED DAY: OCT 12 -->
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full bg-primary-container text-on-primary-container cursor-pointer font-bold shadow-[0_4px_12px_rgba(255,107,0,0.4)] relative scale-110">
+                    12
+                </div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">13</div>
+<div class="w-8 h-8 mx-auto flex flex-col items-center justify-center rounded-full text-on-surface cursor-pointer hover:bg-white/5 transition-colors relative">
+                    14
+                    <span class="absolute bottom-1 w-1 h-1 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,107,0,0.6)]"></span>
+</div>
+</div>
+</div>
+<!-- Selected Day Summary Card (Glassmorphic) -->
+<div class="bg-surface-container/60 backdrop-blur-[20px] border border-white/10 rounded-xl p-md shadow-2xl shadow-black/40 flex items-center gap-md relative overflow-hidden">
+<!-- Subtle gradient flair inside card -->
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="w-16 h-16 rounded-lg bg-surface-container-high border border-white/5 overflow-hidden flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">motorcycle</span>
+</div>
+<div class="flex-grow">
+<p class="font-label-caps text-label-caps text-primary mb-xs">OCT 12, 2023</p>
+<h4 class="font-headline-md text-headline-md text-on-surface leading-tight mb-sm">Alpine Ascent</h4>
+<div class="flex gap-md">
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface-variant opacity-70">DISTANCE</span>
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">142<span class="text-sm font-normal text-on-surface-variant ml-1">km</span></span>
+</div>
+<div class="w-px bg-white/10 h-8 self-center"></div>
+<div class="flex flex-col">
+<span class="font-stat-label text-stat-label text-on-surface-variant opacity-70">TIME</span>
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">4:12<span class="text-sm font-normal text-on-surface-variant ml-1">h</span></span>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar JSON Component -->
+<!-- Active matching 'Journal' intent for Calendar -->
+<nav class="fixed bottom-margin-mobile left-margin-mobile right-margin-mobile z-50 flex justify-around items-center h-20 px-6 bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-2xl border border-white/10 rounded-full shadow-xl shadow-black/40">
+<!-- Tab: Journal (Active) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold hover:opacity-100 transition-opacity scale-110 duration-300 ease-out group" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="book_5" style="font-variation-settings: 'FILL' 1;">book_5</span>
+<span class="font-label-caps text-label-caps">Journal</span>
+</a>
+<!-- Tab: Photos -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" data-icon="image">image</span>
+<span class="font-label-caps text-label-caps">Photos</span>
+</a>
+<!-- Tab: Collections -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+<span class="font-label-caps text-label-caps">Collections</span>
+</a>
+<!-- Tab: Search -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:scale-110 transition-transform" data-icon="search">search</span>
+<span class="font-label-caps text-label-caps">Search</span>
+</a>
+</nav>
+</body></html>

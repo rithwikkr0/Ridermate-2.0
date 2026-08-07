@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, safe-area-inset-top, safe-area-inset-bottom, safe-area-inset-left, safe-area-inset-right" name="viewport"/>
+<title>RiderMate Live Ride Tracking</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Theme injected from instructions) -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#572000",
+                        "primary": "#ffb693",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-fixed-variant": "#474646",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#37393a",
+                        "tertiary-container": "#9a9999",
+                        "outline": "#a98a7d",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e2e2e2",
+                        "on-surface": "#e2e2e2",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "inverse-primary": "#a04100",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e2e2e2",
+                        "surface-tint": "#ffb693",
+                        "primary-container": "#ff6b00",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-primary": "#561f00",
+                        "surface": "#121414",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-tertiary": "#303030",
+                        "surface-variant": "#333535",
+                        "primary-fixed": "#ffdbcc",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary": "#c8c6c5",
+                        "surface-container-highest": "#333535",
+                        "surface-dim": "#121414",
+                        "on-tertiary-container": "#313131",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-primary-fixed": "#351000",
+                        "secondary-container": "#4a4949",
+                        "tertiary": "#c8c6c5",
+                        "surface-container-high": "#282a2b",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-secondary": "#313030",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-container": "#1e2020",
+                        "outline-variant": "#5a4136",
+                        "background": "#121414",
+                        "on-secondary-container": "#bab8b7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Glassmorphism utility */
+        .glass-panel {
+            background-color: rgba(18, 20, 20, 0.6); /* surface with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-warning {
+            background-color: rgba(147, 0, 10, 0.4); /* error-container with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 180, 171, 0.2); /* error with opacity */
+        }
+        
+        .button-primary {
+            background: linear-gradient(180deg, #ff6b00 0%, #d45900 100%);
+            box-shadow: 0 4px 14px rgba(255, 107, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .button-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hide scrollbar for full-screen feel */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Map fading effect */
+        .map-gradient {
+            background: linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.8) 40%, rgba(18, 20, 20, 1) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden font-body-md relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Map Layer -->
+<div class="absolute inset-0 z-0 h-[530px] w-full" data-alt="A dark-themed satellite map view focusing on a winding mountain road. The map style is minimalist and high-tech, using deep charcoal grays and blacks. A vivid neon orange line traces a dynamic route along the curves, glowing against the dark background. A subtle pulse effect emanates from the current position marker." data-location="Stelvio Pass" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBbzKUEsPLSJpFNm8kHUXFw56LkQp0j7d2OY-Ec2-prmixyqCIseGukY0t0jcLO7NXDHu08o7934amPJmDvPUdlrwV0IoOIF-Y-KR-tvtb4lufLd_4eTTsDXk39n-b-AW216mhcxam7kEg5AxdFTl_HrU2v9W9NzycVAxtXP_1uMMOApi_YbI-ayII32oWdpYp4TpzV_fhAw_x_g150A6wnQ3VrzJjPRsLR5XQz9igfS3yjXUTh0iFPjg')">
+<!-- Live Position Marker -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+<div class="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center animate-ping absolute inset-0"></div>
+<div class="w-4 h-4 bg-primary-container rounded-full border-2 border-surface relative z-10 shadow-[0_0_15px_rgba(255,107,0,0.8)]"></div>
+</div>
+</div>
+<!-- Gradient overlay to blend map into solid dark background -->
+<div class="absolute inset-0 z-0 map-gradient pointer-events-none mt-[176px]"></div>
+<!-- UI Overlay Layer -->
+<div class="relative z-10 h-full w-full flex flex-col justify-between pt-safe-top pb-safe-bottom px-margin-mobile">
+<!-- Top Section: AI Safety Banner -->
+<div class="pt-md w-full max-w-md mx-auto">
+<!-- Warning Banner -->
+<div class="glass-warning rounded-lg px-md py-sm flex items-center gap-sm shadow-sm animate-pulse-slow">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-stat-label text-stat-label text-error-container tracking-wide flex-1">Caution: Sharp Turn Ahead</span>
+<span class="font-label-caps text-label-caps text-on-surface/60">300m</span>
+</div>
+</div>
+<!-- Center Section: Ride Metrics Bento Grid -->
+<div class="flex-1 flex flex-col justify-end pb-xl w-full max-w-md mx-auto z-20">
+<!-- Primary Metric (Speed) -->
+<div class="glass-panel rounded-[24px] p-lg mb-gutter text-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden">
+<!-- Subtle glow behind speed -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary-container/10 rounded-full blur-2xl"></div>
+<span class="font-label-caps text-label-caps text-primary block mb-unit uppercase tracking-widest">Current Speed</span>
+<div class="flex items-baseline justify-center gap-unit">
+<span class="font-display-stat text-[72px] leading-none font-bold text-on-surface">45</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">km/h</span>
+</div>
+</div>
+<!-- Secondary Metrics Grid -->
+<div class="grid grid-cols-2 gap-gutter mb-xl">
+<!-- Distance -->
+<div class="glass-panel rounded-xl p-md flex flex-col items-start shadow-sm">
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">route</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Distance</span>
+</div>
+<div class="flex items-baseline gap-unit">
+<span class="font-headline-lg text-headline-lg text-on-surface">12.4</span>
+<span class="font-stat-label text-stat-label text-on-surface-variant">km</span>
+</div>
+</div>
+<!-- Time -->
+<div class="glass-panel rounded-xl p-md flex flex-col items-start shadow-sm">
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">timer</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Time</span>
+</div>
+<div class="flex items-baseline gap-unit">
+<span class="font-headline-lg text-headline-lg text-on-surface">15:22</span>
+</div>
+</div>
+</div>
+<!-- Heart Rate / Elevation (Tertiary Metrics) -->
+<div class="flex gap-sm overflow-x-auto pb-sm snap-x scrollbar-hide">
+<div class="glass-panel rounded-full px-lg py-sm flex items-center gap-sm shrink-0 border border-white/5 bg-surface-container/40">
+<span class="material-symbols-outlined text-error text-[16px] animate-pulse">favorite</span>
+<span class="font-stat-label text-stat-label text-on-surface">142 bpm</span>
+</div>
+<div class="glass-panel rounded-full px-lg py-sm flex items-center gap-sm shrink-0 border border-white/5 bg-surface-container/40">
+<span class="material-symbols-outlined text-tertiary text-[16px]">trending_up</span>
+<span class="font-stat-label text-stat-label text-on-surface">+320m</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Actions -->
+<div class="w-full max-w-md mx-auto mb-md z-20">
+<div class="flex gap-gutter">
+<!-- Pause Button -->
+<button class="button-secondary flex-1 h-[64px] rounded-[32px] flex items-center justify-center gap-sm transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 1;">pause</span>
+<span class="font-headline-md text-[18px] text-on-surface">Pause</span>
+</button>
+<!-- End Button -->
+<button class="button-primary flex-1 h-[64px] rounded-[32px] flex items-center justify-center gap-sm transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50 text-white">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">stop_circle</span>
+<span class="font-headline-md text-[18px] text-white">End</span>
+</button>
+</div>
+<!-- Safe Area Bottom Padding Spacer -->
+<div class="h-4"></div>
+</div>
+</div>
+<!-- Note: Navigation Shell is suppressed here as this is a focused, transactional "active ride" state screen, fulfilling the requirement: "suppress the navigation if the page intent is linear/transactional or task-focused". -->
+</body></html>

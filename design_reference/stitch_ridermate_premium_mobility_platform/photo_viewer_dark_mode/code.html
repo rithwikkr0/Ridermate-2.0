@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Photo Viewer - Full Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#303030",
+                        "on-tertiary-container": "#313131",
+                        "on-primary-fixed": "#351000",
+                        "tertiary-container": "#9a9999",
+                        "tertiary": "#c8c6c5",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#561f00",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-container": "#bab8b7",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-tint": "#ffb693",
+                        "background": "#121414",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary-container": "#ff6b00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "secondary-container": "#4a4949",
+                        "surface-container": "#1e2020",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2b",
+                        "primary": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#572000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed-variant": "#474646",
+                        "outline-variant": "#5a4136",
+                        "outline": "#a98a7d",
+                        "primary-fixed": "#ffdbcc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "display-stat": ["Hanken Grotesk"],
+                        "stat-label": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-stat": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stat-label": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-overlay {
+            background: linear-gradient(to top, rgba(18, 20, 20, 0.9) 0%, rgba(18, 20, 20, 0.4) 60%, transparent 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .top-glass-nav {
+            background: linear-gradient(to bottom, rgba(18, 20, 20, 0.7) 0%, transparent 100%);
+        }
+
+        .action-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .action-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        .action-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen w-screen overflow-hidden m-0 p-0 selection:bg-primary-container selection:text-on-primary-container">
+<!-- Immersive Background Photo -->
+<div class="absolute inset-0 z-0">
+<img alt="Motorcycle at mountain pass" class="w-full h-full object-cover" data-alt="A high-end, dramatic wide shot of a customized sports motorcycle parked on the edge of a rugged mountain pass. The sun is setting in the background, casting long shadows and painting the sky in vibrant hues of circuit orange and deep purple. The scene feels premium, cinematic, and adventurous, perfectly aligning with a luxury ride-tracking app's dark mode aesthetic. High contrast, sharp focus, capturing the raw energy of high-performance machinery against nature." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhy1qf02XQU5aiiK0zDh6AxAPmQTNyXtTEEQ1wdyP7pSMvpQhJPJrhd55g-iSqXmIDyQFJvl5wWzyvMgVts39vmUOaOntHvulBNcdgSONPU8gVPSfMzMShzugNwDzwo0Eqitlv-89acys1iLa9qFGY0HI0lo9uz3Uzl9xP3-jh2uwcZDCPU3Zj_EVzfB_SoLCIsTP60P6aT25LA-Uj6sD7OmB2YpOrKO9cyO_KPk5Qi4KZZWmVavH9nw"/>
+</div>
+<!-- Top Navigation Area (Glassmorphic Fade) -->
+<div class="absolute top-0 inset-x-0 z-10 top-glass-nav pt-8 pb-16 px-margin-mobile flex justify-between items-start pointer-events-none">
+<!-- Back Button -->
+<button class="action-button pointer-events-auto h-12 w-12 rounded-full bg-surface-container-highest/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-on-surface shadow-lg shadow-black/40">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<!-- Actions Cluster -->
+<div class="pointer-events-auto flex gap-unit bg-surface-container-highest/60 backdrop-blur-md border border-white/10 rounded-full p-1 shadow-lg shadow-black/40">
+<button class="action-button h-10 w-10 rounded-full flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">share</span>
+</button>
+<button class="action-button h-10 w-10 rounded-full flex items-center justify-center text-on-surface hover:text-error transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<button class="action-button h-10 w-10 rounded-full flex items-center justify-center text-on-surface hover:text-outline-variant transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">delete</span>
+</button>
+</div>
+</div>
+<!-- Bottom Glassmorphic Info Overlay -->
+<div class="absolute bottom-0 inset-x-0 z-10 glass-overlay pt-24 pb-12 px-margin-mobile flex flex-col gap-sm">
+<div class="flex items-end justify-between">
+<div class="flex flex-col gap-xs">
+<h1 class="font-headline-lg text-headline-lg text-on-surface drop-shadow-md">Alpine Ascent</h1>
+<p class="font-body-md text-body-md text-secondary drop-shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                    Oct 12, 2023
+                </p>
+</div>
+<!-- Elevation Chip -->
+<div class="bg-surface-container-high/80 border border-white/10 rounded-full px-4 py-2 flex items-center gap-2 shadow-xl shadow-primary-container/5">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">landscape</span>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-secondary opacity-70">ELEVATION</span>
+<span class="font-headline-md text-[18px] leading-tight text-on-surface">2,750<span class="text-secondary text-[14px]">m</span></span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

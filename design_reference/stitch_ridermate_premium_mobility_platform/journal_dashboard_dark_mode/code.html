@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RiderMate - Journal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#303030",
+                        "on-tertiary-container": "#313131",
+                        "on-primary-fixed": "#351000",
+                        "tertiary-container": "#9a9999",
+                        "tertiary": "#c8c6c5",
+                        "primary-fixed-dim": "#ffb693",
+                        "on-primary": "#561f00",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-container": "#bab8b7",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e2e2e2",
+                        "inverse-primary": "#a04100",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface-tint": "#ffb693",
+                        "background": "#121414",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "primary-container": "#ff6b00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-highest": "#333535",
+                        "on-primary-fixed-variant": "#7a3000",
+                        "secondary-container": "#4a4949",
+                        "surface-container": "#1e2020",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2b",
+                        "primary": "#ffb693",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface-variant": "#e2bfb0",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#572000",
+                        "surface-variant": "#333535",
+                        "surface-bright": "#37393a",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed-variant": "#474646",
+                        "outline-variant": "#5a4136",
+                        "outline": "#a98a7d",
+                        "primary-fixed": "#ffdbcc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono", "monospace"],
+                        "headline-lg": ["Hanken Grotesk", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-md": ["Hanken Grotesk", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "display-stat": ["Hanken Grotesk", "sans-serif"],
+                        "stat-label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-[16px] leading-[24px] antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-md shadow-primary-container/5 border-b border-transparent transition-all duration-300" id="topAppBar">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors text-primary dark:text-primary active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+<h1 class="font-headline-md text-[24px] leading-[32px] font-semibold text-primary dark:text-primary tracking-tighter">JOURNAL</h1>
+<button class="w-10 h-10 rounded-full overflow-hidden border border-white/10 hover:border-primary/50 transition-colors active:scale-95 duration-200 shadow-[0_0_10px_rgba(255,107,0,0.1)]">
+<img class="w-full h-full object-cover" data-alt="A stylized portrait of a rider wearing a high-end matte black motorcycle helmet with a tinted visor. The background is a sleek, dark studio gradient. The lighting highlights the contours of the helmet, creating a sense of anonymity and premium performance, fitting a high-tech dark mode application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-DvrnmKCrg0k830Wsoo0JJOta4R2BGsN06-LVD2g3kukaE-ES4SxX9IcHDOIfJdsZei4Mc1mhdY0COx7VOzkmoaxysTo0jaNMyPHoDutRPitLdrBEq_aEWxgslw7AevtUeDoMFVsVjVoSTLjC-4cthQnhl9cgB1EtQ2cxWSW5sOMVYlURp1eXgXSVhbBAAIPicvgXmkm7UFoFKtHhACOTjkcmN_axOugWOQFjPoS8D0I7_VyXsHh9mg"/>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[80px] pb-[120px] px-margin-mobile space-y-xl max-w-2xl mx-auto">
+<!-- Hero Section: Latest Adventure -->
+<section class="space-y-sm">
+<div class="flex items-center justify-between px-xs">
+<h2 class="font-label-caps text-[12px] font-medium tracking-[0.05em] text-secondary">LATEST ADVENTURE</h2>
+<span class="font-label-caps text-[10px] tracking-wider text-primary-container/80">YESTERDAY</span>
+</div>
+<div class="relative w-full h-[280px] rounded-xl overflow-hidden glass-card shadow-[0_12px_32px_rgba(0,0,0,0.4)] group cursor-pointer">
+<!-- Background Image -->
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A stunning over-the-shoulder perspective photograph of a sleek modern sports motorcycle riding along a dramatic coastal highway. The ocean waves crash against rocky cliffs to the left. The scene is bathed in golden hour sunlight, creating long shadows and highlighting deep blacks. High contrast, cinematic lighting, premium minimalist feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBtIYaHlOSobCOmUCniFMSOhaYIFCteVzbFreD58BB2aIsH_Xsw5hycsMKI_U5XdB5hgwIdooiJez530U4F-kaI0pMqbDy26zT4R2pERVMB6lbgHCIfvQxYhKi7a_63SpEW_COhmsSSo28kImG34Gr4AtVnIWa9nmYcIh-IxuK5920o8h6QPKXQ1Y_rfhBsQsTVkV4K2oQEIRFdLC81DMcMJy4e_gDOSspRPVwf8EGWy21LeZQbGiJjQQ')"></div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+<!-- Map Overlay Hint (Abstract) -->
+<div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 70% 30%, rgba(255, 107, 0, 0.15) 0%, transparent 40%);">
+<svg class="absolute bottom-10 right-4 w-32 h-24 stroke-primary/30" fill="none" stroke-width="1.5" viewbox="0 0 100 100">
+<path d="M10,90 Q30,70 50,50 T90,20" stroke-linecap="round"></path>
+<circle cx="90" cy="20" fill="currentColor" r="3"></circle>
+</svg>
+</div>
+<!-- Content -->
+<div class="absolute bottom-0 left-0 w-full p-md flex flex-col justify-end">
+<h3 class="font-headline-lg text-[32px] leading-[40px] font-semibold text-on-background mb-xs">Coastal Loop</h3>
+<div class="flex items-center gap-md text-on-surface-variant font-stat-label text-[14px]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary-container">route</span>
+<span>142 KM</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary-container">timer</span>
+<span>2H 15M</span>
+</div>
+</div>
+</div>
+<!-- FAB Overlay (Action) -->
+<button class="absolute top-md right-md w-12 h-12 rounded-full bg-primary-container/20 backdrop-blur-md border border-primary-container/50 flex items-center justify-center text-primary-container shadow-[0_4px_12px_rgba(255,107,0,0.2)] hover:bg-primary-container hover:text-on-primary-container transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</section>
+<!-- Recent Memories (Horizontal Scroll) -->
+<section class="space-y-sm">
+<h2 class="font-label-caps text-[12px] font-medium tracking-[0.05em] text-secondary px-xs">RECENT MEMORIES</h2>
+<div class="flex gap-gutter overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar -mx-margin-mobile px-margin-mobile">
+<!-- Card 1 -->
+<div class="glass-card rounded-xl w-[220px] flex-shrink-0 snap-center overflow-hidden flex flex-col group cursor-pointer hover:border-white/20 transition-colors">
+<div class="h-[120px] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A close-up, high-quality photograph of a motorcycle dashboard and handlebars parked on a misty mountain pass. The background is a blurred landscape of pine trees and fog. The lighting is moody and cool, with subtle reflections on the metallic surfaces. The aesthetic aligns with a dark mode, high-end rider application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfVf-TQimL9Sqz7myBla9KzdW31LODmFZ8Lb7kDfiX9ZOoCsQO85OoPxQR2-DJx2ROcmINKDG3bO1uSeJbJrfwMsi340k-Xfmc6oPIXPYyICWNLQnPV2uyfOQxQxWKDANqZGqv5acNc5e0SG5onxoOaUhLWWULy4QaW480Dlp1wgjxZ8x7yNQB9se61t62wSg4soZTMg15nAsJdfPZ9RmiXRDCSBIQmopmVIHWciaU_vh0fG39-WSGJg"/>
+<div class="absolute top-2 right-2 bg-background/60 backdrop-blur-sm rounded-full px-2 py-0.5 border border-white/10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary">cloud</span>
+<span class="font-label-caps text-[10px] text-on-surface">12°C</span>
+</div>
+</div>
+<div class="p-3 bg-surface-container/30">
+<h4 class="font-headline-md text-[16px] leading-[24px] font-semibold text-on-surface truncate">Alpine Pass</h4>
+<p class="font-stat-label text-[12px] text-on-surface-variant mt-1">Oct 12 • 85 KM</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card rounded-xl w-[220px] flex-shrink-0 snap-center overflow-hidden flex flex-col group cursor-pointer hover:border-white/20 transition-colors">
+<div class="h-[120px] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A wide-angle landscape shot of a winding desert road cutting through red rock formations at dusk. The sky is a gradient of deep blue and purple. A solitary motorcycle is a small silhouette in the distance. The image feels vast, adventurous, and premium, matching a dark mode interface with neon orange accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-C5DhXkLATYbjyRpHZOspygbDfnVDzosaHaaPxqFm78RU_1UJzxZ4SiFlhXKHye2g1tezLXSVA3XG63P773RfCIn67oApho4BQ-z_6UkyxTRcegM4-WquXrl3dl2oQaaOfsH33jqUIr7xYY7dp0fbeI5RlVH0kwr0aKu72H4LEzsmh5npDmrUB9diRf-GFxukW1WBpH4IjNm4Tlz6stTvx_P1Xa9R-ycDGJGh-xsuYTyJuI1D5ij48w"/>
+<div class="absolute top-2 right-2 bg-background/60 backdrop-blur-sm rounded-full px-2 py-0.5 border border-white/10 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">sunny</span>
+<span class="font-label-caps text-[10px] text-on-surface">28°C</span>
+</div>
+</div>
+<div class="p-3 bg-surface-container/30">
+<h4 class="font-headline-md text-[16px] leading-[24px] font-semibold text-on-surface truncate">Desert Run</h4>
+<p class="font-stat-label text-[12px] text-on-surface-variant mt-1">Sep 28 • 310 KM</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-xl w-[220px] flex-shrink-0 snap-center overflow-hidden flex flex-col items-center justify-center p-md group cursor-pointer hover:border-primary/30 transition-colors bg-surface-container-low/50">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center mb-3 group-hover:bg-primary-container/20 group-hover:text-primary-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">grid_view</span>
+</div>
+<span class="font-label-caps text-[12px] text-on-surface font-medium">VIEW ALL</span>
+</div>
+</div>
+</section>
+<!-- Ride Timeline Preview -->
+<section class="space-y-md">
+<div class="flex items-center justify-between px-xs">
+<h2 class="font-label-caps text-[12px] font-medium tracking-[0.05em] text-secondary">RIDE TIMELINE</h2>
+<button class="text-primary-container font-label-caps text-[10px] hover:underline">FILTER</button>
+</div>
+<div class="relative pl-6 space-y-6 before:absolute before:inset-y-0 before:left-2.5 before:w-[1px] before:bg-white/10">
+<!-- Timeline Item 1 -->
+<div class="relative group cursor-pointer">
+<!-- Node -->
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,107,0,0.6)] ring-4 ring-background"></div>
+<div class="glass-card p-4 rounded-xl hover:bg-white/[0.05] transition-colors flex gap-4 items-center">
+<div class="flex-grow">
+<div class="flex justify-between items-baseline mb-1">
+<h4 class="font-body-lg text-[18px] font-semibold text-on-surface">City Night Cruise</h4>
+<span class="font-label-caps text-[10px] text-on-surface-variant">OCT 05</span>
+</div>
+<div class="flex gap-4 font-stat-label text-[12px] text-on-surface-variant/80">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> 45 KM</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span> 45 MIN</span>
+</div>
+</div>
+<!-- Mini Map Visual -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest overflow-hidden border border-white/5 relative flex-shrink-0">
+<img class="w-full h-full object-cover opacity-80 mix-blend-screen" data-alt="A stylized, minimalist dark mode map tile showing a glowing neon orange polyline route through abstract city streets. The map base is very dark grey, almost black, with subtle geometric road lines. High tech, precision navigation aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLDVoZCUA2HfS9MeUrhx6Jz5clKoaDXoKg6JnVG5mAkHEA5E1xjU7vSv-TiDbEdO-yhVayJqLWhbSBJ70WNO1KbyQ8_uFDT56qF7DW6tkRgTNmlPsHWFsRtL-pZzPNkUM7Taqiaw32VDxQ7LSO3KoF6II9np2hMvkkHKpAogAC5Hao3ktdErc_xaB84AsfeUH6LwqMUqunRBzolk9asS6QfyId4-G-Q-gTF0IHCh1wjZZcd3b4C40aaQ"/>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative group cursor-pointer">
+<!-- Node -->
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-surface-variant ring-4 ring-background group-hover:bg-primary-container transition-colors"></div>
+<div class="glass-card p-4 rounded-xl hover:bg-white/[0.05] transition-colors flex gap-4 items-center">
+<div class="flex-grow">
+<div class="flex justify-between items-baseline mb-1">
+<h4 class="font-body-lg text-[18px] font-semibold text-on-surface">Morning Commute</h4>
+<span class="font-label-caps text-[10px] text-on-surface-variant">OCT 04</span>
+</div>
+<div class="flex gap-4 font-stat-label text-[12px] text-on-surface-variant/80">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">speed</span> 12 KM</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span> 20 MIN</span>
+</div>
+</div>
+<!-- Mini Map Visual -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest overflow-hidden border border-white/5 relative flex-shrink-0">
+<img class="w-full h-full object-cover opacity-80 mix-blend-screen" data-alt="A stylized, minimalist dark mode map tile showing a simple, short glowing neon orange polyline route across abstract grid lines. The map base is dark grey. High tech, clean navigation aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnnpOSKi-QM6bwhgyXGZ0EbuGKChSx_0GRotlsYnjHD8n-9S-7a8lPyZrv5d1WD9SXcHKyxjADVJxB8DasNjx_rXwT0YkeGTdRXs17auzI6DY8zWPcrDPqjvjCaHzE0P44o2fLKVpWWwtVxec1EZhiAwEIBCKLIivPB1XM80CvmuHtlf9eI9ZrWGP9WlNGqwg7ydFYPW1G1TEr1BHvm4iVlzPIo8NRKMMU5q6MZOTEHuUiieudXsv4xg"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-margin-mobile left-margin-mobile right-margin-mobile z-50 flex justify-around items-center h-20 px-6 bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-2xl border border-white/10 shadow-xl shadow-black/40 rounded-full">
+<!-- Tab 1: Journal (Active) -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold scale-110 duration-300 ease-out relative group w-16">
+<div class="absolute inset-0 bg-primary/10 rounded-full blur-md opacity-50"></div>
+<span class="material-symbols-outlined text-[28px] mb-1 drop-shadow-[0_0_8px_rgba(255,182,147,0.5)]" style="font-variation-settings: 'FILL' 1;">book_5</span>
+<span class="font-label-caps text-[10px] tracking-wider">Journal</span>
+</button>
+<!-- Tab 2: Photos -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">image</span>
+<span class="font-label-caps text-[10px] tracking-wider">Photos</span>
+</button>
+<!-- Tab 3: Collections -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">auto_awesome_motion</span>
+<span class="font-label-caps text-[10px] tracking-wider">Collections</span>
+</button>
+<!-- Tab 4: Search -->
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary opacity-60 hover:opacity-100 transition-opacity w-16">
+<span class="material-symbols-outlined text-[24px] mb-1">search</span>
+<span class="font-label-caps text-[10px] tracking-wider">Search</span>
+</button>
+</nav>
+<!-- Subtle Scroll Effect Script -->
+<script>
+        const topAppBar = document.getElementById('topAppBar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                topAppBar.classList.add('border-white/10', 'bg-background/95');
+                topAppBar.classList.remove('border-transparent', 'bg-background/80');
+            } else {
+                topAppBar.classList.remove('border-white/10', 'bg-background/95');
+                topAppBar.classList.add('border-transparent', 'bg-background/80');
+            }
+        });
+    </script>
+</body></html>
