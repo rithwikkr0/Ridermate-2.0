@@ -1,14 +1,83 @@
-﻿import 'package:flutter/material.dart';
-
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/router/app_router.dart';
+import '../services/mock_place_search_service.dart';
+import '../services/nominatim_place_search_service.dart';
 
-
-class SearchDestinationScreen extends StatelessWidget {
+class SearchDestinationScreen extends StatefulWidget {
   const SearchDestinationScreen({super.key});
+
+  @override
+  State<SearchDestinationScreen> createState() => _SearchDestinationScreenState();
+}
+
+class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
+  final NominatimPlaceSearchService _searchService = NominatimPlaceSearchService();
+  final TextEditingController _searchController = TextEditingController();
+
+  List<PlaceItem> _searchResults = [];
+  List<PlaceItem> _recentSearches = [];
+  List<PlaceItem> _savedPlaces = [];
+  bool _isSearching = false;
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadInitialData() async {
+    final recent = await _searchService.getRecentSearches();
+    final saved = await _searchService.getSavedPlaces();
+    if (!mounted) return;
+    setState(() {
+      _recentSearches = recent;
+      _savedPlaces = saved;
+    });
+  }
+
+  void _onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    if (query.trim().length < 2) {
+      setState(() {
+        _searchResults = [];
+        _isSearching = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isSearching = true;
+    });
+
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () async {
+      final results = await _searchService.searchPlaces(query);
+      if (!mounted) return;
+      setState(() {
+        _searchResults = results;
+        _isSearching = false;
+      });
+    });
+  }
+
+  void _selectDestination(PlaceItem place) {
+    context.push(
+      '${AppRoutes.routePlanning}?destTitle=${Uri.encodeComponent(place.title)}&destLat=${place.latitude}&destLng=${place.longitude}',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +97,25 @@ class SearchDestinationScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
             border: Border.all(color: AppColors.glassBorder),
           ),
-          child: const TextField(
-            style: TextStyle(color: AppColors.onSurface),
+          child: TextField(
+            controller: _searchController,
+            onChanged: _onSearchChanged,
+            style: const TextStyle(color: AppColors.onSurface),
             decoration: InputDecoration(
-              hintText: 'Search destinations...',
-              hintStyle: TextStyle(color: AppColors.onSurfaceVariant),
-              prefixIcon: Icon(Icons.search, color: AppColors.onSurfaceVariant),
+              hintText: 'Search destinations (Nominatim)...',
+              hintStyle: const TextStyle(color: AppColors.onSurfaceVariant),
+              prefixIcon: const Icon(Icons.search, color: AppColors.onSurfaceVariant),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, color: AppColors.onSurfaceVariant),
+                      onPressed: () {
+                        _searchController.clear();
+                        _onSearchChanged('');
+                      },
+                    )
+                  : null,
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
         ),
@@ -57,18 +137,43 @@ class SearchDestinationScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('RECENT SEARCHES', style: AppTextStyles.labelCaps()).animate().fadeIn(),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildPlaceTile('Coastal Cliffs', '22 km', 'SCENIC').animate().fadeIn(delay: 100.ms),
-                  _buildPlaceTile('Downtown Cafe', '5 km', 'CITY').animate().fadeIn(delay: 150.ms),
-                  
-                  const SizedBox(height: AppSpacing.xl),
-                  Text('SAVED PLACES', style: AppTextStyles.labelCaps()).animate().fadeIn(delay: 200.ms),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildPlaceTile('Home', '0 km', 'HOME').animate().fadeIn(delay: 250.ms),
-                  _buildPlaceTile('Work', '12 km', 'WORK').animate().fadeIn(delay: 300.ms),
-                  
-                  const SizedBox(height: 100), // padding
+                  if (_isSearching)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.circuitOrange,
+                        ),
+                      ),
+                    ),
+
+                  if (_searchResults.isNotEmpty) ...[
+                    Text('SEARCH RESULTS', style: AppTextStyles.labelCaps()).animate().fadeIn(),
+                    const SizedBox(height: AppSpacing.md),
+                    ..._searchResults.map(
+                      (place) => _buildPlaceTile(place, 'RESULT'),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+
+                  if (_recentSearches.isNotEmpty) ...[
+                    Text('RECENT SEARCHES', style: AppTextStyles.labelCaps()).animate().fadeIn(),
+                    const SizedBox(height: AppSpacing.md),
+                    ..._recentSearches.map(
+                      (place) => _buildPlaceTile(place, 'RECENT'),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+
+                  if (_savedPlaces.isNotEmpty) ...[
+                    Text('SAVED PLACES', style: AppTextStyles.labelCaps()).animate().fadeIn(),
+                    const SizedBox(height: AppSpacing.md),
+                    ..._savedPlaces.map(
+                      (place) => _buildPlaceTile(place, 'SAVED'),
+                    ),
+                  ],
+
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
@@ -78,10 +183,11 @@ class SearchDestinationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceTile(String name, String distance, String type) {
+  Widget _buildPlaceTile(PlaceItem place, String tag) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
+        onTap: () => _selectDestination(place),
         contentPadding: EdgeInsets.zero,
         leading: Container(
           width: 48,
@@ -91,17 +197,17 @@ class SearchDestinationScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.glassBorder),
           ),
-          child: const Icon(Icons.place_outlined, color: AppColors.onSurfaceVariant),
+          child: const Icon(Icons.place_outlined, color: AppColors.circuitOrange),
         ),
-        title: Text(name, style: AppTextStyles.bodyLg().copyWith(color: AppColors.onSurface)),
-        subtitle: Text(distance, style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant)),
+        title: Text(place.title, style: AppTextStyles.bodyLg().copyWith(color: AppColors.onSurface)),
+        subtitle: Text(place.subtitle, style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant)),
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: AppColors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(type, style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
+          child: Text(tag, style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
         ),
       ),
     );

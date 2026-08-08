@@ -22,6 +22,8 @@ class RealMapView extends StatefulWidget {
   final bool showControls;
   final bool followUserLocation;
   final Widget? overlayChild;
+  final List<LatLng>? polylinePoints;
+  final List<Marker>? extraMarkers;
 
   const RealMapView({
     super.key,
@@ -30,7 +32,10 @@ class RealMapView extends StatefulWidget {
     this.showControls = true,
     this.followUserLocation = true,
     this.overlayChild,
+    this.polylinePoints,
+    this.extraMarkers,
   });
+
 
   @override
   State<RealMapView> createState() => _RealMapViewState();
@@ -208,6 +213,18 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
             ),
 
 
+            // Polyline Layer for Routes
+            if (widget.polylinePoints != null && widget.polylinePoints!.isNotEmpty)
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: widget.polylinePoints!,
+                    color: AppColors.circuitOrange,
+                    strokeWidth: 5.0,
+                  ),
+                ],
+              ),
+
             // Accuracy Circle Layer
             if (_currentLocation != null &&
                 _currentLocation!.isValid &&
@@ -226,6 +243,10 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
                 ],
               ),
 
+            // Additional Custom Markers (Destination or Group Members)
+            if (widget.extraMarkers != null && widget.extraMarkers!.isNotEmpty)
+              MarkerLayer(markers: widget.extraMarkers!),
+
             // Real Device Location Marker Layer
             if (_currentLocation != null && _currentLocation!.isValid)
               MarkerLayer(
@@ -239,6 +260,7 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
                   ),
                 ],
               ),
+
           ],
         ),
 
