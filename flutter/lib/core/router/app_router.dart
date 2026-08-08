@@ -165,32 +165,46 @@ class _MainShell extends StatefulWidget {
 class _MainShellState extends State<_MainShell> {
   bool _isNavVisible = true;
 
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification.metrics.axis == Axis.vertical) {
+      if (notification is UserScrollNotification) {
+        if (notification.direction == ScrollDirection.reverse) {
+          if (_isNavVisible) setState(() => _isNavVisible = false);
+        } else if (notification.direction == ScrollDirection.forward ||
+            notification.direction == ScrollDirection.idle) {
+          if (!_isNavVisible) setState(() => _isNavVisible = true);
+        }
+      } else if (notification is ScrollEndNotification) {
+        // Always re-show nav when scroll fully stops at top
+        if (notification.metrics.pixels <= notification.metrics.minScrollExtent) {
+          if (!_isNavVisible) setState(() => _isNavVisible = true);
+        }
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          NotificationListener<UserScrollNotification>(
-            onNotification: (notification) {
-              if (notification.metrics.axis == Axis.vertical) {
-                if (notification.direction == ScrollDirection.reverse) {
-                  if (_isNavVisible) setState(() => _isNavVisible = false);
-                } else if (notification.direction == ScrollDirection.forward) {
-                  if (!_isNavVisible) setState(() => _isNavVisible = true);
-                }
-              }
-              return false;
-            },
+          NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
             child: widget.child,
           ),
 
           RmBottomNav(
             currentIndex: widget.navigationShell.currentIndex,
             visible: _isNavVisible,
-            onTap: (i) => widget.navigationShell.goBranch(
-              i,
-              initialLocation: i == widget.navigationShell.currentIndex,
-            ),
+            onTap: (i) {
+              // Always show nav when user explicitly taps a tab
+              if (!_isNavVisible) setState(() => _isNavVisible = true);
+              widget.navigationShell.goBranch(
+                i,
+                initialLocation: i == widget.navigationShell.currentIndex,
+              );
+            },
           ),
         ],
       ),
@@ -233,14 +247,36 @@ final appRouter = GoRouter(
           ),
         ]),
 
-        // Branch 1: Nav / Maps
+        // Branch 1: Nav / Maps — opens RoutePlanningScreen directly with FROM/TO
         StatefulShellBranch(routes: [
           GoRoute(
             path: AppRoutes.nav,
-            builder: (c, s) => const LiveNavigationScreen(),
+            builder: (c, s) {
+              // Parse optional query params for pre-filled origin/destination
+              final startTitle = s.uri.queryParameters['startTitle'];
+              final startLat   = double.tryParse(s.uri.queryParameters['startLat'] ?? '');
+              final startLng   = double.tryParse(s.uri.queryParameters['startLng'] ?? '');
+              final destTitle  = s.uri.queryParameters['destTitle'];
+              final destLat    = double.tryParse(s.uri.queryParameters['destLat'] ?? '');
+              final destLng    = double.tryParse(s.uri.queryParameters['destLng'] ?? '');
+              return RoutePlanningScreen(
+                startTitle: startTitle,
+                startLat: startLat,
+                startLng: startLng,
+                destTitle: destTitle,
+                destLat: destLat,
+                destLng: destLng,
+              );
+            },
             routes: [
-              GoRoute(path: 'search',    builder: (c, s) => const SearchDestinationScreen()),
-              GoRoute(path: 'route',     builder: (c, s) => const RoutePlanningScreen()),
+              GoRoute(
+                path: 'search',
+                builder: (c, s) {
+                  final mode = s.uri.queryParameters['mode'] ?? 'destination';
+                  return SearchDestinationScreen(mode: mode);
+                },
+              ),
+              GoRoute(path: 'live',      builder: (c, s) => const LiveNavigationScreen()),
               GoRoute(path: 'compare',   builder: (c, s) => const RouteComparisonScreen()),
               GoRoute(path: 'heatmap',   builder: (c, s) => const HeatmapExplorerScreen()),
               GoRoute(path: 'group-map', builder: (c, s) => const LiveGroupMapScreen()),

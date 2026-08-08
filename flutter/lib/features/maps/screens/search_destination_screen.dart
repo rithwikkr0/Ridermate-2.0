@@ -79,21 +79,19 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
   }
 
   void _selectPlace(PlaceItem place) {
-    if (widget.mode == 'origin') {
-      context.push(
-        '${AppRoutes.routePlanning}?startTitle=${Uri.encodeComponent(place.title)}&startLat=${place.latitude}&startLng=${place.longitude}',
-      );
-    } else {
-      context.push(
-        '${AppRoutes.routePlanning}?destTitle=${Uri.encodeComponent(place.title)}&destLat=${place.latitude}&destLng=${place.longitude}',
-      );
-    }
+    // Pop back to RoutePlanningScreen carrying the selected place
+    context.pop(place);
   }
 
   void _selectCurrentLocation() {
-    context.push(
-      '${AppRoutes.routePlanning}?startTitle=${Uri.encodeComponent('Current GPS Location')}&startLat=0.0&startLng=0.0',
-    );
+    // Use a sentinel PlaceItem that signals "use live GPS"
+    context.pop(PlaceItem(
+      id: 'current_gps',
+      title: 'Current GPS Location',
+      subtitle: 'Real-time physical GPS sensor position',
+      latitude: 0.0,
+      longitude: 0.0,
+    ));
   }
 
   @override

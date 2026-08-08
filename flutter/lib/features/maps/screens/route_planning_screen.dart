@@ -14,6 +14,8 @@ import '../../../core/services/location_service.dart';
 import '../models/navigation_route_model.dart';
 import '../models/group_ride_model.dart';
 import '../services/osrm_routing_service.dart';
+import '../services/mock_place_search_service.dart';
+
 
 class RoutePlanningScreen extends StatefulWidget {
   final String? startTitle;
@@ -253,7 +255,21 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                                 children: [
                                   // FROM Field
                                   InkWell(
-                                    onTap: () => context.push('${AppRoutes.searchDest}?mode=origin'),
+                                    onTap: () async {
+                                      final result = await context.push<PlaceItem>(
+                                        '${AppRoutes.searchDest}?mode=origin',
+                                      );
+                                      if (result != null && mounted) {
+                                        setState(() {
+                                          _startName = result.title;
+                                          _isStartCurrentLocation =
+                                              result.id == 'current_gps';
+                                          _startLat = result.latitude;
+                                          _startLng = result.longitude;
+                                        });
+                                        _calculateRoute();
+                                      }
+                                    },
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
@@ -276,7 +292,19 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                                   const Divider(color: Colors.white10, height: 1),
                                   // TO Field
                                   InkWell(
-                                    onTap: () => context.push('${AppRoutes.searchDest}?mode=destination'),
+                                    onTap: () async {
+                                      final result = await context.push<PlaceItem>(
+                                        '${AppRoutes.searchDest}?mode=destination',
+                                      );
+                                      if (result != null && mounted) {
+                                        setState(() {
+                                          _destinationName = result.title;
+                                          _destLat = result.latitude;
+                                          _destLng = result.longitude;
+                                        });
+                                        _calculateRoute();
+                                      }
+                                    },
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
