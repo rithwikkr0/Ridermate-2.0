@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
-import 'package:go_router/go_router.dart';
+import '../../auth/controllers/auth_controller.dart';
+
 
 class SettingsHomeScreen extends StatelessWidget {
   const SettingsHomeScreen({super.key});
@@ -69,6 +73,20 @@ class SettingsHomeScreen extends StatelessWidget {
                     _buildTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {}),
                     _buildTile(Icons.info_outline, 'About', () {}),
                   ]),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildSection('SESSION', [
+                    ListTile(
+                      leading: const Icon(Icons.logout, color: Colors.redAccent),
+                      title: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.redAccent)),
+                      onTap: () async {
+                        final authController = context.read<AuthController>();
+                        await authController.logout();
+                        if (context.mounted) {
+                          context.go('/login');
+                        }
+                      },
+                    ),
+                  ]),
                 ],
               ),
             ),
@@ -77,6 +95,7 @@ class SettingsHomeScreen extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildSection(String title, List<Widget> children) {
     return Column(

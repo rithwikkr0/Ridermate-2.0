@@ -8,10 +8,14 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/ride_card.dart';
-import '../../../core/constants/mock_data.dart';
+import '../../../core/constants/mock_data.dart' hide UserModel;
 
+import '../../auth/models/user_model.dart';
+
+import '../../auth/controllers/auth_controller.dart';
 import '../controllers/profile_controller.dart';
 import '../../garage/controllers/garage_controller.dart';
+
 
 class MyProfileScreen extends StatelessWidget {
   const MyProfileScreen({super.key});
@@ -97,7 +101,7 @@ class MyProfileScreen extends StatelessWidget {
                                       Text(
                                         user.vehicles.isNotEmpty
                                             ? '${user.vehicles[0].brand} ${user.vehicles[0].model}'
-                                            : 'KTM Duke 390',
+                                            : 'No vehicle added',
                                         style: AppTextStyles.headlineSm(),
                                       ),
                                       Text(
@@ -123,7 +127,7 @@ class MyProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, user) {
+  Widget _buildHeader(BuildContext context, UserModel user) {
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -137,8 +141,15 @@ class MyProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 36,
-                    backgroundImage: NetworkImage(user.profilePhoto),
+                    backgroundImage: user.profilePhotoUrl.isNotEmpty
+                        ? NetworkImage(user.profilePhotoUrl) as ImageProvider
+                        : null,
+                    backgroundColor: AppColors.surfaceContainerHigh,
+                    child: user.profilePhotoUrl.isEmpty
+                        ? const Icon(Icons.person, size: 36, color: AppColors.onSurfaceVariant)
+                        : null,
                   ),
+
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
@@ -166,6 +177,17 @@ class MyProfileScreen extends StatelessWidget {
                     icon: const Icon(Icons.settings, color: AppColors.onSurface),
                     onPressed: () => context.push('/settings'),
                   ),
+                  IconButton(
+                    icon: const Icon(Icons.logout, color: Colors.redAccent),
+                    onPressed: () async {
+                      final authController = context.read<AuthController>();
+                      await authController.logout();
+                      if (context.mounted) {
+                        context.go('/login');
+                      }
+                    },
+                  ),
+
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -189,7 +211,7 @@ class MyProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow(user) {
+  Widget _buildStatsRow(UserModel user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [

@@ -1,16 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/rm_text_field.dart';
-import 'package:go_router/go_router.dart';
+import '../../auth/models/user_model.dart';
+import '../controllers/profile_controller.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  late TextEditingController _nameController;
+  late TextEditingController _usernameController;
+  late TextEditingController _bioController;
+  late TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = context.read<ProfileController>().userOrDefault;
+    _nameController = TextEditingController(text: user.fullName);
+    _usernameController = TextEditingController(text: user.username);
+    _bioController = TextEditingController(text: user.bio);
+    _phoneController = TextEditingController(text: user.phone);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _usernameController.dispose();
+    _bioController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    final profileController = context.read<ProfileController>();
+    final user = profileController.userOrDefault;
+
+    final updatedUser = UserModel(
+      id: user.id,
+      username: _usernameController.text.trim(),
+      fullName: _nameController.text.trim(),
+      email: user.email,
+      phone: _phoneController.text.trim(),
+      profilePhotoUrl: user.profilePhotoUrl,
+      bio: _bioController.text.trim(),
+      riderLevel: user.riderLevel,
+      xp: user.xp,
+      totalDistanceKm: user.totalDistanceKm,
+      totalRides: user.totalRides,
+      achievements: user.achievements,
+      emergencyContacts: user.emergencyContacts,
+      vehicles: user.vehicles,
+      preferences: user.preferences,
+      createdAt: user.createdAt,
+      updatedAt: DateTime.now(),
+    );
+
+    await profileController.updateProfile(updatedUser);
+    if (mounted) {
+      context.pop();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final profileController = context.watch<ProfileController>();
+    final user = profileController.userOrDefault;
+    final isLoading = profileController.isLoading;
+
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       extendBodyBehindAppBar: true,
@@ -49,9 +115,15 @@ class EditProfileScreen extends StatelessWidget {
                   Center(
                     child: Stack(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=33'),
+                          backgroundImage: user.profilePhotoUrl.isNotEmpty
+                              ? NetworkImage(user.profilePhotoUrl) as ImageProvider
+                              : null,
+                          backgroundColor: AppColors.surfaceContainerHigh,
+                          child: user.profilePhotoUrl.isEmpty
+                              ? const Icon(Icons.person, size: 50, color: AppColors.onSurfaceVariant)
+                              : null,
                         ),
                         Positioned(
                           bottom: 0,
@@ -71,31 +143,30 @@ class EditProfileScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xl),
                   RmTextField(
                     label: 'Name',
-                    initialValue: 'John Rider',
-                    onChanged: (val) {},
+                    controller: _nameController,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   RmTextField(
                     label: 'Username',
-                    initialValue: '@johnrider',
-                    onChanged: (val) {},
+                    controller: _usernameController,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  RmTextField(
+                    label: 'Phone',
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   RmTextField(
                     label: 'Bio',
-                    initialValue: 'Mountain biker & road cyclist...',
+                    controller: _bioController,
                     maxLines: 3,
-                    onChanged: (val) {},
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  RmTextField(
-                    label: 'Location',
-                    initialValue: 'Mumbai, India',
-                    onChanged: (val) {},
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  PrimaryButton(label: 'Save Changes',
-                    onPressed: () => context.pop(),
+                  PrimaryButton(
+                    text: isLoading ? 'SAVING...' : 'SAVE CHANGES',
+                    onPressed: isLoading ? null : _handleSave,
+                    isFullWidth: true,
                   ),
                 ],
               ),

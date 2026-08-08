@@ -3,6 +3,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:ridermate/main.dart';
 
+import 'package:ridermate/core/services/storage_service.dart';
+import 'package:ridermate/features/auth/controllers/auth_controller.dart';
+import 'package:ridermate/features/auth/services/mock_auth_service.dart';
+import 'package:ridermate/features/auth/services/session_service.dart';
+import 'package:ridermate/features/profile/controllers/profile_controller.dart';
+import 'package:ridermate/features/profile/repositories/user_repository.dart';
+import 'package:ridermate/features/rides/controllers/ride_controller.dart';
+import 'package:ridermate/features/rides/repositories/ride_repository.dart';
+import 'package:ridermate/core/services/location_service.dart';
+import 'package:ridermate/features/safety/controllers/sos_controller.dart';
+import 'package:ridermate/features/ai/controllers/ai_controller.dart';
+import 'package:ridermate/features/ai/repositories/ai_repository.dart';
+import 'package:ridermate/features/ai/services/ai_provider.dart';
+import 'package:ridermate/features/community/controllers/community_controller.dart';
+import 'package:ridermate/features/community/repositories/community_repository.dart';
+import 'package:ridermate/features/community/services/friend_manager_service.dart';
+import 'package:ridermate/features/community/services/club_manager_service.dart';
+import 'package:ridermate/features/community/services/challenge_engine_service.dart';
+import 'package:ridermate/features/community/services/leaderboard_service.dart';
+import 'package:ridermate/features/garage/controllers/garage_controller.dart';
+import 'package:ridermate/features/garage/repositories/garage_repository.dart';
+import 'package:ridermate/features/garage/services/fuel_manager_service.dart';
+import 'package:ridermate/features/garage/services/maintenance_service.dart';
+import 'package:ridermate/features/maps/controllers/navigation_controller.dart';
+import 'package:ridermate/features/weather/controllers/weather_controller.dart';
+import 'package:ridermate/features/weather/services/weather_service.dart';
+
 void main() {
   testWidgets('App launches successfully', (WidgetTester tester) async {
     // Suppress network image errors in headless test environment
@@ -15,14 +42,62 @@ void main() {
       originalOnError?.call(details);
     };
 
+    final storageService = MockStorageService();
+    final mockAuthService = MockAuthService();
+    final sessionService = MockSessionService(storageService);
+    final userRepository = MockUserRepository();
+    final rideRepository = MockRideRepository();
+    final locationService = MockLocationService();
+
+    final aiProvider = MockAiProvider();
+    final aiRepository = MockAiRepository(aiProvider);
+
+    final friendManager = MockFriendManagerService();
+    final clubManager = MockClubManagerService();
+    final challengeEngine = MockChallengeEngineService();
+    final leaderboardService = MockLeaderboardService();
+    final communityRepository = MockCommunityRepository(
+      friendManager: friendManager,
+      clubManager: clubManager,
+      challengeEngine: challengeEngine,
+      leaderboardService: leaderboardService,
+    );
+
+    final fuelManagerService = MockFuelManagerService();
+    final maintenanceService = MockMaintenanceService();
+    final garageRepository = MockGarageRepository(
+      fuelManager: fuelManagerService,
+      maintenanceService: maintenanceService,
+    );
+
+    final weatherService = OpenWeatherService();
+
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => ThemeNotifier(),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+          ChangeNotifierProvider(
+              create: (_) => AuthController(mockAuthService, sessionService)),
+          ChangeNotifierProvider(
+              create: (_) => ProfileController(userRepository)),
+          ChangeNotifierProvider(
+              create: (_) => RideController(rideRepository, locationService)),
+          ChangeNotifierProvider(create: (_) => SosController()),
+          ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
+          ChangeNotifierProvider(
+              create: (_) => CommunityController(communityRepository)),
+          ChangeNotifierProvider(
+              create: (_) => GarageController(garageRepository)),
+          ChangeNotifierProvider(create: (_) => NavigationController()),
+          ChangeNotifierProvider(
+              create: (_) => WeatherController(weatherService)),
+        ],
         child: const RiderMateApp(),
       ),
     );
-    await tester.pump(const Duration(seconds: 3));
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
     expect(find.byType(RiderMateApp), findsOneWidget);
 
     // Restore error handler
