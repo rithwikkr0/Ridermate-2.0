@@ -9,6 +9,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/real_map_view.dart';
+import '../../../core/widgets/rm_scroll_body.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/services/location_service.dart';
 import '../models/navigation_route_model.dart';
@@ -220,9 +221,13 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
                     border: Border(top: BorderSide(color: AppColors.glassBorder)),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  child: RmScrollBody(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 110),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                       // Mode Selector (Solo vs Group Ride)
                       Row(
                         children: [
@@ -340,46 +345,45 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
 
                       // OSRM Calculated Stats & Details
                       if (_isLoadingRoute)
-                        const Expanded(
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
                           child: Center(
                             child: CircularProgressIndicator(color: AppColors.circuitOrange),
                           ),
                         )
                       else if (_calculatedRoute != null)
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildStatTile('DISTANCE', '${_calculatedRoute!.distanceKm} km'),
-                                  _buildStatTile('ETA', '${_calculatedRoute!.estimatedDuration.inMinutes} min'),
-                                  _buildStatTile('ROUTING', 'OpenStreetMap OSRM'),
-                                ],
-                              ),
-                              const Spacer(),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.circuitOrange,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    elevation: 4,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _buildStatTile('DISTANCE', '${_calculatedRoute!.distanceKm} km'),
+                                _buildStatTile('ETA', '${_calculatedRoute!.estimatedDuration.inMinutes} min'),
+                                _buildStatTile('ROUTING', 'OpenStreetMap OSRM'),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.circuitOrange,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
-                                  onPressed: _startRide,
-                                  child: Text(
-                                    _selectedMode == RideMode.solo ? 'START SOLO RIDE' : 'PROCEED TO GROUP RIDE',
-                                    style: AppTextStyles.headlineMd(color: Colors.white),
-                                  ),
+                                  elevation: 4,
+                                ),
+                                onPressed: _startRide,
+                                child: Text(
+                                  _selectedMode == RideMode.solo ? 'START SOLO RIDE' : 'PROCEED TO GROUP RIDE',
+                                  style: AppTextStyles.headlineMd(color: Colors.white),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                     ],
                   ),
@@ -387,10 +391,15 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
               ),
             ),
           ),
-        ],
+        ),
       ),
-    );
-  }
+    ],
+  ),
+);
+}
+
+
+
 
   Widget _buildModeChip({required RideMode mode, required String label, required IconData icon}) {
     final isSelected = _selectedMode == mode;

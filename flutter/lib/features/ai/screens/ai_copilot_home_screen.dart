@@ -9,6 +9,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/ai_chat_bubble.dart';
 import '../../../core/widgets/rm_scroll_body.dart';
+import '../../../core/widgets/rm_nav_controller.dart';
 import '../controllers/ai_controller.dart';
 
 class AiCopilotHomeScreen extends StatefulWidget {
@@ -143,58 +144,69 @@ class _AiCopilotHomeScreenState extends State<AiCopilotHomeScreen> {
           ),
         ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile, vertical: AppSpacing.md),
-                  color: AppColors.surfaceDark.withValues(alpha: 0.6),
-                  child: SafeArea(
-                    top: false,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerHigh,
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: AppColors.glassBorder),
-                            ),
-                            child: TextField(
-                              controller: _textController,
-                              style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurface),
-                              decoration: InputDecoration(
-                                hintText: 'Ask AI Copilot anything...',
-                                hintStyle: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant),
-                                border: InputBorder.none,
+          Builder(
+            builder: (context) {
+              final isNavVisible = RmNavScope.maybeOf(context)?.visible ?? true;
+              return AnimatedPositioned(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                bottom: isNavVisible ? 85 : 0,
+                left: 0,
+                right: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile, vertical: AppSpacing.md),
+                      color: AppColors.surfaceDark.withValues(alpha: 0.6),
+                      child: SafeArea(
+                        top: false,
+                        bottom: !isNavVisible,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceContainerHigh,
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(color: AppColors.glassBorder),
+                                ),
+                                child: TextField(
+                                  controller: _textController,
+                                  style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurface),
+                                  decoration: InputDecoration(
+                                    hintText: 'Ask AI Copilot anything...',
+                                    hintStyle: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant),
+                                    border: InputBorder.none,
+                                  ),
+                                  onSubmitted: (_) => _sendMessage(),
+                                ),
                               ),
-                              onSubmitted: (_) => _sendMessage(),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        GestureDetector(
-                          onTap: _sendMessage,
-                          child: Container(
-                            width: 56,
-                            height: 56,
-                            decoration: const BoxDecoration(
-                              gradient: AppColors.orangeGradient,
-                              shape: BoxShape.circle,
+                            const SizedBox(width: AppSpacing.md),
+                            GestureDetector(
+                              onTap: _sendMessage,
+                              child: Container(
+                                width: 56,
+                                height: 56,
+                                decoration: const BoxDecoration(
+                                  gradient: AppColors.orangeGradient,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.send_rounded, color: Colors.white, size: 24),
+                              ),
                             ),
-                            child: const Icon(Icons.send_rounded, color: Colors.white, size: 24),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
+
         ],
       ),
     );
