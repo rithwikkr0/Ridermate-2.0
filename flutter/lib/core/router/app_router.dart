@@ -20,6 +20,8 @@ import '../../features/rides/screens/ride_hud_screen.dart';
 import '../../features/rides/screens/ride_calendar_screen.dart';
 import '../../features/rides/screens/success_ride_saved_screen.dart';
 import '../../features/rides/screens/export_share_screen.dart';
+import '../../features/rides/screens/gps_debug_screen.dart';
+
 import '../../features/maps/screens/live_navigation_screen.dart';
 import '../../features/maps/screens/search_destination_screen.dart';
 import '../../features/maps/screens/route_planning_screen.dart';
@@ -144,7 +146,9 @@ class AppRoutes {
   static const appearance       = '/settings/appearance';
   static const privacySecurity  = '/settings/privacy';
   static const helpSupport      = '/settings/help';
+  static const gpsDebug         = '/gps-debug';
 }
+
 
 /// Shell scaffold with bottom nav
 class _MainShell extends StatefulWidget {
@@ -302,5 +306,7 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.appearance, builder: (c, s) => const AppearanceSettingsScreen()),
     GoRoute(path: AppRoutes.privacySecurity, builder: (c, s) => const PrivacySecurityScreen()),
     GoRoute(path: AppRoutes.helpSupport, builder: (c, s) => const HelpSupportScreen()),
+    GoRoute(path: AppRoutes.gpsDebug, builder: (c, s) => const GpsDebugScreen()),
   ],
 );
+

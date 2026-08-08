@@ -74,7 +74,12 @@ class SettingsHomeScreen extends StatelessWidget {
                     _buildTile(Icons.info_outline, 'About', () {}),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
+                  _buildSection('HARDWARE & TELEMETRY', [
+                    _buildTile(Icons.gps_fixed, 'GPS Verification & Debug', () => context.push('/gps-debug')),
+                  ]),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildSection('SESSION', [
+
                     ListTile(
                       leading: const Icon(Icons.logout, color: Colors.redAccent),
                       title: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.redAccent)),

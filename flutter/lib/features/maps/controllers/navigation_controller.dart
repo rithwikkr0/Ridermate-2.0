@@ -1,25 +1,24 @@
+import 'dart:async';
+import '../../../core/models/ride_point_model.dart';
+import '../../../core/services/location_service.dart';
 import '../../../providers/base_controller.dart';
 import '../models/navigation_route_model.dart';
 import '../models/turn_by_turn_instruction.dart';
-import '../services/mock_gps_provider.dart';
 
 /// RiderMate 2.0 — Navigation Controller
 class NavigationController extends BaseController {
-  final MockGpsProvider gpsProvider = MockGpsProvider();
+  final LocationService locationService;
   NavigationRouteModel? activeRoute;
-  MockGpsPosition? currentPosition;
+  RidePointModel? currentPosition;
   TurnByTurnInstruction? currentInstruction;
+  StreamSubscription<RidePointModel>? _locationSubscription;
 
   bool isNavigating = false;
   bool isPaused = false;
   bool isVoiceGuidanceEnabled = true;
 
-  NavigationController() {
-    gpsProvider.positionStream.listen((pos) {
-      currentPosition = pos;
-      notifyListeners();
-    });
-  }
+  NavigationController({LocationService? locationService})
+      : locationService = locationService ?? const DeviceLocationService();
 
   void startNavigation(NavigationRouteModel route) {
     activeRoute = route;
@@ -31,7 +30,18 @@ class NavigationController extends BaseController {
       direction: TurnDirection.turnLeft,
       iconName: 'turn_left',
     );
-    gpsProvider.startSimulating();
+
+    _locationSubscription?.cancel();
+    _locationSubscription = locationService.getLocationStream().listen(
+      (point) {
+        currentPosition = point;
+        notifyListeners();
+      },
+      onError: (error) {
+        // Handle stream location errors gracefully
+      },
+    );
+
     setState(ViewState.success);
   }
 
@@ -49,7 +59,7 @@ class NavigationController extends BaseController {
     isNavigating = false;
     isPaused = false;
     activeRoute = null;
-    gpsProvider.stop();
+    _locationSubscription?.cancel();
     notifyListeners();
   }
 
@@ -60,7 +70,7 @@ class NavigationController extends BaseController {
 
   @override
   void dispose() {
-    gpsProvider.dispose();
+    _locationSubscription?.cancel();
     super.dispose();
   }
 }
