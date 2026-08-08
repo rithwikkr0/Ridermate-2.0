@@ -8,6 +8,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/ai_chat_bubble.dart';
+import '../../../core/widgets/rm_scroll_body.dart';
 import '../controllers/ai_controller.dart';
 
 class AiCopilotHomeScreen extends StatefulWidget {
@@ -53,9 +54,11 @@ class _AiCopilotHomeScreenState extends State<AiCopilotHomeScreen> {
               ),
             ),
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
+          RmScrollBody(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(
                 AppSpacing.marginMobile,
                 AppSpacing.md,
                 AppSpacing.marginMobile,
@@ -138,6 +141,7 @@ class _AiCopilotHomeScreenState extends State<AiCopilotHomeScreen> {
               ),
             ),
           ),
+        ),
 
           Align(
             alignment: Alignment.bottomCenter,

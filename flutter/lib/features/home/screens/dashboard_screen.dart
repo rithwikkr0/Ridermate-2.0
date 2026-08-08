@@ -11,6 +11,7 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/ride_card.dart';
 import '../../../core/widgets/stats_card.dart';
 import '../../../core/widgets/real_map_view.dart';
+import '../../../core/widgets/rm_scroll_body.dart';
 import '../../../core/constants/mock_data.dart';
 import '../../../core/router/app_router.dart';
 
@@ -57,7 +58,8 @@ class DashboardScreen extends StatelessWidget {
           ),
 
           // Main Scrollable Content
-          CustomScrollView(
+          RmScrollBody(
+            child: CustomScrollView(
             slivers: [
               // Top Glass AppBar
               SliverAppBar(
@@ -386,6 +388,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
 
           // ── SOS Floating Emergency Button ─────────────────────────────────
           Positioned(

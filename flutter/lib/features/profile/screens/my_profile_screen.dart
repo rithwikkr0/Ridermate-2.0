@@ -8,6 +8,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/ride_card.dart';
+import '../../../core/widgets/rm_scroll_body.dart';
 import '../../../core/constants/mock_data.dart' hide UserModel;
 
 import '../../auth/models/user_model.dart';
@@ -40,85 +41,89 @@ class MyProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(context, user),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.marginMobile),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildStatsRow(user),
-                        const SizedBox(height: AppSpacing.xl),
-                        Text('Recent Rides', style: AppTextStyles.headlineSm()),
-                        const SizedBox(height: AppSpacing.md),
-                        SizedBox(
-                          height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 3,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: AppSpacing.md),
-                                child: SizedBox(
-                                  width: 280,
-                                  child: RideCard(ride: MockData.recentRides[index % MockData.recentRides.length]),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Text('Achievements', style: AppTextStyles.headlineSm()),
-                        const SizedBox(height: AppSpacing.md),
-                        Row(
-                          children: user.achievements
-                              .take(3)
-                              .map((a) => Padding(
-                                    padding: const EdgeInsets.only(right: AppSpacing.sm),
-                                    child: _buildAchievementBadge(a.split(' ')[0]),
-                                  ))
-                              .toList(),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        Text('My Vehicle', style: AppTextStyles.headlineSm()),
-                        const SizedBox(height: AppSpacing.md),
-                        GlassCard(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.two_wheeler_rounded, size: 40, color: AppColors.onSurface),
-                                const SizedBox(width: AppSpacing.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        user.vehicles.isNotEmpty
-                                            ? '${user.vehicles[0].brand} ${user.vehicles[0].model}'
-                                            : 'No vehicle added',
-                                        style: AppTextStyles.headlineSm(),
-                                      ),
-                                      Text(
-                                        'Odometer: ${garageController.totalServiceCost > 0 ? "12,450 km" : "12,450 km"}',
-                                        style: AppTextStyles.labelCapsSm(color: Colors.greenAccent),
-                                      ),
-                                    ],
+          RmScrollBody(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(context, user),
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.marginMobile),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildStatsRow(user),
+                          const SizedBox(height: AppSpacing.xl),
+                          Text('Recent Rides', style: AppTextStyles.headlineSm()),
+                          const SizedBox(height: AppSpacing.md),
+                          SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: 3,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: AppSpacing.md),
+                                  child: SizedBox(
+                                    width: 280,
+                                    child: RideCard(ride: MockData.recentRides[index % MockData.recentRides.length]),
                                   ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: AppSpacing.xl),
+                          Text('Achievements', style: AppTextStyles.headlineSm()),
+                          const SizedBox(height: AppSpacing.md),
+                          Row(
+                            children: user.achievements
+                                .take(3)
+                                .map((a) => Padding(
+                                      padding: const EdgeInsets.only(right: AppSpacing.sm),
+                                      child: _buildAchievementBadge(a.split(' ')[0]),
+                                    ))
+                                .toList(),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+                          Text('My Vehicle', style: AppTextStyles.headlineSm()),
+                          const SizedBox(height: AppSpacing.md),
+                          GlassCard(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.two_wheeler_rounded, size: 40, color: AppColors.onSurface),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user.vehicles.isNotEmpty
+                                              ? '${user.vehicles[0].brand} ${user.vehicles[0].model}'
+                                              : 'No vehicle added',
+                                          style: AppTextStyles.headlineSm(),
+                                        ),
+                                        Text(
+                                          'Odometer: ${garageController.totalServiceCost > 0 ? "12,450 km" : "12,450 km"}',
+                                          style: AppTextStyles.labelCapsSm(color: Colors.greenAccent),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -187,7 +192,6 @@ class MyProfileScreen extends StatelessWidget {
                       }
                     },
                   ),
-
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),

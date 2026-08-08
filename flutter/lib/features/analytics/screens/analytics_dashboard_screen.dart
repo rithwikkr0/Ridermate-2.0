@@ -5,6 +5,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/stats_card.dart';
+import '../../../core/widgets/rm_scroll_body.dart';
 
 class AnalyticsDashboardScreen extends StatefulWidget {
   const AnalyticsDashboardScreen({super.key});
@@ -31,14 +32,16 @@ class _AnalyticsDashboardScreenState extends State<AnalyticsDashboardScreen> {
               ),
             ),
           ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.marginMobile,
-                AppSpacing.md,
-                AppSpacing.marginMobile,
-                100,
-              ),
+          RmScrollBody(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.marginMobile,
+                  AppSpacing.md,
+                  AppSpacing.marginMobile,
+                  100,
+                ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -150,6 +153,7 @@ class _AnalyticsDashboardScreenState extends State<AnalyticsDashboardScreen> {
               ),
             ),
           ),
+        ),
         ],
       ),
     );

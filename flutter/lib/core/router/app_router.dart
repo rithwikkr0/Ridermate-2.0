@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
+import '../widgets/rm_nav_controller.dart';
 
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
@@ -163,50 +164,43 @@ class _MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<_MainShell> {
-  bool _isNavVisible = true;
+  final _navCtrl = RmNavController();
 
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.metrics.axis == Axis.vertical) {
-      if (notification is UserScrollNotification) {
-        if (notification.direction == ScrollDirection.reverse) {
-          if (_isNavVisible) setState(() => _isNavVisible = false);
-        } else if (notification.direction == ScrollDirection.forward ||
-            notification.direction == ScrollDirection.idle) {
-          if (!_isNavVisible) setState(() => _isNavVisible = true);
-        }
-      } else if (notification is ScrollEndNotification) {
-        // Always re-show nav when scroll fully stops at top
-        if (notification.metrics.pixels <= notification.metrics.minScrollExtent) {
-          if (!_isNavVisible) setState(() => _isNavVisible = true);
-        }
-      }
-    }
-    return false;
+  @override
+  void dispose() {
+    _navCtrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          NotificationListener<ScrollNotification>(
-            onNotification: _handleScrollNotification,
-            child: widget.child,
-          ),
+    return RmNavScope(
+      controller: _navCtrl,
+      child: ListenableBuilder(
+        listenable: _navCtrl,
+        builder: (context, _) {
+          return Scaffold(
+            body: Stack(
+              children: [
+                // Page content — each page uses RmScrollBody to hook in
+                widget.child,
 
-          RmBottomNav(
-            currentIndex: widget.navigationShell.currentIndex,
-            visible: _isNavVisible,
-            onTap: (i) {
-              // Always show nav when user explicitly taps a tab
-              if (!_isNavVisible) setState(() => _isNavVisible = true);
-              widget.navigationShell.goBranch(
-                i,
-                initialLocation: i == widget.navigationShell.currentIndex,
-              );
-            },
-          ),
-        ],
+                RmBottomNav(
+                  currentIndex: widget.navigationShell.currentIndex,
+                  visible: _navCtrl.visible,
+                  onTap: (i) {
+                    // Always restore nav on explicit tab tap
+                    _navCtrl.forceShow();
+                    widget.navigationShell.goBranch(
+                      i,
+                      initialLocation: i == widget.navigationShell.currentIndex,
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
