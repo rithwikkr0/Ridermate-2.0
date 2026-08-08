@@ -4,18 +4,19 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_spacing.dart';
 
-/// Floating capsule bottom navigation bar
-/// Matches Stitch: fixed bottom-4, backdrop-blur-30px, rounded-full,
-/// border white/10, shadow orange glow
+/// Floating capsule bottom navigation bar with animated scroll-aware hide/show
+/// Matches Stitch design: backdrop-blur-30px, rounded-full, border white/10, shadow orange glow
 class RmBottomNav extends StatelessWidget {
   const RmBottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.visible = true,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool visible;
 
   static const _items = [
     _NavItem(icon: Icons.home_outlined,       activeIcon: Icons.home_rounded,          label: 'Home'),
@@ -27,8 +28,10 @@ class RmBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: AppSpacing.bottomNavBottom,
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      bottom: visible ? AppSpacing.bottomNavBottom : -100,
       left: AppSpacing.marginMobile,
       right: AppSpacing.marginMobile,
       child: ClipRRect(
@@ -51,6 +54,7 @@ class RmBottomNav extends StatelessWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+
               children: List.generate(_items.length, (i) {
                 final active = i == currentIndex;
                 final item = _items[i];

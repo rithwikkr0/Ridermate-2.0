@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
@@ -161,14 +163,27 @@ class _MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<_MainShell> {
+  bool _isNavVisible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          widget.child,
+          NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+              if (notification.direction == ScrollDirection.reverse) {
+                if (_isNavVisible) setState(() => _isNavVisible = false);
+              } else if (notification.direction == ScrollDirection.forward) {
+                if (!_isNavVisible) setState(() => _isNavVisible = true);
+              }
+              return false;
+            },
+            child: widget.child,
+          ),
           RmBottomNav(
             currentIndex: widget.navigationShell.currentIndex,
+            visible: _isNavVisible,
             onTap: (i) => widget.navigationShell.goBranch(
               i,
               initialLocation: i == widget.navigationShell.currentIndex,
@@ -179,6 +194,7 @@ class _MainShellState extends State<_MainShell> {
     );
   }
 }
+
 
 /// GoRouter configuration
 final appRouter = GoRouter(

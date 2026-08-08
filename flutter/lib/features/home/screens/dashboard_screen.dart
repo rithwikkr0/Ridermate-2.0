@@ -11,7 +11,6 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/ride_card.dart';
 import '../../../core/widgets/stats_card.dart';
 import '../../../core/widgets/real_map_view.dart';
-
 import '../../../core/constants/mock_data.dart';
 import '../../../core/router/app_router.dart';
 
@@ -22,6 +21,13 @@ import '../../weather/controllers/weather_controller.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'GOOD MORNING';
+    if (hour < 17) return 'GOOD AFTERNOON';
+    return 'GOOD EVENING';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +55,11 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Main content
+
+          // Main Scrollable Content
           CustomScrollView(
             slivers: [
+              // Top Glass AppBar
               SliverAppBar(
                 pinned: true,
                 backgroundColor: Colors.transparent,
@@ -63,9 +71,13 @@ class DashboardScreen extends StatelessWidget {
                       child: SafeArea(
                         bottom: false,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile, vertical: AppSpacing.sm),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.marginMobile,
+                            vertical: AppSpacing.sm,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                             children: [
                               Row(
                                 children: [
@@ -83,9 +95,10 @@ class DashboardScreen extends StatelessWidget {
                                   Text('RiderMate 2.0', style: AppTextStyles.headlineLg(color: AppColors.circuitOrange)),
                                 ],
                               ),
+                              const Spacer(),
                               IconButton(
                                 icon: const Icon(Icons.notifications_outlined, color: AppColors.onSurfaceVariant),
-                                onPressed: () => context.go(AppRoutes.notifications),
+                                onPressed: () => context.push(AppRoutes.notifications),
                               ),
                             ],
                           ),
@@ -95,40 +108,43 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     AppSpacing.marginMobile,
                     AppSpacing.md,
                     AppSpacing.marginMobile,
-                    100, // bottom nav clearance
+                    120, // Bottom clearance for bottom nav & FAB
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Greeting & Status
+                      // ── Dynamic Greeting & Status Pill ──────────────────
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('GOOD MORNING', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
+                              Text(_getGreeting(), style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
                               Text('Hello, $userName', style: AppTextStyles.headlineLg(color: AppColors.onSurface)),
                             ],
                           ),
                           Row(
                             children: [
                               GestureDetector(
-                                onTap: () => context.go(AppRoutes.weather),
+                                onTap: () => context.push(AppRoutes.weather),
                                 child: GlassCard(
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                   child: Row(
                                     children: [
                                       const Icon(Icons.light_mode, color: AppColors.softOrange, size: 16),
                                       const SizedBox(width: 4),
-                                      Text('${weather.temperatureC.toStringAsFixed(0)}°', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                      Text('${weather.temperatureC.toStringAsFixed(0)}°',
+                                          style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                     ],
                                   ),
                                 ),
@@ -138,9 +154,9 @@ class DashboardScreen extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.battery_charging_full, color: AppColors.onSurface, size: 16),
+                                    const Icon(Icons.gps_fixed, color: AppColors.circuitOrange, size: 16),
                                     const SizedBox(width: 4),
-                                    Text('88%', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                    Text('GPS ON', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                   ],
                                 ),
                               ),
@@ -148,61 +164,113 @@ class DashboardScreen extends StatelessWidget {
                           ),
                         ],
                       ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
                       const SizedBox(height: AppSpacing.md),
 
-                      // Quick Ride card
-                      GestureDetector(
-                        onTap: () {
-                          rideController.startRide();
-                          context.go(AppRoutes.liveRide);
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: AppColors.glassBorder),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: Stack(
-                              children: [
-                                const RealMapView(
-                                  showControls: false,
-                                  showRecenterButton: false,
-                                ),
-
-                                Positioned(
-                                  left: 16,
-                                  bottom: 16,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('READY TO ROLL', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
-                                      Text('Start Quick Ride', style: AppTextStyles.headlineMd(color: Colors.white)),
-                                    ],
+                      // ── Quick Ride & Mode Entry Points (Solo vs Group) ──
+                      GlassCard(
+                        padding: EdgeInsets.zero,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 180,
+                              child: Stack(
+                                children: [
+                                  const RealMapView(
+                                    showControls: false,
+                                    showRecenterButton: false,
                                   ),
-                                ),
-                                Positioned(
-                                  right: 16,
-                                  bottom: 16,
-                                  child: Container(
-                                    width: 56,
-                                    height: 56,
-                                    decoration: const BoxDecoration(
-                                      gradient: AppColors.orangeGradient,
-                                      shape: BoxShape.circle,
+                                  Positioned(
+                                    left: 16,
+                                    bottom: 12,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('START A RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                                        Text('Select Navigation Mode', style: AppTextStyles.headlineMd(color: Colors.white)),
+                                      ],
                                     ),
-                                    child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
                                   ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.circuitOrange,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                      ),
+                                      icon: const Icon(Icons.navigation_rounded, size: 20),
+                                      label: Text('SOLO RIDE', style: AppTextStyles.labelCaps()),
+                                      onPressed: () => context.push(AppRoutes.routePlanning),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        side: const BorderSide(color: AppColors.circuitOrange, width: 1.5),
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                      ),
+                                      icon: const Icon(Icons.groups_rounded, color: AppColors.circuitOrange, size: 20),
+                                      label: Text('GROUP RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                                      onPressed: () => context.push(AppRoutes.liveGroupMap),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
+                      const SizedBox(height: AppSpacing.md),
+
+                      // ── Community & Squad Entry Points ───────────────────
+                      GlassCard(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('COMMUNITY & SQUAD', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                            const SizedBox(height: AppSpacing.md),
+                            Row(
+                              children: [
+                                _buildNavTile(
+                                  context: context,
+                                  icon: Icons.people_outline,
+                                  label: 'Friends',
+                                  route: AppRoutes.friends,
+                                ),
+                                _buildNavTile(
+                                  context: context,
+                                  icon: Icons.mail_outline,
+                                  label: 'Invitations',
+                                  route: AppRoutes.liveGroupMap,
+                                ),
+                                _buildNavTile(
+                                  context: context,
+                                  icon: Icons.chat_bubble_outline,
+                                  label: 'Messages',
+                                  route: AppRoutes.groupChat,
                                 ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
                       ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
                       const SizedBox(height: AppSpacing.md),
 
-                      // AI Coach Insights
+                      // ── AI Readiness Insight ─────────────────────────────
                       GlassCard(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         child: Column(
@@ -255,8 +323,10 @@ class DashboardScreen extends StatelessWidget {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text('${weather.condition} ${weather.windDirection}', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
-                                              Text('${weather.windSpeedKmh.toStringAsFixed(0)} km/h', style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+                                              Text('${weather.condition} ${weather.windDirection}',
+                                                  style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                              Text('${weather.windSpeedKmh.toStringAsFixed(0)} km/h',
+                                                  style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
                                             ],
                                           ),
                                         ],
@@ -269,9 +339,10 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                       ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Recent Rides
+                      // ── Recent Rides ─────────────────────────────────────
                       Text('RECENT RIDES', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
                       const SizedBox(height: AppSpacing.sm),
                       SizedBox(
@@ -284,14 +355,15 @@ class DashboardScreen extends StatelessWidget {
                             final ride = MockData.recentRides[index];
                             return RideCard(
                               ride: ride,
-                              onTap: () => context.go(AppRoutes.rideSummary),
+                              onTap: () => context.push(AppRoutes.rideSummary),
                             );
                           },
                         ),
                       ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
                       const SizedBox(height: AppSpacing.lg),
 
-                      // Weekly Stats
+                      // ── Weekly Overview Stats ────────────────────────────
                       Text('WEEKLY OVERVIEW', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
                       const SizedBox(height: AppSpacing.sm),
                       GridView.count(
@@ -315,14 +387,15 @@ class DashboardScreen extends StatelessWidget {
             ],
           ),
 
-          // SOS Floating Button
+          // ── SOS Floating Emergency Button ─────────────────────────────────
           Positioned(
             right: AppSpacing.marginMobile,
-            bottom: 30,
+            bottom: 90,
             child: FloatingActionButton(
               heroTag: 'sos_fab',
               backgroundColor: AppColors.error,
-              onPressed: () => context.go(AppRoutes.sos),
+              elevation: 6,
+              onPressed: () => context.push(AppRoutes.sos),
               child: const Icon(Icons.sos, color: Colors.white, size: 28),
             ),
           ),
@@ -330,5 +403,34 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
-}
 
+  Widget _buildNavTile({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required String route,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => context.push(route),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.glassBorder),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: AppColors.circuitOrange, size: 24),
+              const SizedBox(height: 4),
+              Text(label, style: AppTextStyles.labelCapsSm(color: AppColors.onSurface)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

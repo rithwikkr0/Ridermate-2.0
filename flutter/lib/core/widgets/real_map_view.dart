@@ -98,9 +98,27 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
       return;
     }
 
-    // Subscribe to real location stream
+    // Attempt immediate single fix for fast initial camera centering
+    final singleFix = await _locationService.getCurrentLocation();
+    if (singleFix.isSuccess && singleFix.dataOrNull != null && singleFix.dataOrNull!.isValid) {
+      final loc = singleFix.dataOrNull!;
+      if (mounted) {
+        setState(() {
+          _currentLocation = loc;
+        });
+        if (_isFollowingUser) {
+          _mapController.move(
+            LatLng(loc.latitude, loc.longitude),
+            widget.initialZoom,
+          );
+        }
+      }
+    }
+
+    // Subscribe to continuous real location stream
     _subscribeToStream();
   }
+
 
   void _subscribeToStream() {
     _locationSubscription?.cancel();
@@ -370,47 +388,75 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
 
   Widget _buildLocationMarker(RidePointModel point) {
     final hasHeading = point.heading > 0;
-    return Transform.rotate(
-      angle: hasHeading ? (point.heading * (3.141592653589793 / 180.0)) : 0.0,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Outer pulse glow
-          Container(
-            width: 44,
-            height: 44,
+    return Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        // YOU label badge
+        Positioned(
+          top: -18,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.circuitOrange.withValues(alpha: 0.3),
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.circuitOrange, width: 1),
+            ),
+            child: const Text(
+              'YOU',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          // Inner solid core
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.circuitOrange,
-              border: Border.all(color: Colors.white, width: 2.5),
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColors.circuitOrange,
-                  blurRadius: 8,
+        ),
+        // Rotated heading arrow & pulse core
+        Transform.rotate(
+          angle: hasHeading ? (point.heading * (3.141592653589793 / 180.0)) : 0.0,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer pulse glow
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.circuitOrange.withValues(alpha: 0.3),
                 ),
-              ],
-            ),
-            child: hasHeading
-                ? const Icon(
-                    Icons.navigation_rounded,
-                    color: Colors.white,
-                    size: 14,
-                  )
-                : null,
+              ),
+              // Inner solid core
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.circuitOrange,
+                  border: Border.all(color: Colors.white, width: 2.5),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: AppColors.circuitOrange,
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: hasHeading
+                    ? const Icon(
+                        Icons.navigation_rounded,
+                        color: Colors.white,
+                        size: 14,
+                      )
+                    : null,
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+
 
   Widget _buildOverlayCard({
     required String title,
