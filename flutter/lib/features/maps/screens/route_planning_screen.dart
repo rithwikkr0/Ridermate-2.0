@@ -16,12 +16,18 @@ import '../models/group_ride_model.dart';
 import '../services/osrm_routing_service.dart';
 
 class RoutePlanningScreen extends StatefulWidget {
+  final String? startTitle;
+  final double? startLat;
+  final double? startLng;
   final String? destTitle;
   final double? destLat;
   final double? destLng;
 
   const RoutePlanningScreen({
     super.key,
+    this.startTitle,
+    this.startLat,
+    this.startLng,
     this.destTitle,
     this.destLat,
     this.destLng,
@@ -40,6 +46,11 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
   List<LatLng> _routePolyline = [];
   bool _isLoadingRoute = false;
 
+  String _startName = 'Current Location';
+  double _startLat = 0.0;
+  double _startLng = 0.0;
+  bool _isStartCurrentLocation = true;
+
   String _destinationName = 'Nandi Hills Peak';
   double _destLat = 13.3702;
   double _destLng = 77.6835;
@@ -47,6 +58,16 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.startTitle != null && widget.startTitle!.isNotEmpty) {
+      _startName = widget.startTitle!;
+      _isStartCurrentLocation = _startName == 'Current Location' || _startName == 'Current GPS Location';
+    }
+    if (widget.startLat != null && widget.startLng != null) {
+      _startLat = widget.startLat!;
+      _startLng = widget.startLng!;
+    }
+
     if (widget.destTitle != null && widget.destTitle!.isNotEmpty) {
       _destinationName = widget.destTitle!;
     }
@@ -54,6 +75,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
       _destLat = widget.destLat!;
       _destLng = widget.destLng!;
     }
+
     _calculateRoute();
   }
 
@@ -62,19 +84,23 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
       _isLoadingRoute = true;
     });
 
-    final currentPos = await _locationService.getCurrentLocation();
-    double startLat = 12.971598;
-    double startLng = 77.594566;
+    double actualStartLat = _startLat;
+    double actualStartLng = _startLng;
 
-    if (currentPos.isSuccess && currentPos.dataOrNull != null && currentPos.dataOrNull!.isValid) {
-      startLat = currentPos.dataOrNull!.latitude;
-      startLng = currentPos.dataOrNull!.longitude;
+    if (_isStartCurrentLocation || (actualStartLat == 0.0 && actualStartLng == 0.0)) {
+      final currentPos = await _locationService.getCurrentLocation();
+      if (currentPos.isSuccess && currentPos.dataOrNull != null && currentPos.dataOrNull!.isValid) {
+        actualStartLat = currentPos.dataOrNull!.latitude;
+        actualStartLng = currentPos.dataOrNull!.longitude;
+      } else {
+        actualStartLat = 12.971598;
+        actualStartLng = 77.594566;
+      }
     }
 
-
     final routes = await _routingService.planRoutes(
-      startLat: startLat,
-      startLng: startLng,
+      startLat: actualStartLat,
+      startLng: actualStartLng,
       destLat: _destLat,
       destLng: _destLng,
     );
@@ -88,6 +114,8 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
           .toList();
 
       setState(() {
+        _startLat = actualStartLat;
+        _startLng = actualStartLng;
         _calculatedRoute = primaryRoute;
         _routePolyline = polyline;
         _isLoadingRoute = false;
@@ -97,6 +125,26 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
         _isLoadingRoute = false;
       });
     }
+  }
+
+  void _swapLocations() {
+    setState(() {
+      final tempName = _startName;
+      final tempLat = _startLat;
+      final tempLng = _startLng;
+      final tempIsCurrent = _isStartCurrentLocation;
+
+      _startName = _destinationName;
+      _startLat = _destLat;
+      _startLng = _destLng;
+      _isStartCurrentLocation = false;
+
+      _destinationName = tempName;
+      _destLat = tempLat;
+      _destLng = tempLng;
+    });
+
+    _calculateRoute();
   }
 
   void _startRide() {
@@ -119,7 +167,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: Text('Route Preview', style: AppTextStyles.headlineMd()),
+        title: Text('Route Planning', style: AppTextStyles.headlineMd()),
         centerTitle: true,
       ),
       body: Stack(
@@ -129,28 +177,29 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
             top: 0,
             left: 0,
             right: 0,
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.50,
             child: RealMapView(
               initialZoom: 13.0,
               showControls: true,
               followUserLocation: false,
               polylinePoints: _routePolyline,
               extraMarkers: [
-                Marker(
-                  point: LatLng(_destLat, _destLng),
-                  width: 44,
-                  height: 44,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: AppColors.circuitOrange,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(color: Colors.black45, blurRadius: 6),
-                      ],
+                if (_destLat != 0.0 && _destLng != 0.0)
+                  Marker(
+                    point: LatLng(_destLat, _destLng),
+                    width: 44,
+                    height: 44,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.circuitOrange,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(color: Colors.black45, blurRadius: 6),
+                        ],
+                      ),
+                      child: const Icon(Icons.flag_rounded, color: Colors.white, size: 24),
                     ),
-                    child: const Icon(Icons.flag_rounded, color: Colors.white, size: 24),
                   ),
-                ),
               ],
             ),
           ),
@@ -162,10 +211,10 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.55,
                   padding: const EdgeInsets.all(AppSpacing.marginMobile),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceDark.withValues(alpha: 0.9),
+                    color: AppColors.surfaceDark.withValues(alpha: 0.92),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
                     border: Border(top: BorderSide(color: AppColors.glassBorder)),
                   ),
@@ -194,31 +243,68 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                       ),
                       const SizedBox(height: AppSpacing.md),
 
-                      // Destination Details Card
+                      // FROM and TO Cards with Swap Button ⇅
                       GlassCard(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.my_location, color: AppColors.circuitOrange, size: 24),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('FROM: Current GPS Location',
-                                        style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
-                                    Text('TO: $_destinationName',
-                                        style: AppTextStyles.bodyLg(color: AppColors.onSurface)),
-                                  ],
-                                ),
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  // FROM Field
+                                  InkWell(
+                                    onTap: () => context.push('${AppRoutes.searchDest}?mode=origin'),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.my_location, color: AppColors.circuitOrange, size: 20),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('FROM', style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+                                                Text(_startName, style: AppTextStyles.bodyLg(color: AppColors.onSurface), overflow: TextOverflow.ellipsis),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const Divider(color: Colors.white10, height: 1),
+                                  // TO Field
+                                  InkWell(
+                                    onTap: () => context.push('${AppRoutes.searchDest}?mode=destination'),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.place, color: Colors.redAccent, size: 20),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('TO', style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+                                                Text(_destinationName, style: AppTextStyles.bodyLg(color: AppColors.onSurface), overflow: TextOverflow.ellipsis),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.search, color: AppColors.circuitOrange),
-                                onPressed: () => context.push(AppRoutes.searchDest),
-                              ),
-                            ],
-                          ),
+                            ),
+                            // Swap Button ⇅
+                            IconButton(
+                              icon: const Icon(Icons.swap_vert_rounded, color: AppColors.circuitOrange, size: 30),
+                              onPressed: _swapLocations,
+                            ),
+                          ],
                         ),
                       ),
 
@@ -259,7 +345,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
                                   ),
                                   onPressed: _startRide,
                                   child: Text(
-                                    _selectedMode == RideMode.solo ? 'START SOLO RIDE' : 'START GROUP RIDE',
+                                    _selectedMode == RideMode.solo ? 'START SOLO RIDE' : 'PROCEED TO GROUP RIDE',
                                     style: AppTextStyles.headlineMd(color: Colors.white),
                                   ),
                                 ),
@@ -294,6 +380,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             Icon(icon, color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant, size: 20),
             const SizedBox(width: 8),

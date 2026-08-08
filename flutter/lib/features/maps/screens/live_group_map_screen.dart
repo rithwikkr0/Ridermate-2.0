@@ -22,6 +22,13 @@ class LiveGroupMapScreen extends StatefulWidget {
 class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
   final GroupRideController _groupController = GroupRideController();
 
+  final List<Map<String, dynamic>> _availableFriends = [
+    {'id': 'f_rahul', 'name': 'Rahul Sharma', 'selected': true},
+    {'id': 'f_dhanush', 'name': 'Dhanush Kumar', 'selected': false},
+    {'id': 'f_kiran', 'name': 'Kiran Rao', 'selected': true},
+    {'id': 'f_subash', 'name': 'Subash V', 'selected': false},
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -40,75 +47,146 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
   }
 
   void _showCreateRideModal() {
-    final titleCtrl = TextEditingController(text: 'Bengaluru → Nandi Hills Ride');
+    final titleCtrl = TextEditingController(text: 'Sunday Nandi Ride');
+    final fromCtrl = TextEditingController(text: 'Current Location');
     final destCtrl = TextEditingController(text: 'Nandi Hills Peak');
+    final dateCtrl = TextEditingController(text: 'Sunday');
+    final timeCtrl = TextEditingController(text: '7:00 AM');
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          padding: EdgeInsets.only(
-            left: AppSpacing.marginMobile,
-            right: AppSpacing.marginMobile,
-            top: AppSpacing.lg,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.lg,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceDark.withValues(alpha: 0.95),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(color: AppColors.glassBorder),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('CREATE GROUP RIDE', style: AppTextStyles.headlineSm(color: AppColors.circuitOrange)),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: titleCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Ride Title',
-                  labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              TextField(
-                controller: destCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Destination',
-                  labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.circuitOrange,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+      builder: (ctx) => StatefulBuilder(
+
+        builder: (context, setModalState) => BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            padding: EdgeInsets.only(
+              left: AppSpacing.marginMobile,
+              right: AppSpacing.marginMobile,
+              top: AppSpacing.lg,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.lg,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceDark.withValues(alpha: 0.95),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border.all(color: AppColors.glassBorder),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('CREATE GROUP RIDE', style: AppTextStyles.headlineSm(color: AppColors.circuitOrange)),
+                  const SizedBox(height: AppSpacing.md),
+                  TextField(
+                    controller: titleCtrl,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      labelText: 'Ride Name',
+                      labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _groupController.createGroupRide(
-                      title: titleCtrl.text,
-                      startLocation: 'Current GPS Location',
-                      destination: destCtrl.text,
-                      date: 'Today',
-                      time: 'Now',
-                      currentUserName: 'Active Rider',
-                      currentUserId: 'user_active',
-                    );
-                  },
-                  child: Text('CREATE & INVITE SQUAD', style: AppTextStyles.labelCaps()),
-                ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: fromCtrl,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'FROM',
+                            labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: destCtrl,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'TO',
+                            labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: dateCtrl,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'Date',
+                            labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: timeCtrl,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'Time',
+                            labelStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text('ADD FRIENDS', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                  const SizedBox(height: AppSpacing.sm),
+                  ..._availableFriends.map(
+                    (f) => CheckboxListTile(
+                      activeColor: AppColors.circuitOrange,
+                      title: Text(f['name'], style: const TextStyle(color: Colors.white)),
+                      value: f['selected'] as bool,
+                      onChanged: (val) {
+                        setModalState(() {
+                          f['selected'] = val ?? false;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.circuitOrange,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        final ride = _groupController.createGroupRide(
+                          title: titleCtrl.text,
+                          startLocation: fromCtrl.text,
+                          destination: destCtrl.text,
+                          date: dateCtrl.text,
+                          time: timeCtrl.text,
+                          currentUserName: 'Active Rider',
+                          currentUserId: 'user_active',
+                        );
+
+                        // Invite selected friends
+                        for (var f in _availableFriends.where((x) => x['selected'] == true)) {
+                          _groupController.inviteFriend(f['name'], f['id']);
+                        }
+                      },
+                      child: Text('CREATE GROUP RIDE & SEND INVITATIONS', style: AppTextStyles.labelCaps()),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -169,7 +247,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: Text('Squad Group Ride', style: AppTextStyles.headlineMd()),
+        title: Text('Group Ride Details', style: AppTextStyles.headlineMd()),
         centerTitle: true,
         actions: [
           IconButton(
@@ -248,7 +326,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.marginMobile),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceDark.withValues(alpha: 0.9),
+                    color: AppColors.surfaceDark.withValues(alpha: 0.92),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
                     border: Border(top: BorderSide(color: AppColors.glassBorder)),
                   ),

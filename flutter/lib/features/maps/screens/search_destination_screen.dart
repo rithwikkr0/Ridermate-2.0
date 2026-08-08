@@ -10,7 +10,12 @@ import '../services/mock_place_search_service.dart';
 import '../services/nominatim_place_search_service.dart';
 
 class SearchDestinationScreen extends StatefulWidget {
-  const SearchDestinationScreen({super.key});
+  final String mode; // 'origin' or 'destination'
+
+  const SearchDestinationScreen({
+    super.key,
+    this.mode = 'destination',
+  });
 
   @override
   State<SearchDestinationScreen> createState() => _SearchDestinationScreenState();
@@ -73,14 +78,29 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
     });
   }
 
-  void _selectDestination(PlaceItem place) {
+  void _selectPlace(PlaceItem place) {
+    if (widget.mode == 'origin') {
+      context.push(
+        '${AppRoutes.routePlanning}?startTitle=${Uri.encodeComponent(place.title)}&startLat=${place.latitude}&startLng=${place.longitude}',
+      );
+    } else {
+      context.push(
+        '${AppRoutes.routePlanning}?destTitle=${Uri.encodeComponent(place.title)}&destLat=${place.latitude}&destLng=${place.longitude}',
+      );
+    }
+  }
+
+  void _selectCurrentLocation() {
     context.push(
-      '${AppRoutes.routePlanning}?destTitle=${Uri.encodeComponent(place.title)}&destLat=${place.latitude}&destLng=${place.longitude}',
+      '${AppRoutes.routePlanning}?startTitle=${Uri.encodeComponent('Current GPS Location')}&startLat=0.0&startLng=0.0',
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isOriginMode = widget.mode == 'origin';
+    final hintText = isOriginMode ? 'Search starting location...' : 'Search destination location...';
+
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       appBar: AppBar(
@@ -102,7 +122,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
             onChanged: _onSearchChanged,
             style: const TextStyle(color: AppColors.onSurface),
             decoration: InputDecoration(
-              hintText: 'Search destinations (Nominatim)...',
+              hintText: hintText,
               hintStyle: const TextStyle(color: AppColors.onSurfaceVariant),
               prefixIcon: const Icon(Icons.search, color: AppColors.onSurfaceVariant),
               suffixIcon: _searchController.text.isNotEmpty
@@ -137,6 +157,29 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Option to use Current GPS Location
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: ListTile(
+                      onTap: _selectCurrentLocation,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: AppColors.circuitOrange.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.circuitOrange),
+                        ),
+                        child: const Icon(Icons.my_location, color: AppColors.circuitOrange),
+                      ),
+                      title: Text('Use Current GPS Location',
+                          style: AppTextStyles.bodyLg().copyWith(color: AppColors.circuitOrange)),
+                      subtitle: Text('Real-time physical GPS sensor position',
+                          style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant)),
+                    ),
+                  ),
+
                   if (_isSearching)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24),
@@ -173,7 +216,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
                     ),
                   ],
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),
@@ -187,7 +230,7 @@ class _SearchDestinationScreenState extends State<SearchDestinationScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
-        onTap: () => _selectDestination(place),
+        onTap: () => _selectPlace(place),
         contentPadding: EdgeInsets.zero,
         leading: Container(
           width: 48,

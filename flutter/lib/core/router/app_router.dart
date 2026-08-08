@@ -172,15 +172,18 @@ class _MainShellState extends State<_MainShell> {
         children: [
           NotificationListener<UserScrollNotification>(
             onNotification: (notification) {
-              if (notification.direction == ScrollDirection.reverse) {
-                if (_isNavVisible) setState(() => _isNavVisible = false);
-              } else if (notification.direction == ScrollDirection.forward) {
-                if (!_isNavVisible) setState(() => _isNavVisible = true);
+              if (notification.metrics.axis == Axis.vertical) {
+                if (notification.direction == ScrollDirection.reverse) {
+                  if (_isNavVisible) setState(() => _isNavVisible = false);
+                } else if (notification.direction == ScrollDirection.forward) {
+                  if (!_isNavVisible) setState(() => _isNavVisible = true);
+                }
               }
               return false;
             },
             child: widget.child,
           ),
+
           RmBottomNav(
             currentIndex: widget.navigationShell.currentIndex,
             visible: _isNavVisible,
