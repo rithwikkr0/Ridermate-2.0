@@ -10,6 +10,8 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/ride_card.dart';
 import '../../../core/widgets/stats_card.dart';
+import '../../../core/widgets/real_map_view.dart';
+
 import '../../../core/constants/mock_data.dart';
 import '../../../core/router/app_router.dart';
 
@@ -164,16 +166,11 @@ class DashboardScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(24),
                             child: Stack(
                               children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [Color(0xFF1E2020), Color(0xFF121414)],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                  ),
+                                const RealMapView(
+                                  showControls: false,
+                                  showRecenterButton: false,
                                 ),
-                                CustomPaint(painter: _MapGridPainter()),
+
                                 Positioned(
                                   left: 16,
                                   bottom: 16,
@@ -335,21 +332,3 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..strokeWidth = 1.0;
-    const step = 30.0;
-    for (double x = 0; x < size.width; x += step) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
-    for (double y = 0; y < size.height; y += step) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

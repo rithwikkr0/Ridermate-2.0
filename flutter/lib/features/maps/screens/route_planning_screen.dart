@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/real_map_view.dart';
 
 class RoutePlanningScreen extends StatelessWidget {
   const RoutePlanningScreen({super.key});
@@ -25,18 +26,16 @@ class RoutePlanningScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // Map Placeholder
+          // Real Map Top View
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             height: MediaQuery.of(context).size.height * 0.6,
-            child: Container(
-              color: const Color(0xFF1E2020),
-              child: CustomPaint(
-                painter: _MapGridPainter(),
-                size: Size.infinite,
-              ),
+            child: const RealMapView(
+              initialZoom: 15.0,
+              showControls: false,
+              followUserLocation: true,
             ),
           ),
           
@@ -63,9 +62,9 @@ class RoutePlanningScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(AppSpacing.sm),
                           child: Column(
                             children: [
-                              _buildLocationInput('From', 'Current Location'),
+                              _buildLocationInput('From', 'Current GPS Location'),
                               const Divider(color: Colors.white10, height: 1),
-                              _buildLocationInput('To', 'Coastal Cliffs'),
+                              _buildLocationInput('To', 'Select Destination'),
                             ],
                           ),
                         ),
@@ -79,9 +78,7 @@ class RoutePlanningScreen extends StatelessWidget {
                         child: ListView(
                           padding: EdgeInsets.zero,
                           children: [
-                            _buildRouteOption('Fastest', '35 min', '22 km', isSelected: true).animate().fadeIn(delay: 200.ms),
-                            _buildRouteOption('Scenic', '45 min', '25 km').animate().fadeIn(delay: 300.ms),
-                            _buildRouteOption('Mountain', '55 min', '24 km').animate().fadeIn(delay: 400.ms),
+                            _buildRouteOption('Direct Route', 'Calculated via GPS', '-- km', isSelected: true).animate().fadeIn(delay: 200.ms),
                           ],
                         ),
                       ),
@@ -128,25 +125,4 @@ class RoutePlanningScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    final step = 40.0;
-    for (double i = 0; i < size.width; i += step) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-    for (double i = 0; i < size.height; i += step) {
-      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
