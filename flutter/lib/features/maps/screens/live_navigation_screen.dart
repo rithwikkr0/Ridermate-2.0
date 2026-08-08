@@ -24,33 +24,53 @@ class LiveNavigationScreen extends StatelessWidget {
             followUserLocation: true,
           ),
           
-          // Floating turn card at top
+          // Floating turn card at top with prominent EXIT NAVIGATION button
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.marginMobile),
-              child: GlassCard(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.turn_left_rounded, color: AppColors.circuitOrange, size: 48),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GlassCard(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
                           children: [
-                            Text('200m', style: AppTextStyles.headlineLg().copyWith(color: AppColors.onSurface)),
-                            Text('Turn left onto Coastal Rd', style: AppTextStyles.bodyLg().copyWith(color: AppColors.onSurfaceVariant)),
+                            const Icon(Icons.turn_left_rounded, color: AppColors.circuitOrange, size: 40),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('200m', style: AppTextStyles.headlineMd().copyWith(color: AppColors.onSurface)),
+                                  Text('Turn left onto Coastal Rd', style: AppTextStyles.bodyLg().copyWith(color: AppColors.onSurfaceVariant), overflow: TextOverflow.ellipsis),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(width: AppSpacing.sm),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 6,
+                    ),
+                    onPressed: () => context.pop(),
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    label: const Text('EXIT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  ),
+                ],
               ),
             ).animate().slideY(begin: -1.0, duration: 400.ms).fadeIn(),
           ),
+
           
           // Speed indicator pill floating right
           Align(
