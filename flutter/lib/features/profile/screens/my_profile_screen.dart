@@ -20,7 +20,7 @@ class MyProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
     final garageController = context.watch<GarageController>();
-    final user = profileController.user;
+    final user = profileController.userOrDefault;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,

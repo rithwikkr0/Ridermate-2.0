@@ -5,25 +5,32 @@ import 'package:provider/provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/errors/global_error_handler.dart';
-import 'core/services/storage_service.dart';
+import 'core/services/database_service.dart';
+import 'core/services/shared_preferences_storage_service.dart';
 
-// Controllers & Repositories
+// Auth
 import 'features/auth/controllers/auth_controller.dart';
-import 'features/auth/services/mock_auth_service.dart';
-import 'features/auth/services/session_service.dart';
+import 'features/auth/services/sqlite_auth_service.dart';
+import 'features/auth/services/shared_preferences_session_service.dart';
 
+// Profile
 import 'features/profile/controllers/profile_controller.dart';
-import 'features/profile/repositories/user_repository.dart';
+import 'features/profile/repositories/sqlite_user_repository.dart';
 
+// Rides — SqliteRideRepository is real; DeviceLocationService is real
 import 'features/rides/controllers/ride_controller.dart';
-import 'features/rides/repositories/ride_repository.dart';
+import 'features/rides/repositories/sqlite_ride_repository.dart';
+import 'core/services/location_service.dart';
 
+// Safety
 import 'features/safety/controllers/sos_controller.dart';
 
+// AI — still mock; will be replaced in Phase 13
 import 'features/ai/controllers/ai_controller.dart';
 import 'features/ai/repositories/ai_repository.dart';
 import 'features/ai/services/ai_provider.dart';
 
+// Community — still mock; will be replaced in Phase 14
 import 'features/community/controllers/community_controller.dart';
 import 'features/community/repositories/community_repository.dart';
 import 'features/community/services/friend_manager_service.dart';
@@ -31,17 +38,20 @@ import 'features/community/services/club_manager_service.dart';
 import 'features/community/services/challenge_engine_service.dart';
 import 'features/community/services/leaderboard_service.dart';
 
+// Garage — still mock; will be replaced in Phase 9
 import 'features/garage/controllers/garage_controller.dart';
 import 'features/garage/repositories/garage_repository.dart';
 import 'features/garage/services/fuel_manager_service.dart';
 import 'features/garage/services/maintenance_service.dart';
 
+// Maps
 import 'features/maps/controllers/navigation_controller.dart';
 
+// Weather — real HTTP call; requires API key for live data
 import 'features/weather/controllers/weather_controller.dart';
 import 'features/weather/services/weather_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GlobalErrorHandler.initialize();
 
@@ -56,16 +66,26 @@ void main() {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-  // Singletons & Services
-  final storageService = MockStorageService();
-  final mockAuthService = MockAuthService();
-  final sessionService = MockSessionService(storageService);
-  final userRepository = MockUserRepository();
-  final rideRepository = MockRideRepository();
+  // ── Real persistent services ──────────────────────────────────────────────
+  final storageService = SharedPreferencesStorageService();
+  final databaseService = DatabaseService.instance;
 
+  // Warm up the database on startup so first operations are fast
+  await databaseService.database;
+
+  // ── Real auth + session ───────────────────────────────────────────────────
+  final authService = SqliteAuthService(databaseService);
+  final sessionService = SharedPreferencesSessionService(storageService);
+
+  // ── Real ride tracking ────────────────────────────────────────────────────
+  final rideRepository = SqliteRideRepository();
+  const locationService = DeviceLocationService();
+
+  // ── AI — mock until Phase 13 ──────────────────────────────────────────────
   final aiProvider = MockAiProvider();
   final aiRepository = MockAiRepository(aiProvider);
 
+  // ── Community — mock until Phase 14 ──────────────────────────────────────
   final friendManager = MockFriendManagerService();
   final clubManager = MockClubManagerService();
   final challengeEngine = MockChallengeEngineService();
@@ -77,6 +97,7 @@ void main() {
     leaderboardService: leaderboardService,
   );
 
+  // ── Garage — mock until Phase 9 ───────────────────────────────────────────
   final fuelManagerService = MockFuelManagerService();
   final maintenanceService = MockMaintenanceService();
   final garageRepository = MockGarageRepository(
@@ -84,21 +105,41 @@ void main() {
     maintenanceService: maintenanceService,
   );
 
+  // ── Weather — real HTTP; DEMO_KEY falls back to mock data ─────────────────
   final weatherService = OpenWeatherService();
+
+  // ── ProfileController starts with an empty repository.
+  // After login/session restore, AuthController updates it with the real
+  // SqliteUserRepository for the authenticated user.
+  // We create a temporary placeholder that points at a dummy userId;
+  // it will be replaced via updateRepository() after auth.
+  final profileController = ProfileController(
+    SqliteUserRepository(databaseService, userId: ''),
+  );
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
-        ChangeNotifierProvider(create: (_) => AuthController(mockAuthService, sessionService)),
-        ChangeNotifierProvider(create: (_) => ProfileController(userRepository)),
-        ChangeNotifierProvider(create: (_) => RideController(rideRepository)),
+        ChangeNotifierProvider(
+          create: (_) => AuthController(
+            authService,
+            sessionService,
+            databaseService: databaseService,
+          ),
+        ),
+        ChangeNotifierProvider(create: (_) => profileController),
+        ChangeNotifierProvider(
+            create: (_) => RideController(rideRepository, locationService)),
         ChangeNotifierProvider(create: (_) => SosController()),
         ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
-        ChangeNotifierProvider(create: (_) => CommunityController(communityRepository)),
-        ChangeNotifierProvider(create: (_) => GarageController(garageRepository)),
+        ChangeNotifierProvider(
+            create: (_) => CommunityController(communityRepository)),
+        ChangeNotifierProvider(
+            create: (_) => GarageController(garageRepository)),
         ChangeNotifierProvider(create: (_) => NavigationController()),
-        ChangeNotifierProvider(create: (_) => WeatherController(weatherService)),
+        ChangeNotifierProvider(
+            create: (_) => WeatherController(weatherService)),
       ],
       child: const RiderMateApp(),
     ),

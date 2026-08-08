@@ -1,16 +1,67 @@
+import 'dart:math';
 import '../../../providers/base_controller.dart';
 import '../models/auth_state.dart';
+import '../models/user_model.dart';
 import '../services/mock_auth_service.dart';
 import '../services/session_service.dart';
+import '../../profile/repositories/sqlite_user_repository.dart';
+import '../../../core/services/database_service.dart';
 
 /// RiderMate 2.0 — Auth Controller
 class AuthController extends BaseController {
   final AuthService authService;
   final SessionService sessionService;
+  final DatabaseService? databaseService;
 
   AuthState stateModel = AuthState.unauthenticated();
 
-  AuthController(this.authService, this.sessionService);
+  AuthController(
+    this.authService,
+    this.sessionService, {
+    this.databaseService,
+  });
+
+  // ── Session restore on cold start ───────────────────────────────────────
+
+  Future<void> restoreSession() async {
+    setState(ViewState.loading);
+    stateModel = AuthState.loading();
+
+    try {
+      final userId = await sessionService.getUserId();
+      final token = await sessionService.getAccessToken();
+
+      if (userId == null || token == null) {
+        stateModel = AuthState.unauthenticated();
+        setState(ViewState.initial);
+        return;
+      }
+
+      // Load the user from the real database
+      if (databaseService != null) {
+        final repo = SqliteUserRepository(
+          databaseService!,
+          userId: userId,
+        );
+        final result = await repo.getCurrentUser();
+        if (result.isSuccess && result.dataOrNull != null) {
+          stateModel = AuthState.loggedIn(result.dataOrNull!, token);
+          setState(ViewState.success);
+          return;
+        }
+      }
+
+      // Session exists but user not loadable — clear it
+      await sessionService.clearSession();
+      stateModel = AuthState.unauthenticated();
+      setState(ViewState.initial);
+    } catch (_) {
+      stateModel = AuthState.unauthenticated();
+      setState(ViewState.initial);
+    }
+  }
+
+  // ── Login ────────────────────────────────────────────────────────────────
 
   Future<void> login(String email, String password) async {
     setState(ViewState.loading);
@@ -19,10 +70,10 @@ class AuthController extends BaseController {
 
     if (result.isSuccess) {
       final user = result.dataOrNull!;
-      const token = 'mock_jwt_access_token_12345';
+      final token = _generateToken(user.id);
       await sessionService.saveSession(
         accessToken: token,
-        refreshToken: 'mock_refresh_token_67890',
+        refreshToken: token,
         userId: user.id,
       );
       stateModel = AuthState.loggedIn(user, token);
@@ -33,10 +84,48 @@ class AuthController extends BaseController {
     }
   }
 
+  // ── Register ─────────────────────────────────────────────────────────────
+
+  Future<void> register(
+      String fullName, String email, String password) async {
+    setState(ViewState.loading);
+    stateModel = AuthState.loading();
+    final result = await authService.register(fullName, email, password);
+
+    if (result.isSuccess) {
+      final user = result.dataOrNull!;
+      final token = _generateToken(user.id);
+      await sessionService.saveSession(
+        accessToken: token,
+        refreshToken: token,
+        userId: user.id,
+      );
+      stateModel = AuthState.loggedIn(user, token);
+      setState(ViewState.success);
+    } else {
+      stateModel = AuthState.error(result.errorOrNull!);
+      setState(ViewState.error, error: result.errorOrNull!);
+    }
+  }
+
+  // ── Logout ───────────────────────────────────────────────────────────────
+
   Future<void> logout() async {
     await sessionService.clearSession();
     await authService.logout();
     stateModel = AuthState.unauthenticated();
     setState(ViewState.initial);
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  bool get isLoggedIn => stateModel.status == AuthStatus.loggedIn;
+  UserModel? get currentUser => stateModel.user;
+
+  static String _generateToken(String userId) {
+    final rng = Random.secure();
+    final bytes = List<int>.generate(24, (_) => rng.nextInt(256));
+    final random = bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+    return 'rm_${userId}_$random';
   }
 }

@@ -29,15 +29,9 @@ class _LiveRideTrackingScreenState extends State<LiveRideTrackingScreen> {
   @override
   Widget build(BuildContext context) {
     final rideController = context.watch<RideController>();
-    final liveState = rideController.currentLiveState;
-
-    final currentSpeed = liveState?.currentSpeedKmh.toStringAsFixed(0) ?? '42';
-    final currentDistance = liveState != null
-        ? '${liveState.distanceKm.toStringAsFixed(1)} km'
-        : '12.4 km';
-    final currentDuration = liveState != null
-        ? '${liveState.duration.inMinutes}m ${liveState.duration.inSeconds % 60}s'
-        : '28 min';
+    final currentSpeed = rideController.currentSpeedKmh.toStringAsFixed(0);
+    final currentDistance = '${rideController.distanceKm.toStringAsFixed(2)} km';
+    final currentDuration = '${rideController.duration.inMinutes}m ${rideController.duration.inSeconds % 60}s';
 
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
@@ -162,9 +156,9 @@ class _LiveRideTrackingScreenState extends State<LiveRideTrackingScreen> {
                             ),
                             child: IconButton(
                               icon: const Icon(Icons.stop_rounded, color: AppColors.error, size: 32),
-                              onPressed: () {
-                                context.read<RideController>().stopRide();
-                                context.go(AppRoutes.successRide);
+                              onPressed: () async {
+                                await context.read<RideController>().stopRide();
+                                if (context.mounted && rideController.lifecycle == RideLifecycle.completed) context.go(AppRoutes.successRide);
                               },
                             ),
                           ),

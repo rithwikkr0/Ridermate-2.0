@@ -1,0 +1,183 @@
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+/// Singleton SQLite database helper for RiderMate 2.0.
+/// Owns the single `ridermate.db` connection shared across all repositories.
+/// Schema migrations are handled via the `version` and `onUpgrade` callbacks.
+class DatabaseService {
+  DatabaseService._();
+  static final DatabaseService instance = DatabaseService._();
+
+  Database? _database;
+
+  Future<Database> get database async =>
+      _database ??= await _openDatabase();
+
+  static const int _version = 2;
+
+  Future<Database> _openDatabase() async {
+    final path = join(await getDatabasesPath(), 'ridermate.db');
+    return openDatabase(
+      path,
+      version: _version,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    // ── Users / Auth ─────────────────────────────────────
+    await db.execute('''
+      CREATE TABLE users (
+        id           TEXT PRIMARY KEY,
+        username     TEXT NOT NULL UNIQUE,
+        full_name    TEXT NOT NULL,
+        email        TEXT NOT NULL UNIQUE,
+        phone        TEXT NOT NULL DEFAULT '',
+        photo_url    TEXT NOT NULL DEFAULT '',
+        bio          TEXT NOT NULL DEFAULT '',
+        rider_level  TEXT NOT NULL DEFAULT 'Novice',
+        xp           INTEGER NOT NULL DEFAULT 0,
+        distance_km  REAL NOT NULL DEFAULT 0.0,
+        total_rides  INTEGER NOT NULL DEFAULT 0,
+        achievements TEXT NOT NULL DEFAULT '[]',
+        preferences  TEXT NOT NULL DEFAULT '{}',
+        password_hash TEXT NOT NULL,
+        created_at   TEXT NOT NULL,
+        updated_at   TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE vehicles (
+        id                   TEXT PRIMARY KEY,
+        user_id              TEXT NOT NULL,
+        brand                TEXT NOT NULL,
+        model                TEXT NOT NULL,
+        year                 INTEGER NOT NULL,
+        registration_number  TEXT NOT NULL DEFAULT '',
+        fuel_type            TEXT NOT NULL DEFAULT 'Petrol',
+        engine_cc            INTEGER NOT NULL DEFAULT 0,
+        color                TEXT NOT NULL DEFAULT '',
+        service_due_date     TEXT,
+        is_default           INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE emergency_contacts (
+        id          TEXT PRIMARY KEY,
+        user_id     TEXT NOT NULL,
+        name        TEXT NOT NULL,
+        relation    TEXT NOT NULL,
+        phone       TEXT NOT NULL,
+        order_index INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // ── Rides ─────────────────────────────────────────────
+    await db.execute('''
+      CREATE TABLE rides (
+        id               TEXT PRIMARY KEY,
+        title            TEXT NOT NULL,
+        vehicle          TEXT NOT NULL DEFAULT '',
+        start_time       INTEGER NOT NULL,
+        end_time         INTEGER,
+        duration_seconds INTEGER NOT NULL DEFAULT 0,
+        distance_km      REAL NOT NULL DEFAULT 0.0,
+        average_speed    REAL NOT NULL DEFAULT 0.0,
+        max_speed        REAL NOT NULL DEFAULT 0.0,
+        elevation        REAL NOT NULL DEFAULT 0.0,
+        calories         INTEGER NOT NULL DEFAULT 0,
+        weather          TEXT NOT NULL DEFAULT '',
+        ride_score       INTEGER NOT NULL DEFAULT 0,
+        status           TEXT NOT NULL DEFAULT 'completed'
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE ride_points (
+        ride_id     TEXT NOT NULL,
+        point_index INTEGER NOT NULL,
+        latitude    REAL NOT NULL,
+        longitude   REAL NOT NULL,
+        speed       REAL NOT NULL DEFAULT 0.0,
+        timestamp   INTEGER NOT NULL,
+        elevation   REAL NOT NULL DEFAULT 0.0,
+        heading     REAL NOT NULL DEFAULT 0.0,
+        accuracy    REAL NOT NULL DEFAULT 0.0,
+        PRIMARY KEY (ride_id, point_index),
+        FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
+      )
+    ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // Migration from version 1 (SqliteRideRepository schema) to version 2
+    if (oldVersion < 2) {
+      // Users and contacts table — new in v2
+      try {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS users (
+            id            TEXT PRIMARY KEY,
+            username      TEXT NOT NULL UNIQUE,
+            full_name     TEXT NOT NULL,
+            email         TEXT NOT NULL UNIQUE,
+            phone         TEXT NOT NULL DEFAULT '',
+            photo_url     TEXT NOT NULL DEFAULT '',
+            bio           TEXT NOT NULL DEFAULT '',
+            rider_level   TEXT NOT NULL DEFAULT 'Novice',
+            xp            INTEGER NOT NULL DEFAULT 0,
+            distance_km   REAL NOT NULL DEFAULT 0.0,
+            total_rides   INTEGER NOT NULL DEFAULT 0,
+            achievements  TEXT NOT NULL DEFAULT '[]',
+            preferences   TEXT NOT NULL DEFAULT '{}',
+            password_hash TEXT NOT NULL,
+            created_at    TEXT NOT NULL,
+            updated_at    TEXT NOT NULL
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS vehicles (
+            id                   TEXT PRIMARY KEY,
+            user_id              TEXT NOT NULL,
+            brand                TEXT NOT NULL,
+            model                TEXT NOT NULL,
+            year                 INTEGER NOT NULL,
+            registration_number  TEXT NOT NULL DEFAULT '',
+            fuel_type            TEXT NOT NULL DEFAULT 'Petrol',
+            engine_cc            INTEGER NOT NULL DEFAULT 0,
+            color                TEXT NOT NULL DEFAULT '',
+            service_due_date     TEXT,
+            is_default           INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS emergency_contacts (
+            id          TEXT PRIMARY KEY,
+            user_id     TEXT NOT NULL,
+            name        TEXT NOT NULL,
+            relation    TEXT NOT NULL,
+            phone       TEXT NOT NULL,
+            order_index INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+          )
+        ''');
+      } catch (_) {
+        // Tables may already exist in some edge cases
+      }
+    }
+  }
+
+  /// Closes the database connection. Call only on app dispose.
+  Future<void> close() async {
+    final db = _database;
+    if (db != null) {
+      await db.close();
+      _database = null;
+    }
+  }
+}

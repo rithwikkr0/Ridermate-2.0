@@ -4,7 +4,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../../../core/constants/mock_data.dart';
+import 'package:provider/provider.dart';
+import '../controllers/ride_controller.dart';
+import '../../../core/utils/geo_utils.dart';
 import '../../../core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -14,6 +16,8 @@ class RideHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<RideController>();
+    final rides = controller.rides;
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       extendBodyBehindAppBar: true,
@@ -86,14 +90,14 @@ class RideHistoryScreen extends StatelessWidget {
                         Column(
                           children: [
                             Text('DISTANCE', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
-                            Text('120 km', style: AppTextStyles.headlineMd(color: AppColors.circuitOrange)),
+                            Text('${rides.fold<double>(0, (sum, ride) => sum + ride.distanceKm).toStringAsFixed(1)} km', style: AppTextStyles.headlineMd(color: AppColors.circuitOrange)),
                           ],
                         ),
                         Container(width: 1, height: 40, color: AppColors.glassBorder),
                         Column(
                           children: [
                             Text('RIDES', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
-                            Text('5', style: AppTextStyles.headlineMd(color: AppColors.circuitOrange)),
+                            Text('${rides.length}', style: AppTextStyles.headlineMd(color: AppColors.circuitOrange)),
                           ],
                         ),
                       ],
@@ -102,15 +106,15 @@ class RideHistoryScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   
                   // List
-                  ListView.separated(
+                  if (rides.isEmpty) Padding(padding: const EdgeInsets.all(AppSpacing.xl), child: Center(child: Text('No saved rides yet. Start a ride to build your history.', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)))) else ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: MockData.recentRides.length,
+                    itemCount: rides.length,
                     separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
                     itemBuilder: (context, index) {
-                      final ride = MockData.recentRides[index];
+                      final ride = rides[index];
                       return GestureDetector(
-                        onTap: () => context.go(AppRoutes.rideSummary),
+                        onTap: () { controller.selectRide(ride); context.go(AppRoutes.rideSummary); },
                         child: GlassCard(
                           padding: const EdgeInsets.all(AppSpacing.md),
                           child: Column(
@@ -120,7 +124,7 @@ class RideHistoryScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(ride.title, style: AppTextStyles.statLabel(color: AppColors.onSurface)),
-                                  Text(ride.date, style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
+                                  Text('${ride.startTime.day}/${ride.startTime.month}/${ride.startTime.year}', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
                                 ],
                               ),
                               const SizedBox(height: AppSpacing.sm),
@@ -131,7 +135,7 @@ class RideHistoryScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('DIST', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
-                                        Text('\${ride.distance} KM', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                        Text(GeoUtils.formatDistance(ride.distanceKm), style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                       ],
                                     ),
                                   ),
@@ -140,7 +144,7 @@ class RideHistoryScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('AVG', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
-                                        Text('\${ride.avgSpeed} KM/H', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                        Text('${ride.averageSpeedKmh.toStringAsFixed(1)} KM/H', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                       ],
                                     ),
                                   ),
@@ -149,7 +153,7 @@ class RideHistoryScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('TIME', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
-                                        Text(ride.duration, style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                                        Text(GeoUtils.formatDuration(ride.duration.inMilliseconds), style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                       ],
                                     ),
                                   ),

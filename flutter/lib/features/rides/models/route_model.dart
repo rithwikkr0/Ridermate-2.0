@@ -5,6 +5,8 @@ class RoutePoint {
   final double speedKmh;
   final int timestamp;
   final double elevationMeters;
+  final double headingDegrees;
+  final double accuracyMeters;
 
   const RoutePoint({
     required this.latitude,
@@ -12,6 +14,8 @@ class RoutePoint {
     required this.speedKmh,
     required this.timestamp,
     required this.elevationMeters,
+    this.headingDegrees = 0,
+    this.accuracyMeters = 0,
   });
 
   Map<String, dynamic> toJson() => {
@@ -20,6 +24,8 @@ class RoutePoint {
         'speedKmh': speedKmh,
         'timestamp': timestamp,
         'elevationMeters': elevationMeters,
+        'headingDegrees': headingDegrees,
+        'accuracyMeters': accuracyMeters,
       };
 
   factory RoutePoint.fromJson(Map<String, dynamic> json) => RoutePoint(
@@ -28,6 +34,8 @@ class RoutePoint {
         speedKmh: (json['speedKmh'] as num).toDouble(),
         timestamp: json['timestamp'] as int,
         elevationMeters: (json['elevationMeters'] as num).toDouble(),
+        headingDegrees: (json['headingDegrees'] as num?)?.toDouble() ?? 0,
+        accuracyMeters: (json['accuracyMeters'] as num?)?.toDouble() ?? 0,
       );
 }
 

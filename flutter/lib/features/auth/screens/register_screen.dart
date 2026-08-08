@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -8,12 +9,79 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/rm_text_field.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/services/database_service.dart';
+import '../../../providers/base_controller.dart';
+import '../controllers/auth_controller.dart';
+import '../../profile/controllers/profile_controller.dart';
+import '../../profile/repositories/sqlite_user_repository.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleRegister() async {
+    setState(() => _errorMessage = null);
+
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm = _confirmController.text;
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'All fields are required.');
+      return;
+    }
+    if (password != confirm) {
+      setState(() => _errorMessage = 'Passwords do not match.');
+      return;
+    }
+    if (password.length < 6) {
+      setState(() => _errorMessage = 'Password must be at least 6 characters.');
+      return;
+    }
+
+    final authController = context.read<AuthController>();
+    await authController.register(name, email, password);
+
+    if (!mounted) return;
+    if (authController.state == ViewState.success) {
+      // Wire the ProfileController to the real user repository
+      final userId = authController.currentUser!.id;
+      context.read<ProfileController>().updateRepository(
+        SqliteUserRepository(DatabaseService.instance, userId: userId),
+      );
+      context.go(AppRoutes.home);
+    } else {
+      setState(() {
+        _errorMessage = authController.stateModel.error?.message ?? 'Registration failed.';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
+    final isLoading = authController.isLoading;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -66,13 +134,15 @@ class RegisterScreen extends StatelessWidget {
                             Text('FULL NAME', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
                             const SizedBox(height: AppSpacing.sm),
                             RmTextField(
-                              hintText: 'John Doe',
+                              controller: _nameController,
+                              hintText: 'Your full name',
                               prefixIcon: Icons.person_outline,
                             ),
                             const SizedBox(height: AppSpacing.md),
                             Text('EMAIL ADDRESS', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
                             const SizedBox(height: AppSpacing.sm),
                             RmTextField(
+                              controller: _emailController,
                               hintText: 'rider@example.com',
                               prefixIcon: Icons.mail_outline,
                               keyboardType: TextInputType.emailAddress,
@@ -81,6 +151,7 @@ class RegisterScreen extends StatelessWidget {
                             Text('PASSWORD', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
                             const SizedBox(height: AppSpacing.sm),
                             RmTextField(
+                              controller: _passwordController,
                               hintText: '••••••••',
                               prefixIcon: Icons.lock_outline,
                               obscureText: true,
@@ -89,14 +160,31 @@ class RegisterScreen extends StatelessWidget {
                             Text('CONFIRM PASSWORD', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
                             const SizedBox(height: AppSpacing.sm),
                             RmTextField(
+                              controller: _confirmController,
                               hintText: '••••••••',
                               prefixIcon: Icons.lock_outline,
                               obscureText: true,
                             ),
+                            if (_errorMessage != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              Container(
+                                padding: const EdgeInsets.all(AppSpacing.sm),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                                ),
+                                child: Text(
+                                  _errorMessage!,
+                                  style: AppTextStyles.bodyMd().copyWith(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: AppSpacing.lg),
                             PrimaryButton(
-                              text: 'CREATE ACCOUNT',
-                              onPressed: () => context.go(AppRoutes.otp),
+                              text: isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT',
+                              onPressed: isLoading ? null : _handleRegister,
                               isFullWidth: true,
                             ),
                           ],

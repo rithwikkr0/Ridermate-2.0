@@ -1,5 +1,7 @@
 import 'route_model.dart';
 
+enum RideStatus { running, paused, completed }
+
 /// RiderMate 2.0 — Core Ride Engine Model
 class RideEngineModel {
   final String id;
@@ -16,6 +18,7 @@ class RideEngineModel {
   final String weather;
   final List<RoutePoint> routePoints;
   final int rideScore;
+  final RideStatus status;
 
   const RideEngineModel({
     required this.id,
@@ -32,6 +35,7 @@ class RideEngineModel {
     required this.weather,
     required this.routePoints,
     required this.rideScore,
+    this.status = RideStatus.completed,
   });
 
   Map<String, dynamic> toJson() => {
@@ -49,5 +53,6 @@ class RideEngineModel {
         'weather': weather,
         'routePoints': routePoints.map((p) => p.toJson()).toList(),
         'rideScore': rideScore,
+        'status': status.name,
       };
 }

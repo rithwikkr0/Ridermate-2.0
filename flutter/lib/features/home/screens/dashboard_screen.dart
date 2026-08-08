@@ -28,7 +28,7 @@ class DashboardScreen extends StatelessWidget {
     final aiController = context.watch<AiController>();
     final weatherController = context.watch<WeatherController>();
 
-    final user = profileController.user;
+    final user = profileController.userOrDefault;
     final userName = user.fullName.isNotEmpty ? user.fullName.split(' ')[0] : 'Rider';
     final weather = weatherController.weather;
 
@@ -69,7 +69,13 @@ class DashboardScreen extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 20,
-                                    backgroundImage: NetworkImage(user.profilePhotoUrl),
+                                    backgroundImage: user.profilePhotoUrl.isNotEmpty
+                                        ? NetworkImage(user.profilePhotoUrl) as ImageProvider
+                                        : null,
+                                    backgroundColor: AppColors.surfaceContainerHigh,
+                                    child: user.profilePhotoUrl.isEmpty
+                                        ? const Icon(Icons.person, color: AppColors.onSurfaceVariant, size: 20)
+                                        : null,
                                   ),
                                   const SizedBox(width: AppSpacing.sm),
                                   Text('RiderMate 2.0', style: AppTextStyles.headlineLg(color: AppColors.circuitOrange)),

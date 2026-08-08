@@ -9,12 +9,17 @@ import '../../../core/widgets/secondary_button.dart';
 import '../../../core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import '../controllers/ride_controller.dart';
+import '../../../core/utils/geo_utils.dart';
 
 class RideSummaryScreen extends StatelessWidget {
   const RideSummaryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ride = context.watch<RideController>().selectedRide;
+    if (ride == null) return Scaffold(appBar: AppBar(title: const Text('Ride Summary')), body: const Center(child: Text('Select a saved ride from history.')));
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       extendBodyBehindAppBar: true,
@@ -92,9 +97,9 @@ class RideSummaryScreen extends StatelessWidget {
                   // Hero stats
                   Row(
                     children: [
-                      Expanded(child: _buildStat('DISTANCE', '42.5', 'KM')),
-                      Expanded(child: _buildStat('AVG SPEED', '28.2', 'KM/H')),
-                      Expanded(child: _buildStat('DURATION', '1h 45m', '')),
+                      Expanded(child: _buildStat('DISTANCE', ride.distanceKm.toStringAsFixed(2), 'KM')),
+                      Expanded(child: _buildStat('AVG SPEED', ride.averageSpeedKmh.toStringAsFixed(1), 'KM/H')),
+                      Expanded(child: _buildStat('DURATION', GeoUtils.formatDuration(ride.duration.inMilliseconds), '')),
                     ],
                   ).animate().fadeIn(duration: 300.ms, delay: 100.ms).slideY(begin: 0.1),
                   const SizedBox(height: AppSpacing.md),
@@ -102,9 +107,9 @@ class RideSummaryScreen extends StatelessWidget {
                   // Secondary stats
                   Row(
                     children: [
-                      Expanded(child: _buildStat('MAX SPEED', '48.5', 'KM/H')),
-                      Expanded(child: _buildStat('ELEVATION', '350', 'M')),
-                      Expanded(child: _buildStat('CALORIES', '850', 'KCAL')),
+                      Expanded(child: _buildStat('MAX SPEED', ride.maxSpeedKmh.toStringAsFixed(1), 'KM/H')),
+                      Expanded(child: _buildStat('ELEVATION', ride.elevationMeters.toStringAsFixed(0), 'M')),
+                      Expanded(child: _buildStat('CALORIES', '${ride.caloriesBurned}', 'KCAL')),
                     ],
                   ).animate().fadeIn(duration: 300.ms, delay: 200.ms).slideY(begin: 0.1),
                   const SizedBox(height: AppSpacing.md),

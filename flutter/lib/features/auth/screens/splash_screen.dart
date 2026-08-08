@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/services/database_service.dart';
+import '../controllers/auth_controller.dart';
+import '../../profile/controllers/profile_controller.dart';
+import '../../profile/repositories/sqlite_user_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,11 +21,32 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (mounted) {
-        context.go(AppRoutes.onboarding);
-      }
-    });
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    // Allow the splash animation to begin
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    // Attempt to restore session from persistent storage
+    final authController = context.read<AuthController>();
+    await authController.restoreSession();
+
+    if (!mounted) return;
+
+    if (authController.isLoggedIn) {
+      // Wire the ProfileController to the real repository for this user
+      final userId = authController.currentUser!.id;
+      final profileController = context.read<ProfileController>();
+      profileController.updateRepository(
+        SqliteUserRepository(DatabaseService.instance, userId: userId),
+      );
+      context.go(AppRoutes.home);
+    } else {
+      context.go(AppRoutes.onboarding);
+    }
   }
 
   @override

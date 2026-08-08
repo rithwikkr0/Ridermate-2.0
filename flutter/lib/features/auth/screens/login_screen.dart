@@ -10,8 +10,11 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/rm_text_field.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/services/database_service.dart';
 import '../../../providers/base_controller.dart';
 import '../controllers/auth_controller.dart';
+import '../../profile/controllers/profile_controller.dart';
+import '../../profile/repositories/sqlite_user_repository.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,8 +24,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController(text: 'rider@ridermate.app');
-  final TextEditingController _passwordController = TextEditingController(text: 'password123');
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -39,6 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
       final authController = context.read<AuthController>();
       await authController.login(email, password);
       if (mounted && authController.state == ViewState.success) {
+        // Wire the ProfileController to the real user repository
+        final userId = authController.currentUser!.id;
+        context.read<ProfileController>().updateRepository(
+          SqliteUserRepository(DatabaseService.instance, userId: userId),
+        );
         context.go(AppRoutes.home);
       }
     }
