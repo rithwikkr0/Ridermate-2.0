@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:latlong2/latlong.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/secondary_button.dart';
+import '../../../core/widgets/real_map_view.dart';
 import '../../../core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -68,32 +70,87 @@ class RideSummaryScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Map placeholder
-                  Container(
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerHigh,
+                  // Route Map — real FlutterMap with recorded GPS polyline
+                  Builder(builder: (context) {
+                    final polylinePoints = ride.routePoints
+                        .map((p) => LatLng(p.latitude, p.longitude))
+                        .toList();
+                    return ClipRRect(
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.glassBorder),
-                    ),
-                    child: Stack(
-                      children: [
-                        CustomPaint(painter: _MapGridPainter(), size: Size.infinite),
-                        Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                      child: SizedBox(
+                        height: 250,
+                        child: ride.routePoints.isEmpty
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceContainerHigh,
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(color: AppColors.glassBorder),
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.map_rounded,
+                                          color: AppColors.circuitOrange, size: 48),
+                                      const SizedBox(height: 8),
+                                      Text('No GPS points recorded',
+                                          style: AppTextStyles.statLabel(
+                                              color: AppColors.onSurfaceVariant)),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : RealMapView(
+                                initialZoom: 14.0,
+                                showControls: false,
+                                followUserLocation: false,
+                                polylinePoints: polylinePoints,
+                              ),
+                      ),
+                    );
+                  }), // end Builder
+                  const SizedBox(height: AppSpacing.sm),
+                  // Origin / Destination info
+                  if (ride.origin.isNotEmpty || ride.destination.isNotEmpty) ...[
+                    GlassCard(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        children: [
+                          Column(
                             children: [
-                              Icon(Icons.map_rounded, color: AppColors.circuitOrange, size: 48),
-                              const SizedBox(height: 8),
-                              Text('Route Map', style: AppTextStyles.statLabel(color: AppColors.onSurfaceVariant)),
+                              const Icon(Icons.my_location,
+                                  color: AppColors.circuitOrange, size: 16),
+                              Container(
+                                  width: 1, height: 20, color: AppColors.glassBorder),
+                              const Icon(Icons.place, color: Colors.redAccent, size: 16),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
-                  const SizedBox(height: AppSpacing.md),
-                  
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ride.origin.isEmpty ? 'Unknown origin' : ride.origin,
+                                  style: AppTextStyles.bodyMd(color: AppColors.onSurface),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  ride.destination.isEmpty
+                                      ? 'Unknown destination'
+                                      : ride.destination,
+                                  style: AppTextStyles.bodyMd(color: AppColors.onSurface),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn(duration: 300.ms, delay: 50.ms),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
                   // Hero stats
                   Row(
                     children: [
@@ -188,32 +245,4 @@ class RideSummaryScreen extends StatelessWidget {
   }
 }
 
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.05)
-      ..strokeWidth = 1;
 
-    for (double i = 0; i < size.width; i += 20) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-    for (double i = 0; i < size.height; i += 20) {
-      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
-    }
-    
-    final pathPaint = Paint()
-      ..color = AppColors.circuitOrange
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
-      
-    final path = Path()
-      ..moveTo(size.width * 0.2, size.height * 0.8)
-      ..quadraticBezierTo(size.width * 0.5, size.height * 0.5, size.width * 0.8, size.height * 0.2);
-      
-    canvas.drawPath(path, pathPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

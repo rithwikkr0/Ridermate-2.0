@@ -20,8 +20,10 @@ dependencies:
   # Animations
   flutter_animate: ^4.5.2
 
-  # Images
+  # Images & Camera
   cached_network_image: ^3.4.1
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
 
   # State (for theme toggle)
   provider: ^6.1.2

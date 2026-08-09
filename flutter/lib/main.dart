@@ -22,6 +22,10 @@ import 'features/rides/controllers/ride_controller.dart';
 import 'features/rides/repositories/sqlite_ride_repository.dart';
 import 'core/services/location_service.dart';
 
+// Memories — SqliteMemoryRepository is real
+import 'features/memories/controllers/memory_controller.dart';
+import 'features/memories/repositories/memory_repository.dart';
+
 // Safety
 import 'features/safety/controllers/sos_controller.dart';
 
@@ -79,6 +83,7 @@ void main() async {
 
   // ── Real ride tracking ────────────────────────────────────────────────────
   final rideRepository = SqliteRideRepository();
+  final memoryRepository = SqliteMemoryRepository();
   const locationService = DeviceLocationService();
 
   // ── AI — mock until Phase 13 ──────────────────────────────────────────────
@@ -140,6 +145,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => NavigationController()),
         ChangeNotifierProvider(
             create: (_) => WeatherController(weatherService)),
+        ChangeNotifierProvider(
+            create: (_) => MemoryController(memoryRepository, locationService)),
       ],
       child: const RiderMateApp(),
     ),

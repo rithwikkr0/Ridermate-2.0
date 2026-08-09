@@ -13,7 +13,7 @@ class DatabaseService {
   Future<Database> get database async =>
       _database ??= await _openDatabase();
 
-  static const int _version = 2;
+  static const int _version = 4;
 
   Future<Database> _openDatabase() async {
     final path = join(await getDatabasesPath(), 'ridermate.db');
@@ -93,7 +93,11 @@ class DatabaseService {
         calories         INTEGER NOT NULL DEFAULT 0,
         weather          TEXT NOT NULL DEFAULT '',
         ride_score       INTEGER NOT NULL DEFAULT 0,
-        status           TEXT NOT NULL DEFAULT 'completed'
+        status           TEXT NOT NULL DEFAULT 'completed',
+        ride_mode        TEXT NOT NULL DEFAULT 'solo',
+        user_id          TEXT NOT NULL DEFAULT '',
+        origin           TEXT NOT NULL DEFAULT '',
+        destination      TEXT NOT NULL DEFAULT ''
       )
     ''');
 
@@ -112,6 +116,9 @@ class DatabaseService {
         FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
       )
     ''');
+
+    // ── Memories ──────────────────────────────────────────
+    await _createMemoriesTable(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -170,6 +177,60 @@ class DatabaseService {
         // Tables may already exist in some edge cases
       }
     }
+
+    // Migration from version 2 to version 3
+    // Adds ride_mode, user_id, origin, destination to the rides table
+    if (oldVersion < 3) {
+      try {
+        await db.execute(
+            "ALTER TABLE rides ADD COLUMN ride_mode TEXT NOT NULL DEFAULT 'solo'");
+      } catch (_) {}
+      try {
+        await db.execute(
+            "ALTER TABLE rides ADD COLUMN user_id TEXT NOT NULL DEFAULT ''");
+      } catch (_) {}
+      try {
+        await db.execute(
+            "ALTER TABLE rides ADD COLUMN origin TEXT NOT NULL DEFAULT ''");
+      } catch (_) {}
+      try {
+        await db.execute(
+            "ALTER TABLE rides ADD COLUMN destination TEXT NOT NULL DEFAULT ''");
+      } catch (_) {}
+    }
+
+    // Migration from version 3 to version 4
+    // Adds memories table and indexes
+    if (oldVersion < 4) {
+      await _createMemoriesTable(db);
+    }
+  }
+
+  static Future<void> _createMemoriesTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS memories (
+        id             TEXT PRIMARY KEY,
+        user_id        TEXT NOT NULL,
+        ride_id        TEXT,
+        image_path     TEXT NOT NULL,
+        thumbnail_path TEXT,
+        caption        TEXT NOT NULL DEFAULT '',
+        latitude       REAL,
+        longitude      REAL,
+        location_name  TEXT,
+        created_at     TEXT NOT NULL,
+        updated_at     TEXT NOT NULL,
+        privacy        TEXT NOT NULL DEFAULT 'private',
+        ride_distance  REAL,
+        ride_duration  INTEGER
+      )
+    ''');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_memories_user_id ON memories(user_id)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_memories_created_at ON memories(created_at)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_memories_ride_id ON memories(ride_id)');
   }
 
   /// Closes the database connection. Call only on app dispose.

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -16,6 +17,7 @@ import '../models/navigation_route_model.dart';
 import '../models/group_ride_model.dart';
 import '../services/osrm_routing_service.dart';
 import '../services/mock_place_search_service.dart';
+import '../../../features/rides/controllers/ride_controller.dart';
 
 
 class RoutePlanningScreen extends StatefulWidget {
@@ -152,7 +154,14 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
 
   void _startRide() {
     if (_selectedMode == RideMode.solo) {
-      context.push(AppRoutes.liveNavigation);
+      // Start the real ride engine, then navigate to the ride tracking HUD
+      final rideCtrl = context.read<RideController>();
+      rideCtrl.startRide(
+        mode: 'solo',
+        origin: _startName,
+        destination: _destinationName,
+      );
+      context.push(AppRoutes.liveRide);
     } else {
       context.push(AppRoutes.liveGroupMap);
     }
