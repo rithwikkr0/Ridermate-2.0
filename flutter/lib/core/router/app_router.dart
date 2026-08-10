@@ -63,6 +63,7 @@ import '../../features/achievements/screens/goals_achievements_screen.dart';
 import '../../features/sos/screens/safety_center_screen.dart';
 import '../../features/sos/screens/sos_countdown_screen.dart';
 import '../../features/sos/screens/emergency_contacts_screen.dart';
+import '../../features/sos/screens/add_emergency_contact_screen.dart';
 import '../../features/sos/screens/emergency_tracking_screen.dart';
 import '../../features/sos/screens/safety_history_screen.dart';
 import '../../features/sos/screens/safety_settings_screen.dart';
@@ -353,8 +354,12 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.goals,      builder: (c, s) => const GoalsAchievementsScreen()),
     GoRoute(path: AppRoutes.safety,     builder: (c, s) => const SafetyCenterScreen()),
     GoRoute(path: AppRoutes.sos,        builder: (c, s) => const SosCountdownScreen()),
+    GoRoute(path: '/sos/countdown',     builder: (c, s) => const SosCountdownScreen()),
     GoRoute(path: AppRoutes.emergencyContacts, builder: (c, s) => const EmergencyContactsScreen()),
+    GoRoute(path: '/sos/contacts',     builder: (c, s) => const EmergencyContactsScreen()),
+    GoRoute(path: '/sos/add-contact',  builder: (c, s) => const AddEditEmergencyContactScreen()),
     GoRoute(path: AppRoutes.emergencyTracking, builder: (c, s) => const EmergencyTrackingScreen()),
+    GoRoute(path: '/sos/tracking',     builder: (c, s) => const EmergencyTrackingScreen()),
     GoRoute(path: AppRoutes.safetyHistory, builder: (c, s) => const SafetyHistoryScreen()),
     GoRoute(path: AppRoutes.safetySettings, builder: (c, s) => const SafetySettingsScreen()),
     GoRoute(path: AppRoutes.settings,   builder: (c, s) => const SettingsHomeScreen()),

@@ -12,6 +12,9 @@ sealed class Result<T> {
 
   T? get dataOrNull => isSuccess ? (this as Success<T>).data : null;
   AppError? get errorOrNull => isFailure ? (this as Failure<T>).error : null;
+
+  T? get data => dataOrNull;
+  AppError? get error => errorOrNull;
 }
 
 final class Success<T> extends Result<T> {

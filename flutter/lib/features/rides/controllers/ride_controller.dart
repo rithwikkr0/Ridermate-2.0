@@ -91,8 +91,10 @@ class RideController extends BaseController {
   bool get isIdle => _rideState == RideState.idle;
   bool get isTracking =>
       _rideState == RideState.active || _rideState == RideState.paused;
+  bool get isRideActive => isTracking;
   bool get isPaused => _rideState == RideState.paused;
   bool get isCompleted => _rideState == RideState.completed;
+  RideEngineModel? get currentRide => selectedRide;
 
   Duration get duration {
     if (_startedAt == null) return Duration.zero;

@@ -13,7 +13,7 @@ class DatabaseService {
   Future<Database> get database async =>
       _database ??= await _openDatabase();
 
-  static const int _version = 4;
+  static const int _version = 5;
 
   Future<Database> _openDatabase() async {
     final path = join(await getDatabasesPath(), 'ridermate.db');
@@ -119,6 +119,9 @@ class DatabaseService {
 
     // ── Memories ──────────────────────────────────────────
     await _createMemoriesTable(db);
+
+    // ── Emergency & SOS ───────────────────────────────────
+    await _createEmergencyTables(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -204,6 +207,16 @@ class DatabaseService {
     if (oldVersion < 4) {
       await _createMemoriesTable(db);
     }
+
+    // Migration from version 4 to version 5
+    // Adds emergency_contacts and sos_events tables and indexes
+    if (oldVersion < 5) {
+      await _createEmergencyTables(db);
+      try {
+        await db.execute(
+            "ALTER TABLE emergency_contacts ADD COLUMN is_primary INTEGER NOT NULL DEFAULT 0");
+      } catch (_) {}
+    }
   }
 
   static Future<void> _createMemoriesTable(Database db) async {
@@ -231,6 +244,47 @@ class DatabaseService {
         'CREATE INDEX IF NOT EXISTS idx_memories_created_at ON memories(created_at)');
     await db.execute(
         'CREATE INDEX IF NOT EXISTS idx_memories_ride_id ON memories(ride_id)');
+  }
+
+  static Future<void> _createEmergencyTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS emergency_contacts (
+        id           TEXT PRIMARY KEY,
+        user_id      TEXT NOT NULL,
+        name         TEXT NOT NULL,
+        phone_number TEXT NOT NULL,
+        relationship TEXT NOT NULL DEFAULT 'Contact',
+        is_primary   INTEGER NOT NULL DEFAULT 0,
+        created_at   TEXT NOT NULL,
+        updated_at   TEXT NOT NULL
+      )
+    ''');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_emergency_contacts_user_id ON emergency_contacts(user_id)');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS sos_events (
+        id                 TEXT PRIMARY KEY,
+        user_id            TEXT NOT NULL,
+        ride_id            TEXT,
+        status             TEXT NOT NULL,
+        latitude           REAL,
+        longitude          REAL,
+        accuracy           REAL,
+        location_timestamp TEXT,
+        started_at         TEXT NOT NULL,
+        cancelled_at       TEXT,
+        resolved_at        TEXT,
+        contact_attempts   TEXT NOT NULL DEFAULT '[]',
+        message            TEXT NOT NULL DEFAULT ''
+      )
+    ''');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_sos_events_user_id ON sos_events(user_id)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_sos_events_created_at ON sos_events(started_at)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_sos_events_status ON sos_events(status)');
   }
 
   /// Closes the database connection. Call only on app dispose.
