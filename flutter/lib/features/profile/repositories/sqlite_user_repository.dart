@@ -21,51 +21,58 @@ class SqliteUserRepository implements UserRepository {
   // ── Helpers ──────────────────────────────────────────────────────────────
 
   Future<List<VehicleModel>> _loadVehicles() async {
-    final db = await _db.database;
-    final rows = await db.query(
-      'vehicles',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
-    return rows
-        .map(
-          (r) => VehicleModel(
-            id: r['id'] as String,
-            brand: r['brand'] as String,
-            model: r['model'] as String,
-            year: r['year'] as int,
-            registrationNumber: r['registration_number'] as String? ?? '',
-            fuelType: r['fuel_type'] as String? ?? 'Petrol',
-            engineCapacityCc: r['engine_cc'] as int? ?? 0,
-            color: r['color'] as String? ?? '',
-            serviceDueDate: r['service_due_date'] != null
-                ? (DateTime.tryParse(r['service_due_date'] as String) ?? DateTime.now().add(const Duration(days: 365)))
-                : DateTime.now().add(const Duration(days: 365)),
-            isDefault: (r['is_default'] as int? ?? 0) == 1,
-          ),
-        )
-        .toList();
+    try {
+      final db = await _db.database;
+      final rows = await db.query(
+        'vehicles',
+        where: 'user_id = ?',
+        whereArgs: [userId],
+      );
+      return rows
+          .map(
+            (r) => VehicleModel(
+              id: r['id'] as String,
+              brand: r['brand'] as String? ?? r['model_name'] as String? ?? 'Bike',
+              model: r['model'] as String? ?? r['model_name'] as String? ?? 'Standard',
+              year: r['year'] as int? ?? 2024,
+              registrationNumber: r['registration_number'] as String? ?? '',
+              fuelType: r['fuel_type'] as String? ?? 'Petrol',
+              engineCapacityCc: r['engine_cc'] as int? ?? 150,
+              color: r['color'] as String? ?? '',
+              serviceDueDate: r['service_due_date'] != null
+                  ? (DateTime.tryParse(r['service_due_date'] as String) ?? DateTime.now().add(const Duration(days: 365)))
+                  : DateTime.now().add(const Duration(days: 365)),
+              isDefault: (r['is_default'] as int? ?? r['is_primary'] as int? ?? 0) == 1,
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<List<EmergencyContactModel>> _loadContacts() async {
-    final db = await _db.database;
-    final rows = await db.query(
-      'emergency_contacts',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'order_index ASC',
-    );
-    return rows
-        .map(
-          (r) => EmergencyContactModel(
-            id: r['id'] as String,
-            name: r['name'] as String,
-            relation: r['relation'] as String,
-            phone: r['phone'] as String,
-            orderIndex: r['order_index'] as int? ?? 0,
-          ),
-        )
-        .toList();
+    try {
+      final db = await _db.database;
+      final rows = await db.query(
+        'emergency_contacts',
+        where: 'user_id = ?',
+        whereArgs: [userId],
+      );
+      return rows
+          .map(
+            (r) => EmergencyContactModel(
+              id: r['id'] as String,
+              name: r['name'] as String,
+              relation: (r['relation'] ?? r['relationship'] ?? 'Contact') as String,
+              phone: (r['phone'] ?? r['phone_number'] ?? '') as String,
+              orderIndex: (r['order_index'] ?? r['is_primary'] ?? 0) as int? ?? 0,
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<UserModel?> _loadUser() async {

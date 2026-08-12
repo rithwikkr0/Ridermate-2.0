@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_spacing.dart';
+import '../notifications/widgets/notification_badge.dart';
 
 /// Frosted glass top app bar matching Stitch TopAppBar design.
 /// background: surface/60, backdrop-filter: blur(30px), border-b white/10
@@ -114,37 +115,7 @@ class RmTopNav extends StatelessWidget implements PreferredSizeWidget {
                 if (trailing != null)
                   trailing!
                 else if (showNotification)
-                  GestureDetector(
-                    onTap: onNotificationTap,
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                        border: Border.all(color: AppColors.glassBorder),
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          const Icon(Icons.notifications_outlined,
-                              color: AppColors.onSurface, size: AppSpacing.iconSm),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.circuitOrange,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  NotificationBadge(onTap: onNotificationTap),
               ],
             ),
           ),

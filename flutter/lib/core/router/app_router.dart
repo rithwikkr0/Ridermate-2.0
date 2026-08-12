@@ -14,6 +14,7 @@ import '../../features/auth/screens/privacy_policy_screen.dart';
 import '../../features/auth/screens/terms_screen.dart';
 import '../../features/home/screens/dashboard_screen.dart';
 import '../../features/home/screens/notification_center_screen.dart';
+import '../notifications/screens/notification_settings_screen.dart';
 import '../../features/home/screens/weather_details_screen.dart';
 import '../../features/rides/screens/ride_history_screen.dart';
 import '../../features/rides/screens/ride_summary_screen.dart';
@@ -96,6 +97,7 @@ class AppRoutes {
 
   // Sub-routes
   static const notifications    = '/notifications';
+  static const notificationSettings = '/settings/notifications';
   static const weather          = '/weather';
   static const rideHistory      = '/rides';
   static const rides            = '/rides'; // alias
@@ -363,6 +365,7 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.safetyHistory, builder: (c, s) => const SafetyHistoryScreen()),
     GoRoute(path: AppRoutes.safetySettings, builder: (c, s) => const SafetySettingsScreen()),
     GoRoute(path: AppRoutes.settings,   builder: (c, s) => const SettingsHomeScreen()),
+    GoRoute(path: AppRoutes.notificationSettings, builder: (c, s) => const NotificationSettingsScreen()),
     GoRoute(path: AppRoutes.appearance, builder: (c, s) => const AppearanceSettingsScreen()),
     GoRoute(path: AppRoutes.privacySecurity, builder: (c, s) => const PrivacySecurityScreen()),
     GoRoute(path: AppRoutes.helpSupport, builder: (c, s) => const HelpSupportScreen()),

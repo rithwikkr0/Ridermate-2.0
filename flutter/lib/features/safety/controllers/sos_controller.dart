@@ -10,6 +10,7 @@ import '../repositories/emergency_repository.dart';
 import '../services/emergency_call_service.dart';
 import '../services/emergency_sms_service.dart';
 import '../services/emergency_sync_service.dart';
+import '../../../core/notifications/services/notification_service.dart';
 
 enum SosState { idle, countdown, activeEmergency, cancelled, resolved, failed }
 
@@ -87,6 +88,12 @@ class SosController extends BaseController {
     timeline.clear();
     timeline.logEvent('SOS Triggered', 'Manual trigger activated by rider', 'sos_icon');
 
+    NotificationService.instance.notifyEmergency(
+      title: 'RiderMate Emergency',
+      body: 'SOS countdown initiated. Tap to open active emergency tracking.',
+      rideId: rideId,
+    );
+
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_isDisposed) {
@@ -137,6 +144,12 @@ class SosController extends BaseController {
     sosState = SosState.activeEmergency;
     setState(ViewState.loading);
     timeline.logEvent('Emergency Activated', 'Obtaining location & dispatching alerts', 'alert_icon');
+
+    NotificationService.instance.notifyEmergency(
+      title: 'RiderMate Emergency Active',
+      body: 'SOS activated. Live emergency tracking & contacts alert active.',
+      rideId: rideId,
+    );
 
     // 1. Obtain best available GPS location
     double? lat;

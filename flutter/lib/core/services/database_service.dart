@@ -13,7 +13,7 @@ class DatabaseService {
   Future<Database> get database async =>
       _database ??= await _openDatabase();
 
-  static const int _version = 5;
+  static const int _version = 6;
 
   Future<Database> _openDatabase() async {
     final path = join(await getDatabasesPath(), 'ridermate.db');
@@ -122,6 +122,9 @@ class DatabaseService {
 
     // ── Emergency & SOS ───────────────────────────────────
     await _createEmergencyTables(db);
+
+    // ── Notifications ─────────────────────────────────────
+    await _createNotificationsTables(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -217,6 +220,12 @@ class DatabaseService {
             "ALTER TABLE emergency_contacts ADD COLUMN is_primary INTEGER NOT NULL DEFAULT 0");
       } catch (_) {}
     }
+
+    // Migration from version 5 to version 6
+    // Adds notifications and notification_preferences tables and indexes
+    if (oldVersion < 6) {
+      await _createNotificationsTables(db);
+    }
   }
 
   static Future<void> _createMemoriesTable(Database db) async {
@@ -285,6 +294,50 @@ class DatabaseService {
         'CREATE INDEX IF NOT EXISTS idx_sos_events_created_at ON sos_events(started_at)');
     await db.execute(
         'CREATE INDEX IF NOT EXISTS idx_sos_events_status ON sos_events(status)');
+  }
+
+  static Future<void> _createNotificationsTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS notifications (
+        id         TEXT PRIMARY KEY,
+        user_id    TEXT NOT NULL,
+        type       TEXT NOT NULL,
+        title      TEXT NOT NULL,
+        body       TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        read_at    TEXT,
+        route      TEXT,
+        entity_id  TEXT,
+        priority   TEXT NOT NULL DEFAULT 'normal',
+        payload    TEXT,
+        image_url  TEXT,
+        expires_at TEXT
+      )
+    ''');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created_at)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_notifications_read_at ON notifications(read_at)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_notifications_type ON notifications(type)');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS notification_preferences (
+        user_id             TEXT PRIMARY KEY,
+        emergency_enabled   INTEGER NOT NULL DEFAULT 1,
+        safety_enabled      INTEGER NOT NULL DEFAULT 1,
+        ride_enabled        INTEGER NOT NULL DEFAULT 1,
+        social_enabled      INTEGER NOT NULL DEFAULT 1,
+        ai_enabled          INTEGER NOT NULL DEFAULT 1,
+        maintenance_enabled INTEGER NOT NULL DEFAULT 1,
+        achievement_enabled INTEGER NOT NULL DEFAULT 1,
+        system_enabled      INTEGER NOT NULL DEFAULT 1,
+        sound_enabled       INTEGER NOT NULL DEFAULT 1,
+        vibration_enabled   INTEGER NOT NULL DEFAULT 1
+      )
+    ''');
   }
 
   /// Closes the database connection. Call only on app dispose.

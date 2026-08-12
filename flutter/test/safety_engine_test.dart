@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ridermate/features/safety/services/safety_score_calculator.dart';
 import 'package:ridermate/features/safety/controllers/sos_controller.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({'user_id': 'test_user'});
+
   group('Safety Engine Unit Tests', () {
     test('SafetyScoreCalculator computes scores accurately', () {
       final safeScore = SafetyScoreCalculator.calculate(

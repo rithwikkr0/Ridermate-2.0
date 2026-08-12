@@ -7,6 +7,7 @@ import '../models/ride_engine_model.dart';
 import '../models/route_model.dart';
 import '../repositories/ride_repository.dart';
 import '../services/statistics_engine.dart';
+import '../../../core/notifications/services/notification_service.dart';
 
 // ---------------------------------------------------------------------------
 // Ride State Machine
@@ -191,6 +192,13 @@ class RideController extends BaseController {
 
     _transition(RideState.active);
 
+    NotificationService.instance.notifyRideEvent(
+      title: 'Ride Started',
+      body: '${_rideMode == 'group' ? 'Group' : 'Solo'} ride recording initiated.',
+      rideId: 'ride-${_startedAt!.millisecondsSinceEpoch}',
+      isCompleted: false,
+    );
+
     // 1-second UI refresh timer
     _clockTimer = Timer.periodic(
       const Duration(seconds: 1),
@@ -354,6 +362,13 @@ class RideController extends BaseController {
     selectedRide = ride;
     rides.insert(0, ride);
     _transition(RideState.completed);
+
+    NotificationService.instance.notifyRideEvent(
+      title: 'Ride Completed',
+      body: 'Your ride (${ride.distanceKm.toStringAsFixed(1)} km, ${ride.duration.inMinutes} min) is ready.',
+      rideId: ride.id,
+      isCompleted: true,
+    );
   }
 
   // ── Discard (cancel without saving) ────────────────────────────────────

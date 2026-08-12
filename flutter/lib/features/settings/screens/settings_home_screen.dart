@@ -57,6 +57,7 @@ class SettingsHomeScreen extends StatelessWidget {
                   ]),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('PREFERENCES', [
+                    _buildTile(Icons.notifications_outlined, 'Notification Settings', () => context.push('/settings/notifications')),
                     _buildTile(Icons.palette_outlined, 'Appearance', () => context.push('/appearance_settings')),
                     _buildTile(Icons.navigation_outlined, 'Navigation Settings', () {}),
                     _buildTile(Icons.straighten, 'Units', () {}),

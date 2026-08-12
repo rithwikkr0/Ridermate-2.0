@@ -7,6 +7,8 @@ import 'core/theme/app_theme.dart';
 import 'core/errors/global_error_handler.dart';
 import 'core/services/database_service.dart';
 import 'core/services/shared_preferences_storage_service.dart';
+import 'core/notifications/services/notification_service.dart';
+import 'core/notifications/controllers/notification_controller.dart';
 
 // Auth
 import 'features/auth/controllers/auth_controller.dart';
@@ -76,6 +78,17 @@ void main() async {
 
   // Warm up the database on startup so first operations are fast
   await databaseService.database;
+
+  // Initialize Android local notifications platform
+  await NotificationService.instance.initialize(
+    onNotificationTap: (route, payload) {
+      if (route != null && route.isNotEmpty) {
+        try {
+          appRouter.push(route);
+        } catch (_) {}
+      }
+    },
+  );
 
   // ── Real auth + session ───────────────────────────────────────────────────
   final authService = SqliteAuthService(databaseService);
@@ -147,6 +160,7 @@ void main() async {
             create: (_) => WeatherController(weatherService)),
         ChangeNotifierProvider(
             create: (_) => MemoryController(memoryRepository, locationService)),
+        ChangeNotifierProvider(create: (_) => NotificationController()),
       ],
       child: const RiderMateApp(),
     ),

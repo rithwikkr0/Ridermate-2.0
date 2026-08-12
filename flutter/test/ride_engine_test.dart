@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ridermate/core/models/ride_point_model.dart';
 import 'package:ridermate/core/utils/geo_utils.dart';
 import 'package:ridermate/core/utils/unit_converters.dart';
@@ -111,6 +112,9 @@ RidePointModel _validPoint({
 // ─────────────────────────────────────────────────────────────────────────────
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({'user_id': 'test_user'});
+
   group('1. RideState — enum values', () {
     test('All states are defined', () {
       expect(RideState.values, contains(RideState.idle));

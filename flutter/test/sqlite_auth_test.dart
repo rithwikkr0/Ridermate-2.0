@@ -17,14 +17,20 @@ void main() {
 
     setUp(() async {
       dbService = DatabaseService.instance;
+      final db = await dbService.database;
+      try { await db.delete('users'); } catch (_) {}
+      try { await db.delete('vehicles'); } catch (_) {}
+      try { await db.delete('emergency_contacts'); } catch (_) {}
       authService = SqliteAuthService(dbService);
     });
 
     tearDown(() async {
-      final db = await dbService.database;
-      await db.delete('users');
-      await db.delete('vehicles');
-      await db.delete('emergency_contacts');
+      try {
+        final db = await dbService.database;
+        await db.delete('users');
+        await db.delete('vehicles');
+        await db.delete('emergency_contacts');
+      } catch (_) {}
     });
 
     test('Register new user succeeds and saves to SQLite', () async {
@@ -34,6 +40,9 @@ void main() {
         'securePassword123',
       );
 
+      if (res.isFailure) {
+        print('REGISTER ERROR: ${res.errorOrNull}');
+      }
       expect(res.isSuccess, isTrue);
       final user = res.dataOrNull!;
       expect(user.fullName, equals('Rithwik Rider'));
