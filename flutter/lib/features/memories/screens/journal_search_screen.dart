@@ -13,7 +13,6 @@ import '../../../core/router/app_router.dart';
 import '../../../core/utils/geo_utils.dart';
 import '../../../features/auth/controllers/auth_controller.dart';
 import '../controllers/memory_controller.dart';
-import '../models/memory_model.dart';
 
 class JournalSearchScreen extends StatefulWidget {
   const JournalSearchScreen({super.key});

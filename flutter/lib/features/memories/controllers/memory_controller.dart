@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import '../../../core/errors/result.dart';
-import '../../../core/errors/app_error.dart';
 import '../../../core/services/location_service.dart';
 import '../../../providers/base_controller.dart';
 import '../../rides/models/ride_engine_model.dart';
