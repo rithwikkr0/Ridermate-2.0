@@ -102,6 +102,7 @@ class MemoryController extends BaseController {
 
   // ── Camera / Gallery Pickers ─────────────────────────────────────────────
   Future<void> pickFromGallery() async {
+    memoryError = null;
     try {
       final XFile? file = await _picker.pickImage(
         source: ImageSource.gallery,
@@ -120,6 +121,7 @@ class MemoryController extends BaseController {
   }
 
   Future<void> captureFromCamera() async {
+    memoryError = null;
     try {
       final XFile? file = await _picker.pickImage(
         source: ImageSource.camera,

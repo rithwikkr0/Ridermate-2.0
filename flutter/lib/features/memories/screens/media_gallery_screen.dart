@@ -147,7 +147,7 @@ class _MediaGalleryScreenState extends State<MediaGalleryScreen> {
                         return GestureDetector(
                           onTap: () {
                             memoryCtrl.selectMemory(memory);
-                            context.push(AppRoutes.photoViewer);
+                            context.push(AppRoutes.memoryDetail);
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),

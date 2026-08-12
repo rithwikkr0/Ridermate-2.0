@@ -476,5 +476,51 @@ void main() {
       expect(success, isFalse);
       expect(controller.memoryError, contains('photo'));
     });
+
+    test('initEditDraft populates controller buffer for editing existing memory', () {
+      final now = DateTime.now();
+      final memoryToEdit = MemoryModel(
+        id: 'mem_edit_123',
+        userId: 'user1',
+        rideId: 'ride_555',
+        imagePath: '/storage/memories/memory_123.jpg',
+        caption: 'Existing memory caption',
+        latitude: 19.0760,
+        longitude: 72.8777,
+        locationName: 'Mumbai Coast',
+        privacy: MemoryPrivacy.friends,
+        createdAt: now,
+        updatedAt: now,
+        rideDistance: 15.0,
+        rideDuration: 1800,
+      );
+
+      controller.initEditDraft(memoryToEdit);
+
+      expect(controller.draftId, 'mem_edit_123');
+      expect(controller.draftImagePath, '/storage/memories/memory_123.jpg');
+      expect(controller.draftCaption, 'Existing memory caption');
+      expect(controller.draftLatitude, 19.0760);
+      expect(controller.draftLongitude, 72.8777);
+      expect(controller.draftLocationName, 'Mumbai Coast');
+      expect(controller.draftPrivacy, MemoryPrivacy.friends);
+      expect(controller.draftRideId, 'ride_555');
+    });
+
+    test('selectMemory updates selectedMemory state property', () {
+      final now = DateTime.now();
+      final mem = MemoryModel(
+        id: 'm_select',
+        userId: 'user1',
+        imagePath: '/path/select.jpg',
+        caption: 'Selected memory',
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      controller.selectMemory(mem);
+      expect(controller.selectedMemory?.id, 'm_select');
+      expect(controller.selectedMemory?.caption, 'Selected memory');
+    });
   });
 }

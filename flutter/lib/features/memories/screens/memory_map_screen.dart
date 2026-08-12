@@ -137,7 +137,7 @@ class _MemoryMapScreenState extends State<MemoryMapScreen> {
               child: GlassCard(
                 onPressed: () {
                   memoryCtrl.selectMemory(_tappedMemory!);
-                  context.push(AppRoutes.photoViewer);
+                  context.push(AppRoutes.memoryDetail);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -189,7 +189,7 @@ class _MemoryMapScreenState extends State<MemoryMapScreen> {
                             size: 16, color: AppColors.circuitOrange),
                         onPressed: () {
                           memoryCtrl.selectMemory(_tappedMemory!);
-                          context.push(AppRoutes.photoViewer);
+                          context.push(AppRoutes.memoryDetail);
                         },
                       ),
                     ],

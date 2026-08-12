@@ -114,7 +114,7 @@ class _JournalSearchScreenState extends State<JournalSearchScreen> {
                                 child: GlassCard(
                                   onPressed: () {
                                     memoryCtrl.selectMemory(memory);
-                                    context.push(AppRoutes.photoViewer);
+                                    context.push(AppRoutes.memoryDetail);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(AppSpacing.md),

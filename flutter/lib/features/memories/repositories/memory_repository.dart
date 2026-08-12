@@ -34,12 +34,16 @@ class SqliteMemoryRepository implements MemoryRepository {
     }
     final ext = p.extension(sourcePath).isEmpty ? '.jpg' : p.extension(sourcePath);
     final targetPath = p.join(memoriesDir.path, 'memory_$memoryId$ext');
+    if (p.canonicalize(sourcePath) == p.canonicalize(targetPath)) {
+      return targetPath; // Already in persistent app storage, do not copy onto itself
+    }
     final copiedFile = await file.copy(targetPath);
     return copiedFile.path;
   }
 
   /// Deletes persistent image file if it exists in local app storage
   Future<void> deleteImageFromLocalStorage(String path) async {
+    if (path.startsWith('assets/') || path.trim().isEmpty) return;
     try {
       final file = File(path);
       if (await file.exists()) {
@@ -192,7 +196,7 @@ class SqliteMemoryRepository implements MemoryRepository {
       final pattern = '%${query.toLowerCase()}%';
       final rows = await db.query(
         'memories',
-        where: 'user_id = ? AND (LOWER(caption) LIKE ? OR LOWER(location_name) LIKE ?)',
+        where: 'user_id = ? AND (LOWER(caption) LIKE ? OR (location_name IS NOT NULL AND LOWER(location_name) LIKE ?))',
         whereArgs: [userId, pattern, pattern],
         orderBy: 'created_at DESC',
       );

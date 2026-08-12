@@ -15,18 +15,36 @@ import '../controllers/memory_controller.dart';
 import '../models/memory_model.dart';
 
 class MemoryDetailScreen extends StatelessWidget {
-  final MemoryModel memory;
+  final MemoryModel? memory;
 
-  const MemoryDetailScreen({super.key, required this.memory});
+  const MemoryDetailScreen({super.key, this.memory});
 
   @override
   Widget build(BuildContext context) {
     final memoryCtrl = context.watch<MemoryController>();
+    final targetMemory = memory ?? memoryCtrl.selectedMemory;
+
+    if (targetMemory == null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: const Center(
+          child: Text('No memory selected', style: TextStyle(color: Colors.white)),
+        ),
+      );
+    }
+
     final authCtrl = context.watch<AuthController>();
     final userId = authCtrl.currentUser?.id ?? 'default_user';
 
-    final dateStr = _formatDate(memory.createdAt);
-    final isAsset = memory.imagePath.startsWith('assets/');
+    final dateStr = _formatDate(targetMemory.createdAt);
+    final isAsset = targetMemory.imagePath.startsWith('assets/');
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -34,22 +52,28 @@ class MemoryDetailScreen extends StatelessWidget {
         children: [
           // ── Large Photo Background / Viewer ──────────────────────────────
           Positioned.fill(
-            child: isAsset
-                ? Image.asset(memory.imagePath, fit: BoxFit.contain)
-                : Image.file(
-                    File(memory.imagePath),
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.broken_image, size: 64, color: AppColors.onSurfaceVariant),
-                          const SizedBox(height: 8),
-                          Text('Image not found', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
-                        ],
+            child: GestureDetector(
+              onTap: () {
+                memoryCtrl.selectMemory(targetMemory);
+                context.push(AppRoutes.photoViewer);
+              },
+              child: isAsset
+                  ? Image.asset(targetMemory.imagePath, fit: BoxFit.contain)
+                  : Image.file(
+                      File(targetMemory.imagePath),
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.broken_image, size: 64, color: AppColors.onSurfaceVariant),
+                            const SizedBox(height: 8),
+                            Text('Image not found', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+            ),
           ),
 
           // ── Top Navigation Bar ───────────────────────────────────────────
@@ -68,7 +92,7 @@ class MemoryDetailScreen extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      if (memory.latitude != null && memory.longitude != null)
+                      if (targetMemory.latitude != null && targetMemory.longitude != null)
                         CircleAvatar(
                           backgroundColor: Colors.black.withValues(alpha: 0.6),
                           child: IconButton(
@@ -84,7 +108,7 @@ class MemoryDetailScreen extends StatelessWidget {
                         child: IconButton(
                           icon: const Icon(Icons.edit, color: Colors.white),
                           onPressed: () {
-                            memoryCtrl.initEditDraft(memory);
+                            memoryCtrl.initEditDraft(targetMemory);
                             context.push(AppRoutes.createMemory);
                           },
                         ),
@@ -94,7 +118,7 @@ class MemoryDetailScreen extends StatelessWidget {
                         backgroundColor: Colors.black.withValues(alpha: 0.6),
                         child: IconButton(
                           icon: const Icon(Icons.delete_outline, color: AppColors.error),
-                          onPressed: () => _confirmDelete(context, memoryCtrl, userId),
+                          onPressed: () => _confirmDelete(context, memoryCtrl, targetMemory, userId),
                         ),
                       ),
                     ],
@@ -121,20 +145,20 @@ class MemoryDetailScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildPrivacyPill(memory.privacy),
+                            _buildPrivacyPill(targetMemory.privacy),
                             Text(dateStr, style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
                           ],
                         ),
 
-                        if (memory.caption.isNotEmpty) ...[
+                        if (targetMemory.caption.isNotEmpty) ...[
                           const SizedBox(height: 8),
                           Text(
-                            memory.caption,
+                            targetMemory.caption,
                             style: AppTextStyles.bodyLg(color: Colors.white),
                           ),
                         ],
 
-                        if (memory.locationName != null && memory.locationName!.isNotEmpty) ...[
+                        if (targetMemory.locationName != null && targetMemory.locationName!.isNotEmpty) ...[
                           const SizedBox(height: 8),
                           Row(
                             children: [
@@ -142,7 +166,7 @@ class MemoryDetailScreen extends StatelessWidget {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  memory.locationName!,
+                                  targetMemory.locationName!,
                                   style: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -151,7 +175,7 @@ class MemoryDetailScreen extends StatelessWidget {
                           ),
                         ],
 
-                        if (memory.rideDistance != null || memory.rideDuration != null) ...[
+                        if (targetMemory.rideDistance != null || targetMemory.rideDuration != null) ...[
                           const SizedBox(height: 12),
                           const Divider(color: AppColors.glassBorder),
                           const SizedBox(height: 8),
@@ -160,17 +184,17 @@ class MemoryDetailScreen extends StatelessWidget {
                               const Icon(Icons.directions_bike, size: 16, color: AppColors.circuitOrange),
                               const SizedBox(width: 6),
                               Text(
-                                memory.rideDistance != null
-                                    ? GeoUtils.formatDistance(memory.rideDistance!)
+                                targetMemory.rideDistance != null
+                                    ? GeoUtils.formatDistance(targetMemory.rideDistance!)
                                     : 'Associated Ride',
                                 style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant),
                               ),
-                              if (memory.rideDuration != null) ...[
+                              if (targetMemory.rideDuration != null) ...[
                                 const SizedBox(width: 12),
                                 const Icon(Icons.timer_outlined, size: 16, color: AppColors.onSurfaceVariant),
                                 const SizedBox(width: 4),
                                 Text(
-                                  _formatDuration(memory.rideDuration!),
+                                  _formatDuration(targetMemory.rideDuration!),
                                   style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant),
                                 ),
                               ],
@@ -241,6 +265,7 @@ class MemoryDetailScreen extends StatelessWidget {
   Future<void> _confirmDelete(
     BuildContext context,
     MemoryController memoryCtrl,
+    MemoryModel targetMemory,
     String userId,
   ) async {
     final confirmed = await showDialog<bool>(
@@ -272,7 +297,7 @@ class MemoryDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      final success = await memoryCtrl.deleteMemory(memory.id, userId);
+      final success = await memoryCtrl.deleteMemory(targetMemory.id, userId);
       if (success && context.mounted) {
         context.pop();
       }

@@ -36,6 +36,9 @@ class _CreateMemoryScreenState extends State<CreateMemoryScreen> {
     _captionController = TextEditingController(text: memoryCtrl.draftCaption);
     _locationNameController =
         TextEditingController(text: memoryCtrl.draftLocationName ?? '');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RideController>().loadHistory();
+    });
   }
 
   @override
@@ -325,7 +328,10 @@ class _CreateMemoryScreenState extends State<CreateMemoryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownButtonFormField<String?>(
-                            value: memoryCtrl.draftRideId,
+                            value: (memoryCtrl.draftRideId != null &&
+                                    rideCtrl.rides.any((r) => r.id == memoryCtrl.draftRideId))
+                                ? memoryCtrl.draftRideId
+                                : null,
                             decoration: const InputDecoration(
                               labelText: 'Select Ride',
                               prefixIcon: Icon(Icons.directions_bike, color: AppColors.circuitOrange),

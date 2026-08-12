@@ -91,6 +91,10 @@ class _JournalDashboardScreenState extends State<JournalDashboardScreen> {
                           Row(
                             children: [
                               IconButton(
+                                icon: const Icon(Icons.photo_library_outlined, color: AppColors.onSurface),
+                                onPressed: () => context.push(AppRoutes.mediaGallery),
+                              ),
+                              IconButton(
                                 icon: const Icon(Icons.map_outlined, color: AppColors.circuitOrange),
                                 onPressed: () => context.push(AppRoutes.memoryMap),
                               ),
@@ -188,7 +192,7 @@ class _JournalDashboardScreenState extends State<JournalDashboardScreen> {
       child: GlassCard(
         onPressed: () {
           memoryCtrl.selectMemory(memory);
-          context.push(AppRoutes.photoViewer);
+          context.push(AppRoutes.memoryDetail);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

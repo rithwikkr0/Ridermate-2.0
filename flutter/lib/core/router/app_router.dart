@@ -59,6 +59,7 @@ import '../../features/memories/screens/photo_viewer_screen.dart';
 import '../../features/memories/screens/voice_note_recorder_screen.dart';
 import '../../features/memories/screens/create_memory_screen.dart';
 import '../../features/memories/screens/memory_map_screen.dart';
+import '../../features/memories/screens/memory_detail_screen.dart';
 import '../../features/achievements/screens/achievements_hub_screen.dart';
 import '../../features/achievements/screens/goals_achievements_screen.dart';
 import '../../features/sos/screens/safety_center_screen.dart';
@@ -139,13 +140,14 @@ class AppRoutes {
   static const groupChat        = '/social/chat';
   static const challenges       = '/social/challenges';
   static const leaderboard      = '/social/leaderboard';
-  static const journalSearch    = '/journal/search';
-  static const createMemory     = '/journal/create';
-  static const memoryMap        = '/journal/map';
-  static const collections      = '/journal/collections';
-  static const mediaGallery     = '/journal/gallery';
-  static const photoViewer      = '/journal/photo';
-  static const voiceNote        = '/journal/voice';
+  static const journalSearch    = '/memories/search';
+  static const createMemory     = '/memories/create';
+  static const memoryMap        = '/memories/map';
+  static const collections      = '/memories/collections';
+  static const mediaGallery     = '/memories/gallery';
+  static const photoViewer      = '/memories/photo';
+  static const memoryDetail     = '/memories/detail';
+  static const voiceNote        = '/memories/voice';
   static const achievements     = '/achievements';
   static const goals            = '/achievements/goals';
   static const safety           = '/safety';
@@ -302,6 +304,7 @@ final appRouter = GoRouter(
               GoRoute(path: 'collections', builder: (c, s) => const CollectionsHubScreen()),
               GoRoute(path: 'gallery',     builder: (c, s) => const MediaGalleryScreen()),
               GoRoute(path: 'photo',       builder: (c, s) => const PhotoViewerScreen()),
+              GoRoute(path: 'detail',      builder: (c, s) => const MemoryDetailScreen()),
               GoRoute(path: 'voice',       builder: (c, s) => const VoiceNoteRecorderScreen()),
             ],
           ),
@@ -368,7 +371,17 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.collections, builder: (c, s) => const CollectionsHubScreen()),
     GoRoute(path: AppRoutes.mediaGallery, builder: (c, s) => const MediaGalleryScreen()),
     GoRoute(path: AppRoutes.photoViewer, builder: (c, s) => const PhotoViewerScreen()),
+    GoRoute(path: AppRoutes.memoryDetail, builder: (c, s) => const MemoryDetailScreen()),
     GoRoute(path: AppRoutes.voiceNote,  builder: (c, s) => const VoiceNoteRecorderScreen()),
+    // Legacy /journal/... path aliases
+    GoRoute(path: '/journal/search',    builder: (c, s) => const JournalSearchScreen()),
+    GoRoute(path: '/journal/create',    builder: (c, s) => const CreateMemoryScreen()),
+    GoRoute(path: '/journal/map',       builder: (c, s) => const MemoryMapScreen()),
+    GoRoute(path: '/journal/collections', builder: (c, s) => const CollectionsHubScreen()),
+    GoRoute(path: '/journal/gallery',   builder: (c, s) => const MediaGalleryScreen()),
+    GoRoute(path: '/journal/photo',     builder: (c, s) => const PhotoViewerScreen()),
+    GoRoute(path: '/journal/detail',    builder: (c, s) => const MemoryDetailScreen()),
+    GoRoute(path: '/journal/voice',     builder: (c, s) => const VoiceNoteRecorderScreen()),
     GoRoute(path: AppRoutes.achievements, builder: (c, s) => const AchievementsHubScreen()),
     GoRoute(path: AppRoutes.goals,      builder: (c, s) => const GoalsAchievementsScreen()),
     GoRoute(path: AppRoutes.safety,     builder: (c, s) => const SafetyCenterScreen()),
