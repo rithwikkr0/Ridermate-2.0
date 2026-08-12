@@ -91,6 +91,11 @@ class AppRoutes {
   // Shell routes
   static const home             = '/home';
   static const nav              = '/nav';
+  static const ride             = '/nav'; // alias
+  static const memories         = '/memories';
+  static const journal          = '/memories'; // canonical memories route alias
+  static const community        = '/social';
+  static const social           = '/social';
   static const coach            = '/coach';
   static const stats            = '/stats';
   static const profile          = '/profile';
@@ -134,7 +139,6 @@ class AppRoutes {
   static const groupChat        = '/social/chat';
   static const challenges       = '/social/challenges';
   static const leaderboard      = '/social/leaderboard';
-  static const journal          = '/journal';
   static const journalSearch    = '/journal/search';
   static const createMemory     = '/journal/create';
   static const memoryMap        = '/journal/map';
@@ -286,30 +290,33 @@ final appRouter = GoRouter(
           ),
         ]),
 
-        // Branch 2: AI Coach
+        // Branch 2: Memories / Journal
         StatefulShellBranch(routes: [
           GoRoute(
-            path: AppRoutes.coach,
-            builder: (c, s) => const AiCopilotHomeScreen(),
+            path: AppRoutes.memories,
+            builder: (c, s) => const JournalDashboardScreen(),
             routes: [
-              GoRoute(path: 'listening', builder: (c, s) => const AiListeningScreen()),
-              GoRoute(path: 'pre-ride',  builder: (c, s) => const AiPreRideBriefingScreen()),
-              GoRoute(path: 'post-ride', builder: (c, s) => const AiPostRideAnalysisScreen()),
-              GoRoute(path: 'insights',  builder: (c, s) => const AiCoachInsightsScreen()),
-              GoRoute(path: 'hub',       builder: (c, s) => const AiInsightsHubScreen()),
+              GoRoute(path: 'search',      builder: (c, s) => const JournalSearchScreen()),
+              GoRoute(path: 'create',      builder: (c, s) => const CreateMemoryScreen()),
+              GoRoute(path: 'map',         builder: (c, s) => const MemoryMapScreen()),
+              GoRoute(path: 'collections', builder: (c, s) => const CollectionsHubScreen()),
+              GoRoute(path: 'gallery',     builder: (c, s) => const MediaGalleryScreen()),
+              GoRoute(path: 'photo',       builder: (c, s) => const PhotoViewerScreen()),
+              GoRoute(path: 'voice',       builder: (c, s) => const VoiceNoteRecorderScreen()),
             ],
           ),
         ]),
 
-        // Branch 3: Stats / Analytics
+        // Branch 3: Community
         StatefulShellBranch(routes: [
           GoRoute(
-            path: AppRoutes.stats,
-            builder: (c, s) => const AnalyticsDashboardScreen(),
+            path: AppRoutes.social,
+            builder: (c, s) => const SocialFeedScreen(),
             routes: [
-              GoRoute(path: 'analytics', builder: (c, s) => const AnalyticsHubScreen()),
-              GoRoute(path: 'trends',    builder: (c, s) => const PerformanceTrendsScreen()),
-              GoRoute(path: 'records',   builder: (c, s) => const PersonalRecordsScreen()),
+              GoRoute(path: 'friends',    builder: (c, s) => const FriendsHomeScreen()),
+              GoRoute(path: 'squads',     builder: (c, s) => const SquadsCommunityScreen()),
+              GoRoute(path: 'challenges', builder: (c, s) => const CommunityChallengesScreen()),
+              GoRoute(path: 'leaderboard',builder: (c, s) => const LeaderboardScreen()),
             ],
           ),
         ]),
@@ -327,7 +334,17 @@ final appRouter = GoRouter(
       ],
     ),
 
-    // ── Full-screen routes (outside shell) ────────────────
+    // ── Full-screen & Secondary routes (outside shell) ──
+    GoRoute(path: AppRoutes.coach,        builder: (c, s) => const AiCopilotHomeScreen()),
+    GoRoute(path: AppRoutes.aiListening,  builder: (c, s) => const AiListeningScreen()),
+    GoRoute(path: AppRoutes.aiPreRide,    builder: (c, s) => const AiPreRideBriefingScreen()),
+    GoRoute(path: AppRoutes.aiPostRide,   builder: (c, s) => const AiPostRideAnalysisScreen()),
+    GoRoute(path: AppRoutes.aiCoachInsights, builder: (c, s) => const AiCoachInsightsScreen()),
+    GoRoute(path: AppRoutes.aiInsightsHub,builder: (c, s) => const AiInsightsHubScreen()),
+    GoRoute(path: AppRoutes.stats,        builder: (c, s) => const AnalyticsDashboardScreen()),
+    GoRoute(path: AppRoutes.analyticsHub, builder: (c, s) => const AnalyticsHubScreen()),
+    GoRoute(path: AppRoutes.perfTrends,   builder: (c, s) => const PerformanceTrendsScreen()),
+    GoRoute(path: AppRoutes.personalRecords, builder: (c, s) => const PersonalRecordsScreen()),
     GoRoute(path: AppRoutes.rideHistory, builder: (c, s) => const RideHistoryScreen()),
     GoRoute(path: AppRoutes.rideSummary, builder: (c, s) => const RideSummaryScreen()),
     GoRoute(path: AppRoutes.liveRide,   builder: (c, s) => const LiveRideTrackingScreen()),

@@ -54,8 +54,7 @@ class NotificationBadge extends StatelessWidget {
                       unreadCount > 99 ? '99+' : unreadCount.toString(),
                       style: AppTextStyles.caption(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ).copyWith(fontSize: 9),
+                      ).copyWith(fontSize: 9, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),

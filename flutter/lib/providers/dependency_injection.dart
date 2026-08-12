@@ -15,6 +15,6 @@ class DI {
       SharedPreferencesStorageService();
   static final PermissionService permissions = AndroidPermissionService();
   static final LocationService location = const DeviceLocationService();
-  static final NotificationService notification = MockNotificationService();
+  static final LegacyNotificationService notification = MockNotificationService();
   static final BatteryService battery = MockBatteryService();
 }

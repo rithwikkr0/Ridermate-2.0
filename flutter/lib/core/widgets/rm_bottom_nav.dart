@@ -19,11 +19,11 @@ class RmBottomNav extends StatelessWidget {
   final bool visible;
 
   static const _items = [
-    _NavItem(icon: Icons.home_outlined,       activeIcon: Icons.home_rounded,          label: 'Home'),
-    _NavItem(icon: Icons.explore_outlined,    activeIcon: Icons.explore_rounded,       label: 'Nav'),
-    _NavItem(icon: Icons.psychology_outlined, activeIcon: Icons.psychology_rounded,    label: 'Coach'),
-    _NavItem(icon: Icons.insights_outlined,   activeIcon: Icons.insights_rounded,      label: 'Stats'),
-    _NavItem(icon: Icons.person_outline,      activeIcon: Icons.person_rounded,        label: 'Profile'),
+    _NavItem(icon: Icons.home_outlined,          activeIcon: Icons.home_rounded,           label: 'Home'),
+    _NavItem(icon: Icons.explore_outlined,       activeIcon: Icons.explore_rounded,        label: 'Ride'),
+    _NavItem(icon: Icons.photo_library_outlined, activeIcon: Icons.photo_library_rounded,  label: 'Memories'),
+    _NavItem(icon: Icons.people_outline_rounded, activeIcon: Icons.people_rounded,         label: 'Community'),
+    _NavItem(icon: Icons.person_outline,         activeIcon: Icons.person_rounded,         label: 'Profile'),
   ];
 
   @override
@@ -54,7 +54,6 @@ class RmBottomNav extends StatelessWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-
               children: List.generate(_items.length, (i) {
                 final active = i == currentIndex;
                 final item = _items[i];
@@ -63,7 +62,7 @@ class RmBottomNav extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: active
                           ? AppColors.circuitOrange.withValues(alpha: 0.10)

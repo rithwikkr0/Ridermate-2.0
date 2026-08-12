@@ -273,18 +273,27 @@ class DashboardScreen extends StatelessWidget {
                       const SizedBox(height: AppSpacing.md),
 
                       // ── AI Readiness Insight ─────────────────────────────
-                      GlassCard(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.psychology, color: AppColors.circuitOrange),
-                                const SizedBox(width: 8),
-                                Text('AI Coach Insights', style: AppTextStyles.headlineMd(color: AppColors.onSurface)),
-                              ],
-                            ),
+                      GestureDetector(
+                        onTap: () => context.push(AppRoutes.coach),
+                        behavior: HitTestBehavior.opaque,
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.psychology, color: AppColors.circuitOrange),
+                                      const SizedBox(width: 8),
+                                      Text('AI Coach Insights', style: AppTextStyles.headlineMd(color: AppColors.onSurface)),
+                                    ],
+                                  ),
+                                  const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.circuitOrange, size: 16),
+                                ],
+                              ),
                             const SizedBox(height: AppSpacing.sm),
                             Row(
                               children: [
@@ -340,6 +349,7 @@ class DashboardScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                      ),
                       ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
 
                       const SizedBox(height: AppSpacing.lg),
