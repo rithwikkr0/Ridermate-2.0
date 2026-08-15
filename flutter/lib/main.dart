@@ -8,6 +8,7 @@ import 'core/errors/global_error_handler.dart';
 import 'core/services/database_service.dart';
 import 'core/services/shared_preferences_storage_service.dart';
 import 'core/notifications/services/notification_service.dart';
+import 'core/notifications/services/local_notification_service.dart';
 import 'core/notifications/controllers/notification_controller.dart';
 
 // Auth
@@ -90,6 +91,18 @@ void main() async {
     },
   );
 
+  // Check if app was cold-started by a notification tap.
+  // The background handler stores the route in SharedPreferences.
+  // We schedule navigation after the first frame so the router is ready.
+  final pendingRoute = await LocalNotificationService.consumePendingTapRoute();
+  if (pendingRoute != null && pendingRoute.isNotEmpty) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        appRouter.push(pendingRoute);
+      } catch (_) {}
+    });
+  }
+
   // ── Real auth + session ───────────────────────────────────────────────────
   final authService = SqliteAuthService(databaseService);
   final sessionService = SharedPreferencesSessionService(storageService);
@@ -98,6 +111,7 @@ void main() async {
   final rideRepository = SqliteRideRepository();
   final memoryRepository = SqliteMemoryRepository();
   const locationService = DeviceLocationService();
+  final rideController = RideController(rideRepository, locationService);
 
   // ── AI — mock until Phase 13 ──────────────────────────────────────────────
   final aiProvider = MockAiProvider();
@@ -135,20 +149,29 @@ void main() async {
     SqliteUserRepository(databaseService, userId: ''),
   );
 
+  // Build the NotificationController so we can pass it to AuthController.
+  final notificationController = NotificationController();
+
+  // Build AuthController with onUserChanged callback.
+  // This keeps NotificationController and RideController in sync with the
+  // authenticated user after every login / session-restore / logout.
+  final authController = AuthController(
+    authService,
+    sessionService,
+    databaseService: databaseService,
+    onUserChanged: (userId) {
+      notificationController.refreshForUser(userId);
+      rideController.setUserId(userId);
+    },
+  );
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
-        ChangeNotifierProvider(
-          create: (_) => AuthController(
-            authService,
-            sessionService,
-            databaseService: databaseService,
-          ),
-        ),
+        ChangeNotifierProvider(create: (_) => authController),
         ChangeNotifierProvider(create: (_) => profileController),
-        ChangeNotifierProvider(
-            create: (_) => RideController(rideRepository, locationService)),
+        ChangeNotifierProvider(create: (_) => rideController),
         ChangeNotifierProvider(create: (_) => SosController()),
         ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
         ChangeNotifierProvider(
@@ -158,9 +181,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => NavigationController()),
         ChangeNotifierProvider(
             create: (_) => WeatherController(weatherService)),
-        ChangeNotifierProvider(
-            create: (_) => MemoryController(memoryRepository, locationService)),
-        ChangeNotifierProvider(create: (_) => NotificationController()),
+        ChangeNotifierProvider(create: (_) => MemoryController(memoryRepository, locationService)),
+        ChangeNotifierProvider(create: (_) => notificationController),
       ],
       child: const RiderMateApp(),
     ),

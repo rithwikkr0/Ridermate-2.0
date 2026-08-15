@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import '../../../providers/base_controller.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/services/shared_preferences_storage_service.dart';

@@ -168,7 +168,8 @@ class NotificationSettingsScreen extends StatelessWidget {
     return SwitchListTile(
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.circuitOrange,
+      activeThumbColor: AppColors.circuitOrange,
+      activeTrackColor: AppColors.circuitOrange.withValues(alpha: 0.4),
       secondary: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(

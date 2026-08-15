@@ -77,14 +77,13 @@ class NotificationCenterScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Category Filter Chips
+                    // ── Category Filter Chips ──────────────────────────────
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
                           _buildFilterChip(
-                            context,
-                            'All',
+                            context, 'All',
                             controller.selectedFilter == null && !controller.unreadOnlyFilter,
                             () => controller.setFilter(null),
                           ),
@@ -96,46 +95,17 @@ class NotificationCenterScreen extends StatelessWidget {
                             () => controller.setUnreadOnlyFilter(!controller.unreadOnlyFilter),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          _buildFilterChip(
-                            context,
-                            'Safety',
-                            controller.selectedFilter == NotificationType.safety,
-                            () => controller.setFilter(
-                              controller.selectedFilter == NotificationType.safety ? null : NotificationType.safety,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          _buildFilterChip(
-                            context,
-                            'Ride',
-                            controller.selectedFilter == NotificationType.ride,
-                            () => controller.setFilter(
-                              controller.selectedFilter == NotificationType.ride ? null : NotificationType.ride,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          _buildFilterChip(
-                            context,
-                            'AI',
-                            controller.selectedFilter == NotificationType.ai,
-                            () => controller.setFilter(
-                              controller.selectedFilter == NotificationType.ai ? null : NotificationType.ai,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          _buildFilterChip(
-                            context,
-                            'Achievements',
-                            controller.selectedFilter == NotificationType.achievement,
-                            () => controller.setFilter(
-                              controller.selectedFilter == NotificationType.achievement ? null : NotificationType.achievement,
-                            ),
-                          ),
+                          // All 8 category chips
+                          for (final type in NotificationType.values) ...[
+                            _buildTypeChip(context, type, controller),
+                            const SizedBox(width: AppSpacing.sm),
+                          ],
                         ],
                       ),
                     ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
                     const SizedBox(height: AppSpacing.md),
 
+                    // ── Notification List ──────────────────────────────────
                     if (notifications.isEmpty)
                       Container(
                         height: 300,
@@ -166,18 +136,14 @@ class NotificationCenterScreen extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: notifications.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+                        separatorBuilder: (_, index) => const SizedBox(height: AppSpacing.sm),
                         itemBuilder: (context, index) {
                           final notif = notifications[index];
                           return NotificationTile(
                             appNotification: notif,
                             onTap: () {
                               controller.markAsRead(notif.id);
-                              if (notif.route != null && notif.route!.isNotEmpty) {
-                                try {
-                                  context.push(notif.route!);
-                                } catch (_) {}
-                              }
+                              _navigateFromNotification(context, notif.type, notif.route, notif.entityId);
                             },
                             onDelete: () => controller.deleteNotification(notif.id),
                           )
@@ -196,22 +162,82 @@ class NotificationCenterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(BuildContext context, String label, bool isSelected, VoidCallback onTap) {
+  /// Navigates to the correct screen based on notification type and route.
+  /// Emergency always goes to safety tracking. Falls back to dashboard if route is unknown.
+  void _navigateFromNotification(
+    BuildContext context,
+    NotificationType type,
+    String? route,
+    String? entityId,
+  ) {
+    try {
+      // Emergency — always safety tracking regardless of stored route
+      if (type == NotificationType.emergency) {
+        context.push('/safety/tracking');
+        return;
+      }
+
+      // Memory type — navigate to memory detail with entity ID
+      if (type == NotificationType.ride && route == '/memories/detail' && entityId != null) {
+        context.push('/memories/detail', extra: entityId);
+        return;
+      }
+
+      // Use stored route if valid
+      if (route != null && route.isNotEmpty && route.startsWith('/')) {
+        context.push(route);
+        return;
+      }
+
+      // Fallback — no route or malformed route
+      context.go('/');
+    } catch (_) {
+      // Navigation error — silently fall back to dashboard
+      try {
+        context.go('/');
+      } catch (_) {}
+    }
+  }
+
+  Widget _buildTypeChip(
+    BuildContext context,
+    NotificationType type,
+    NotificationController controller,
+  ) {
+    final isSelected = controller.selectedFilter == type;
+    return _buildFilterChip(
+      context,
+      type.displayName,
+      isSelected,
+      () => controller.setFilter(isSelected ? null : type),
+      accentColor: type.color,
+    );
+  }
+
+  Widget _buildFilterChip(
+    BuildContext context,
+    String label,
+    bool isSelected,
+    VoidCallback onTap, {
+    Color? accentColor,
+  }) {
+    final color = accentColor ?? AppColors.circuitOrange;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.circuitOrange.withValues(alpha: 0.2) : Colors.transparent,
+          color: isSelected ? color.withValues(alpha: 0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.circuitOrange : AppColors.glassBorder,
+            color: isSelected ? color : AppColors.glassBorder,
           ),
         ),
         child: Text(
           label,
           style: AppTextStyles.statLabel(
-            color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+            color: isSelected ? color : AppColors.onSurfaceVariant,
           ),
         ),
       ),

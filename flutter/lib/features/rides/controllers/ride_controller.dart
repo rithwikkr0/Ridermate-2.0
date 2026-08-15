@@ -85,6 +85,15 @@ class RideController extends BaseController {
   // ── Error ─────────────────────────────────────────────────────────────
   String? rideError;
 
+  // ── Authenticated user ID (set by AuthController callback) ─────────────
+  String _currentUserId = 'user_guest';
+
+  /// Updates the authenticated user ID used for notifications.
+  /// Call from AuthController.onUserChanged via main.dart.
+  void setUserId(String userId) {
+    _currentUserId = userId.isNotEmpty ? userId : 'user_guest';
+  }
+
   // ── Selected ride (for summary screen) ─────────────────────────────────
   RideEngineModel? selectedRide;
 
@@ -197,6 +206,7 @@ class RideController extends BaseController {
       body: '${_rideMode == 'group' ? 'Group' : 'Solo'} ride recording initiated.',
       rideId: 'ride-${_startedAt!.millisecondsSinceEpoch}',
       isCompleted: false,
+      userId: _currentUserId,
     );
 
     // 1-second UI refresh timer
@@ -212,13 +222,26 @@ class RideController extends BaseController {
     );
   }
 
-  // ── Location update handler ────────────────────────────────────────────
+  // ── Location update handler ────────────────────────────────────────
   void _onLocationUpdate(RidePointModel point) {
     if (_rideState != RideState.active) return; // ignore while paused/stopping
 
     _lastAccuracyM = point.accuracy;
 
     if (!_isValidPoint(point, previous: _lastPoint)) return;
+
+    // Overspeed safety warning — fires when GPS speed exceeds 80 km/h.
+    // Throttled to 30 seconds to prevent notification flood during sustained overspeed.
+    if (point.speed > 80.0) {
+      final rideId = 'ride-${_startedAt?.millisecondsSinceEpoch ?? 0}';
+      NotificationService.instance.notifySafetyWarning(
+        title: '⚠️ Overspeed Warning',
+        body: 'Speed ${point.speed.toStringAsFixed(0)} km/h exceeds safe urban limit.',
+        rideId: rideId,
+        userId: _currentUserId,
+        cooldown: const Duration(seconds: 30),
+      );
+    }
 
     _recordPoint(point);
     notifyListeners();
@@ -368,6 +391,7 @@ class RideController extends BaseController {
       body: 'Your ride (${ride.distanceKm.toStringAsFixed(1)} km, ${ride.duration.inMinutes} min) is ready.',
       rideId: ride.id,
       isCompleted: true,
+      userId: _currentUserId,
     );
   }
 

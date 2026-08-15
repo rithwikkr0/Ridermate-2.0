@@ -7,11 +7,18 @@ import '../services/session_service.dart';
 import '../../profile/repositories/sqlite_user_repository.dart';
 import '../../../core/services/database_service.dart';
 
+// Callback type — receives the authenticated userId, or 'user_guest' on logout
+typedef UserChangedCallback = void Function(String userId);
+
 /// RiderMate 2.0 — Auth Controller
 class AuthController extends BaseController {
   final AuthService authService;
   final SessionService sessionService;
   final DatabaseService? databaseService;
+
+  /// Optional callback invoked after every auth state change.
+  /// Wire to NotificationController.refreshForUser in main.dart.
+  UserChangedCallback? onUserChanged;
 
   AuthState stateModel = AuthState.unauthenticated();
 
@@ -19,6 +26,7 @@ class AuthController extends BaseController {
     this.authService,
     this.sessionService, {
     this.databaseService,
+    this.onUserChanged,
   });
 
   // ── Session restore on cold start ───────────────────────────────────────
@@ -46,6 +54,7 @@ class AuthController extends BaseController {
         final result = await repo.getCurrentUser();
         if (result.isSuccess && result.dataOrNull != null) {
           stateModel = AuthState.loggedIn(result.dataOrNull!, token);
+          onUserChanged?.call(userId);
           setState(ViewState.success);
           return;
         }
@@ -77,6 +86,7 @@ class AuthController extends BaseController {
         userId: user.id,
       );
       stateModel = AuthState.loggedIn(user, token);
+      onUserChanged?.call(user.id);
       setState(ViewState.success);
     } else {
       stateModel = AuthState.error(result.errorOrNull!);
@@ -101,6 +111,7 @@ class AuthController extends BaseController {
         userId: user.id,
       );
       stateModel = AuthState.loggedIn(user, token);
+      onUserChanged?.call(user.id);
       setState(ViewState.success);
     } else {
       stateModel = AuthState.error(result.errorOrNull!);
@@ -113,6 +124,7 @@ class AuthController extends BaseController {
   Future<void> logout() async {
     await sessionService.clearSession();
     await authService.logout();
+    onUserChanged?.call('user_guest');
     stateModel = AuthState.unauthenticated();
     setState(ViewState.initial);
   }
