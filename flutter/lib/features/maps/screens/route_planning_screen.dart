@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -137,7 +136,6 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
       final tempName = _startName;
       final tempLat = _startLat;
       final tempLng = _startLng;
-      final tempIsCurrent = _isStartCurrentLocation;
 
       _startName = _destinationName;
       _startLat = _destLat;
@@ -415,7 +413,7 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
     return GestureDetector(
       onTap: () => setState(() => _selectedMode = mode),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.circuitOrange.withValues(alpha: 0.2) : AppColors.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(16),
@@ -426,14 +424,19 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
-            Icon(icon, color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: AppTextStyles.labelCaps().copyWith(
-                color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+            Icon(icon, color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant, size: 18),
+            const SizedBox(width: 6),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  style: AppTextStyles.labelCaps().copyWith(
+                    color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+                  ),
+                ),
               ),
             ),
           ],
@@ -443,13 +446,19 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
   }
 
   Widget _buildStatTile(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
-        const SizedBox(height: 2),
-        Text(value, style: AppTextStyles.headlineLg(color: AppColors.onSurface)),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+          const SizedBox(height: 2),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value, style: AppTextStyles.headlineMd(color: AppColors.onSurface)),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/services/shared_preferences_storage_service.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../safety/controllers/sos_controller.dart';
 import '../../safety/models/emergency_contact_model.dart';
 import '../../safety/repositories/emergency_repository.dart';
@@ -51,24 +52,34 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
     );
 
     if (confirm == true && mounted) {
-      final userId = (await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest';
+      final authUserId = context.read<AuthController>().currentUser?.id;
+      final userId = (authUserId != null && authUserId.isNotEmpty)
+          ? authUserId
+          : ((await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest');
       final repo = SqliteEmergencyRepository();
       await repo.deleteContact(contact.id, userId: userId);
-      context.read<SosController>().loadContacts();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Contact Removed'), backgroundColor: Colors.redAccent),
-      );
+      if (mounted) {
+        context.read<SosController>().loadContacts();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contact Removed'), backgroundColor: Colors.redAccent),
+        );
+      }
     }
   }
 
   Future<void> _setPrimary(EmergencyContact contact) async {
-    final userId = (await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest';
+    final authUserId = context.read<AuthController>().currentUser?.id;
+    final userId = (authUserId != null && authUserId.isNotEmpty)
+        ? authUserId
+        : ((await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest');
     final repo = SqliteEmergencyRepository();
     await repo.setPrimaryContact(contact.id, userId: userId);
-    context.read<SosController>().loadContacts();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${contact.name} set as primary contact'), backgroundColor: Colors.green),
-    );
+    if (mounted) {
+      context.read<SosController>().loadContacts();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${contact.name} set as primary contact'), backgroundColor: Colors.green),
+      );
+    }
   }
 
   @override
@@ -266,7 +277,9 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => AddEditEmergencyContactScreen(contact: contact)),
-                  ).then((_) => context.read<SosController>().loadContacts()),
+                  ).then((_) {
+                    if (mounted) context.read<SosController>().loadContacts();
+                  }),
                   icon: const Icon(Icons.edit, size: 16, color: AppColors.onSurfaceVariant),
                   label: Text('Edit', style: AppTextStyles.bodyXs(color: AppColors.onSurfaceVariant)),
                 ),

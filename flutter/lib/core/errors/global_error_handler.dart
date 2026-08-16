@@ -15,6 +15,9 @@ class GlobalErrorHandler {
           code: 'FLUTTER_FRAMEWORK_ERROR',
         ),
       );
+      if (kDebugMode) {
+        FlutterError.dumpErrorToConsole(details);
+      }
     };
 
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {

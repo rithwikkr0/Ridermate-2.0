@@ -81,11 +81,6 @@ class _MemoryMapScreenState extends State<MemoryMapScreen> {
       );
     }).toList();
 
-    LatLng? centerPoint;
-    if (geoMemories.isNotEmpty) {
-      centerPoint = LatLng(geoMemories.first.latitude!, geoMemories.first.longitude!);
-    }
-
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       body: Stack(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
 
 import '../../../core/errors/result.dart';
 import '../../../core/errors/app_error.dart';
@@ -223,14 +224,17 @@ class SqliteUserRepository implements UserRepository {
       EmergencyContactModel contact) async {
     try {
       final db = await _db.database;
+      final now = DateTime.now().toIso8601String();
       await db.insert('emergency_contacts', {
         'id': contact.id,
         'user_id': userId,
         'name': contact.name,
-        'relation': contact.relation,
-        'phone': contact.phone,
-        'order_index': contact.orderIndex,
-      });
+        'phone_number': contact.phone,
+        'relationship': contact.relation,
+        'is_primary': contact.orderIndex == 0 ? 1 : 0,
+        'created_at': now,
+        'updated_at': now,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
       final contacts = await _loadContacts();
       return Result.success(contacts);
     } catch (e) {

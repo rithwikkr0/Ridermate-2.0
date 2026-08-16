@@ -33,7 +33,6 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
-    final rideController = context.watch<RideController>();
     final aiController = context.watch<AiController>();
     final weatherController = context.watch<WeatherController>();
 
@@ -81,23 +80,29 @@ class DashboardScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                             children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage: user.profilePhotoUrl.isNotEmpty
-                                        ? NetworkImage(user.profilePhotoUrl) as ImageProvider
-                                        : null,
-                                    backgroundColor: AppColors.surfaceContainerHigh,
-                                    child: user.profilePhotoUrl.isEmpty
-                                        ? const Icon(Icons.person, color: AppColors.onSurfaceVariant, size: 20)
-                                        : null,
-                                  ),
-                                  const SizedBox(width: AppSpacing.sm),
-                                  Text('RiderMate 2.0', style: AppTextStyles.headlineLg(color: AppColors.circuitOrange)),
-                                ],
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 18,
+                                      backgroundImage: user.profilePhotoUrl.isNotEmpty
+                                          ? NetworkImage(user.profilePhotoUrl) as ImageProvider
+                                          : null,
+                                      backgroundColor: AppColors.surfaceContainerHigh,
+                                      child: user.profilePhotoUrl.isEmpty
+                                          ? const Icon(Icons.person, color: AppColors.onSurfaceVariant, size: 18)
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text('RiderMate 2.0', style: AppTextStyles.headlineLg(color: AppColors.circuitOrange)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const Spacer(),
                               IconButton(
                                 icon: const Icon(Icons.notifications_outlined, color: AppColors.onSurfaceVariant),
                                 onPressed: () => context.push(AppRoutes.notifications),
@@ -123,10 +128,11 @@ class DashboardScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ── Dynamic Greeting & Status Pill ──────────────────
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,14 +142,16 @@ class DashboardScreen extends StatelessWidget {
                             ],
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               GestureDetector(
                                 onTap: () => context.push(AppRoutes.weather),
                                 child: GlassCard(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(Icons.light_mode, color: AppColors.softOrange, size: 16),
+                                      const Icon(Icons.light_mode, color: AppColors.softOrange, size: 14),
                                       const SizedBox(width: 4),
                                       Text('${weather.temperatureC.toStringAsFixed(0)}°',
                                           style: AppTextStyles.statLabel(color: AppColors.onSurface)),
@@ -151,12 +159,13 @@ class DashboardScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 6),
                               GlassCard(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.gps_fixed, color: AppColors.circuitOrange, size: 16),
+                                    const Icon(Icons.gps_fixed, color: AppColors.circuitOrange, size: 14),
                                     const SizedBox(width: 4),
                                     Text('GPS ON', style: AppTextStyles.statLabel(color: AppColors.onSurface)),
                                   ],
@@ -175,7 +184,7 @@ class DashboardScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 180,
+                              height: 160,
                               child: Stack(
                                 children: [
                                   const RealMapView(
@@ -183,14 +192,19 @@ class DashboardScreen extends StatelessWidget {
                                     showRecenterButton: false,
                                   ),
                                   Positioned(
-                                    left: 16,
-                                    bottom: 12,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('START A RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
-                                        Text('Select Navigation Mode', style: AppTextStyles.headlineMd(color: Colors.white)),
-                                      ],
+                                    left: 12,
+                                    right: 12,
+                                    bottom: 8,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('START A RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                                          Text('Select Navigation Mode', style: AppTextStyles.headlineMd(color: Colors.white)),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -205,25 +219,31 @@ class DashboardScreen extends StatelessWidget {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.circuitOrange,
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                       ),
-                                      icon: const Icon(Icons.navigation_rounded, size: 20),
-                                      label: Text('SOLO RIDE', style: AppTextStyles.labelCaps()),
+                                      icon: const Icon(Icons.navigation_rounded, size: 18),
+                                      label: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text('SOLO RIDE', style: AppTextStyles.labelCaps()),
+                                      ),
                                       onPressed: () => context.push(AppRoutes.routePlanning),
                                     ),
                                   ),
-                                  const SizedBox(width: AppSpacing.md),
+                                  const SizedBox(width: AppSpacing.sm),
                                   Expanded(
                                     child: OutlinedButton.icon(
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.white,
                                         side: const BorderSide(color: AppColors.circuitOrange, width: 1.5),
-                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                       ),
-                                      icon: const Icon(Icons.groups_rounded, color: AppColors.circuitOrange, size: 20),
-                                      label: Text('GROUP RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                                      icon: const Icon(Icons.groups_rounded, color: AppColors.circuitOrange, size: 18),
+                                      label: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text('GROUP RIDE', style: AppTextStyles.labelCaps(color: AppColors.circuitOrange)),
+                                      ),
                                       onPressed: () => context.push(AppRoutes.liveGroupMap),
                                     ),
                                   ),
@@ -331,14 +351,22 @@ class DashboardScreen extends StatelessWidget {
                                             child: const Icon(Icons.air, size: 18, color: AppColors.onSurface),
                                           ),
                                           const SizedBox(width: 8),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('${weather.condition} ${weather.windDirection}',
-                                                  style: AppTextStyles.statLabel(color: AppColors.onSurface)),
-                                              Text('${weather.windSpeedKmh.toStringAsFixed(0)} km/h',
-                                                  style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
-                                            ],
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${weather.condition} ${weather.windDirection}',
+                                                  style: AppTextStyles.statLabel(color: AppColors.onSurface),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                                Text(
+                                                  '${weather.windSpeedKmh.toStringAsFixed(0)} km/h',
+                                                  style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -384,7 +412,7 @@ class DashboardScreen extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         mainAxisSpacing: AppSpacing.sm,
                         crossAxisSpacing: AppSpacing.sm,
-                        childAspectRatio: 1.5,
+                        childAspectRatio: 1.15,
                         children: const [
                           StatsCard(label: 'Total Distance', value: '128.4', unit: 'KM', icon: Icons.map_outlined),
                           StatsCard(label: 'Total Rides', value: '5', unit: 'RIDES', icon: Icons.two_wheeler),

@@ -11,7 +11,7 @@ void main() {
       final friendService = MockFriendManagerService();
       final friends = await friendService.getFriendsList();
       expect(friends.length, equals(3));
-      expect(friends.first.name, equals('Arjun K.'));
+      expect(friends.first.fullName, equals('Arjun K.'));
     });
 
     test('MockClubManagerService joins club', () async {

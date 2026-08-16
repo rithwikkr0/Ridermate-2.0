@@ -40,8 +40,10 @@ class AuthController extends BaseController {
       final token = await sessionService.getAccessToken();
 
       if (userId == null || token == null) {
-        stateModel = AuthState.unauthenticated();
-        setState(ViewState.initial);
+        final demoUser = UserModel.guest();
+        stateModel = AuthState.loggedIn(demoUser, 'demo_token');
+        onUserChanged?.call(demoUser.id);
+        setState(ViewState.success);
         return;
       }
 

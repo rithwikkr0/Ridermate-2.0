@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ridermate/features/weather/models/weather_model.dart';
 import 'package:ridermate/features/weather/services/weather_service.dart';
 import 'package:ridermate/features/weather/controllers/weather_controller.dart';
 

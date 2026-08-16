@@ -36,7 +36,15 @@ class RideCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(ride.title, style: AppTextStyles.statLabel(color: AppColors.onSurface)),
+                  Expanded(
+                    child: Text(
+                      ride.title,
+                      style: AppTextStyles.statLabel(color: AppColors.onSurface),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     ride.timeAgo.toUpperCase(),
                     style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant),
@@ -46,17 +54,17 @@ class RideCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
-                  _StatChip(label: 'DIST', value: ride.distance),
-                  const SizedBox(width: AppSpacing.lg),
-                  _StatChip(label: 'AVG', value: ride.avgSpeed),
+                  Expanded(child: _StatChip(label: 'DIST', value: ride.distance)),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(child: _StatChip(label: 'AVG', value: ride.avgSpeed)),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  _StatChip(label: 'TIME', value: ride.duration),
-                  const SizedBox(width: AppSpacing.lg),
-                  _StatChip(label: 'ELEV', value: ride.elevation),
+                  Expanded(child: _StatChip(label: 'TIME', value: ride.duration)),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(child: _StatChip(label: 'ELEV', value: ride.elevation)),
                 ],
               ),
             ],

@@ -82,24 +82,38 @@ class _JournalDashboardScreenState extends State<JournalDashboardScreen> {
                     children: [
                       // Header
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Ride Journal',
-                            style: AppTextStyles.headlineMd(color: AppColors.onSurface),
+                          Expanded(
+                            child: Text(
+                              'Ride Journal',
+                              style: AppTextStyles.headlineMd(color: AppColors.onSurface),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.photo_library_outlined, color: AppColors.onSurface),
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(Icons.photo_library_outlined, color: AppColors.onSurface, size: 22),
                                 onPressed: () => context.push(AppRoutes.mediaGallery),
                               ),
+                              const SizedBox(width: 8),
                               IconButton(
-                                icon: const Icon(Icons.map_outlined, color: AppColors.circuitOrange),
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(Icons.map_outlined, color: AppColors.circuitOrange, size: 22),
                                 onPressed: () => context.push(AppRoutes.memoryMap),
                               ),
+                              const SizedBox(width: 8),
                               IconButton(
-                                icon: const Icon(Icons.search, color: AppColors.onSurface),
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(Icons.search, color: AppColors.onSurface, size: 22),
                                 onPressed: () => context.push(AppRoutes.journalSearch),
                               ),
                             ],

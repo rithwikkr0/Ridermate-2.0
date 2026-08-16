@@ -1,22 +1,6 @@
-/// RiderMate 2.0 — Comprehensive Community & Social Models
-class FriendModel {
-  final String id;
-  final String name;
-  final String username;
-  final String avatarUrl;
-  final bool isOnline;
-  final String lastSeenText;
+export 'friend_model.dart';
 
-  const FriendModel({
-    required this.id,
-    required this.name,
-    required this.username,
-    required this.avatarUrl,
-    required this.isOnline,
-    required this.lastSeenText,
-  });
-}
-
+/// RiderMate 2.0 — Ride Club Model
 class RideClubModel {
   final String id;
   final String name;
@@ -37,6 +21,7 @@ class RideClubModel {
   });
 }
 
+/// RiderMate 2.0 — Challenge Model
 class ChallengeModel {
   final String id;
   final String title;
@@ -55,6 +40,7 @@ class ChallengeModel {
   });
 }
 
+/// RiderMate 2.0 — Leaderboard Rank Model
 class LeaderboardRankModel {
   final int rank;
   final String name;

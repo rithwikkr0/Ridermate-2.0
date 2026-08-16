@@ -199,19 +199,25 @@ void main() {
   });
 
   group('3. EmergencySmsService & SosController State Machine Tests', () {
-    test('EmergencySmsService builds valid message with location link', () {
+    test('EmergencySmsService builds valid message with location link and emergency contact details', () {
       const smsService = EmergencySmsService();
       final msg = smsService.buildEmergencyMessage(
         riderName: 'Test Rider',
+        riderPhone: '9876543210',
         latitude: 12.9716,
         longitude: 77.5946,
         timestamp: DateTime(2026, 8, 10, 15, 30),
+        emergencyContactName: 'Hema',
+        emergencyContactPhone: '8951563449',
+        emergencyContactRelationship: 'Friend',
         rideDistanceKm: 15.4,
       );
 
-      expect(msg.contains('RIDERMATE EMERGENCY ALERT'), true);
+      expect(msg.contains('RIDERMATE EMERGENCY DISTRESS ALERT'), true);
       expect(msg.contains('Test Rider'), true);
-      expect(msg.contains('https://maps.google.com/?q=12.9716,77.5946'), true);
+      expect(msg.contains('9876543210'), true);
+      expect(msg.contains('https://maps.google.com/?q=12.971600,77.594600'), true);
+      expect(msg.contains('Hema (Friend) 8951563449'), true);
       expect(msg.contains('15.4 km'), true);
     });
 
@@ -225,6 +231,16 @@ void main() {
 
       controller.cancelSos();
       expect(controller.sosState, SosState.cancelled);
+
+      controller.dispose();
+    });
+
+    test('SosController triggerImmediateSos activates emergency mode immediately', () {
+      final controller = SosController();
+      expect(controller.sosState, SosState.idle);
+
+      controller.triggerImmediateSos();
+      expect(controller.sosState, SosState.activeEmergency);
 
       controller.dispose();
     });

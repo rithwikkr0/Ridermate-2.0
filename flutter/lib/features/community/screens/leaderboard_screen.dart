@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
-import 'package:go_router/go_router.dart';
+import '../controllers/community_controller.dart';
+import '../models/community_models.dart';
 
-class LeaderboardScreen extends StatelessWidget {
+class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
 
-  static const leaderboard = [
-    {'rank': 1, 'name': 'Arjun K.', 'score': '284 km', 'img': '1'},
-    {'rank': 2, 'name': 'Priya S.', 'score': '256 km', 'img': '12'},
-    {'rank': 3, 'name': 'John Rider', 'score': '248 km', 'img': '13', 'highlight': true},
-    {'rank': 4, 'name': 'Rahul M.', 'score': '210 km', 'img': '5'},
-    {'rank': 5, 'name': 'Divya R.', 'score': '195 km', 'img': '8'},
-    {'rank': 6, 'name': 'Kiran P.', 'score': '180 km', 'img': '9'},
-  ];
+  @override
+  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
+}
+
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CommunityController>().loadLeaderboard();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final community = context.watch<CommunityController>();
+    final list = community.leaderboard;
+
+    final first = list.isNotEmpty ? list[0] : null;
+    final second = list.length > 1 ? list[1] : null;
+    final third = list.length > 2 ? list[2] : null;
+
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       appBar: AppBar(
@@ -44,114 +58,117 @@ class LeaderboardScreen extends StatelessWidget {
             ),
           ),
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.sm),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile),
-                    child: Row(
-                      children: ['Distance', 'Elevation', 'Speed', 'Rides'].map((filter) {
-                        final isSelected = filter == 'Distance';
-                        return Padding(
-                          padding: const EdgeInsets.only(right: AppSpacing.sm),
-                          child: Chip(
-                            label: Text(
-                              filter,
-                              style: AppTextStyles.labelCapsSm(
-                                color: isSelected ? Colors.white : AppColors.onSurface,
-                              ),
-                            ),
-                            backgroundColor: isSelected ? AppColors.circuitOrange : AppColors.surfaceContainerHigh,
-                            side: BorderSide(color: isSelected ? Colors.transparent : AppColors.glassBorder),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
-                  
-                  const SizedBox(height: AppSpacing.xl),
-                  
-                  // Podium
-                  SizedBox(
-                    height: 250,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+            child: list.isEmpty
+                ? Center(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        buildPodium(2, 'Priya S.', '256 km', '12', 100, false).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-                        const SizedBox(width: AppSpacing.sm),
-                        buildPodium(1, 'Arjun K.', '284 km', '11', 140, true).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2),
-                        const SizedBox(width: AppSpacing.sm),
-                        buildPodium(3, 'John Rider', '248 km', '13', 80, false).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
+                        const Icon(Icons.emoji_events_outlined, size: 56, color: AppColors.onSurfaceVariant),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text('No Leaderboard Data Yet', style: AppTextStyles.headlineSm()),
+                        const SizedBox(height: 4),
+                        Text('Ride and track your distance to climb the leaderboard!', style: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant)),
                       ],
                     ),
-                  ),
-                  
-                  const SizedBox(height: AppSpacing.xl),
-                  
-                  // List
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile),
-                    itemCount: leaderboard.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
-                    itemBuilder: (context, index) {
-                      final item = leaderboard[index];
-                      final isHighlighted = item['highlight'] == true;
-                      
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: isHighlighted ? Border.all(color: AppColors.circuitOrange, width: 2) : null,
-                        ),
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(AppSpacing.md),
+                  )
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: AppSpacing.md),
+                        // Top Podium
+                        SizedBox(
+                          height: 250,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 30,
-                                child: Text('#${item['rank']}', style: AppTextStyles.bodyLg(color: AppColors.onSurface)),
-                              ),
+                              if (second != null)
+                                buildPodium(2, second.name, '${second.distanceKm.toStringAsFixed(1)} km', 100, false)
+                                    .animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
                               const SizedBox(width: AppSpacing.sm),
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=${item['img']}'),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: Text(item['name'] as String, style: AppTextStyles.bodyLg(color: AppColors.onSurface)),
-                              ),
-                              Text(item['score'] as String, style: AppTextStyles.statLabel(color: AppColors.circuitOrange)),
+                              if (first != null)
+                                buildPodium(1, first.name, '${first.distanceKm.toStringAsFixed(1)} km', 140, true)
+                                    .animate().fadeIn(delay: 100.ms).slideY(begin: 0.2),
+                              const SizedBox(width: AppSpacing.sm),
+                              if (third != null)
+                                buildPodium(3, third.name, '${third.distanceKm.toStringAsFixed(1)} km', 80, false)
+                                    .animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
                             ],
                           ),
                         ),
-                      ).animate().fadeIn(delay: Duration(milliseconds: 400 + (index * 50))).slideX(begin: 0.1);
-                    },
+
+                        const SizedBox(height: AppSpacing.xl),
+
+                        // List of All Riders
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.marginMobile),
+                          itemCount: list.length,
+                          separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+                          itemBuilder: (context, index) {
+                            final item = list[index];
+                            final isHighlighted = item.isCurrentUser;
+
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border: isHighlighted ? Border.all(color: AppColors.circuitOrange, width: 2) : null,
+                              ),
+                              child: GlassCard(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 30,
+                                      child: Text('#${item.rank}', style: AppTextStyles.bodyLg(color: AppColors.onSurface)),
+                                    ),
+                                    const SizedBox(width: AppSpacing.sm),
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: AppColors.surfaceContainerHighest,
+                                      backgroundImage: item.avatarUrl.isNotEmpty ? NetworkImage(item.avatarUrl) : null,
+                                      child: item.avatarUrl.isEmpty ? const Icon(Icons.person, color: AppColors.onSurface) : null,
+                                    ),
+                                    const SizedBox(width: AppSpacing.md),
+                                    Expanded(
+                                      child: Text(
+                                        item.isCurrentUser ? '${item.name} (You)' : item.name,
+                                        style: AppTextStyles.bodyLg(color: AppColors.onSurface),
+                                      ),
+                                    ),
+                                    Text('${item.distanceKm.toStringAsFixed(1)} km', style: AppTextStyles.statLabel(color: AppColors.circuitOrange)),
+                                  ],
+                                ),
+                              ),
+                            ).animate().fadeIn(delay: Duration(milliseconds: 200 + (index * 30))).slideX(begin: 0.1);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 
-  Widget buildPodium(int rank, String name, String score, String imgIndex, double height, bool isFirst) {
+  Widget buildPodium(int rank, String name, String score, double height, bool isFirst) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (isFirst) const Icon(Icons.emoji_events, color: Color(0xFFFFD700), size: 28),
         CircleAvatar(
           radius: isFirst ? 28 : 22,
-          backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=$imgIndex'),
+          backgroundColor: AppColors.surfaceContainerHighest,
+          child: const Icon(Icons.person, color: AppColors.onSurface),
         ),
         const SizedBox(height: 4),
-        Text(name, style: AppTextStyles.labelCapsSm(color: AppColors.onSurface)),
+        SizedBox(
+          width: 80,
+          child: Text(name, style: AppTextStyles.labelCapsSm(color: AppColors.onSurface), maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+        ),
         Text(score, style: AppTextStyles.labelCapsSm(color: AppColors.circuitOrange)),
         const SizedBox(height: 4),
         Container(

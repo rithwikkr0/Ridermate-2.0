@@ -69,6 +69,8 @@ class UserModel {
     required this.updatedAt,
   });
 
+  String get photoUrl => profilePhotoUrl;
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'username': username,
@@ -88,4 +90,27 @@ class UserModel {
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt.toIso8601String(),
       };
+
+  factory UserModel.guest() {
+    final now = DateTime.now();
+    return UserModel(
+      id: 'user_demo',
+      username: 'demo_rider',
+      fullName: 'RiderMate Pro',
+      email: 'demo@ridermate.app',
+      phone: '+919876543210',
+      profilePhotoUrl: '',
+      bio: 'RiderMate Rider',
+      riderLevel: 'Novice',
+      xp: 100,
+      totalDistanceKm: 0.0,
+      totalRides: 0,
+      achievements: const [],
+      emergencyContacts: const [],
+      vehicles: const [],
+      preferences: const UserPreferences(),
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
 }

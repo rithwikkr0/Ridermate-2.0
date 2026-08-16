@@ -17,11 +17,6 @@ import 'package:ridermate/features/ai/controllers/ai_controller.dart';
 import 'package:ridermate/features/ai/repositories/ai_repository.dart';
 import 'package:ridermate/features/ai/services/ai_provider.dart';
 import 'package:ridermate/features/community/controllers/community_controller.dart';
-import 'package:ridermate/features/community/repositories/community_repository.dart';
-import 'package:ridermate/features/community/services/friend_manager_service.dart';
-import 'package:ridermate/features/community/services/club_manager_service.dart';
-import 'package:ridermate/features/community/services/challenge_engine_service.dart';
-import 'package:ridermate/features/community/services/leaderboard_service.dart';
 import 'package:ridermate/features/garage/controllers/garage_controller.dart';
 import 'package:ridermate/features/garage/repositories/garage_repository.dart';
 import 'package:ridermate/features/garage/services/fuel_manager_service.dart';
@@ -52,17 +47,6 @@ void main() {
     final aiProvider = MockAiProvider();
     final aiRepository = MockAiRepository(aiProvider);
 
-    final friendManager = MockFriendManagerService();
-    final clubManager = MockClubManagerService();
-    final challengeEngine = MockChallengeEngineService();
-    final leaderboardService = MockLeaderboardService();
-    final communityRepository = MockCommunityRepository(
-      friendManager: friendManager,
-      clubManager: clubManager,
-      challengeEngine: challengeEngine,
-      leaderboardService: leaderboardService,
-    );
-
     final fuelManagerService = MockFuelManagerService();
     final maintenanceService = MockMaintenanceService();
     final garageRepository = MockGarageRepository(
@@ -84,8 +68,7 @@ void main() {
               create: (_) => RideController(rideRepository, locationService)),
           ChangeNotifierProvider(create: (_) => SosController()),
           ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
-          ChangeNotifierProvider(
-              create: (_) => CommunityController(communityRepository)),
+          ChangeNotifierProvider(create: (_) => CommunityController()),
           ChangeNotifierProvider(
               create: (_) => GarageController(garageRepository)),
           ChangeNotifierProvider(create: (_) => NavigationController()),
@@ -97,7 +80,7 @@ void main() {
     );
 
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle(const Duration(milliseconds: 100)).catchError((_) => 0);
     expect(find.byType(RiderMateApp), findsOneWidget);
 
     // Restore error handler

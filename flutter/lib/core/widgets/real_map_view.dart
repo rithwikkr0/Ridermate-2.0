@@ -467,42 +467,45 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
   }) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.marginMobile),
+        padding: const EdgeInsets.all(AppSpacing.xs),
         child: GlassCard(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 48, color: AppColors.circuitOrange),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  title,
-                  style: AppTextStyles.headlineSm()
-                      .copyWith(color: AppColors.circuitOrange),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  message,
-                  style: AppTextStyles.bodyMd()
-                      .copyWith(color: AppColors.onSurfaceVariant),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.circuitOrange,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 32, color: AppColors.circuitOrange),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    title,
+                    style: AppTextStyles.labelCaps()
+                        .copyWith(color: AppColors.circuitOrange),
+                    textAlign: TextAlign.center,
                   ),
-                  onPressed: onPressed,
-                  child: Text(buttonText, style: AppTextStyles.labelCaps()),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    message,
+                    style: AppTextStyles.bodySm()
+                        .copyWith(color: AppColors.onSurfaceVariant),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.circuitOrange,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onPressed: onPressed,
+                    child: Text(buttonText, style: AppTextStyles.labelCapsSm()),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

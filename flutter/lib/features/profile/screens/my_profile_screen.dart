@@ -7,25 +7,58 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../../../core/widgets/ride_card.dart';
 import '../../../core/widgets/rm_scroll_body.dart';
-import '../../../core/constants/mock_data.dart' hide UserModel;
+import '../../../core/router/app_router.dart';
 
 import '../../auth/models/user_model.dart';
-
 import '../../auth/controllers/auth_controller.dart';
 import '../controllers/profile_controller.dart';
 import '../../garage/controllers/garage_controller.dart';
+import '../../safety/repositories/sqlite_traffic_repository.dart';
+import '../../community/repositories/sqlite_friend_repository.dart';
 
-
-class MyProfileScreen extends StatelessWidget {
+/// RiderMate 2.0 — Central Personal Profile Dashboard & Command Hub Screen
+class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
+
+  @override
+  State<MyProfileScreen> createState() => _MyProfileScreenState();
+}
+
+class _MyProfileScreenState extends State<MyProfileScreen> {
+  final SqliteTrafficRepository _trafficRepository = SqliteTrafficRepository();
+  final SqliteFriendRepository _friendRepository = SqliteFriendRepository();
+
+  int _safetyScore = 100;
+  int _friendCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileMetrics();
+  }
+
+  Future<void> _loadProfileMetrics() async {
+    final authController = context.read<AuthController>();
+    final uid = authController.currentUser?.id ?? 'user_guest';
+
+    final scoreRes = await _trafficRepository.getSafetyScore(userId: uid);
+    final friendsRes = await _friendRepository.getFriends(userId: uid);
+
+    if (mounted) {
+      setState(() {
+        _safetyScore = scoreRes.dataOrNull ?? 100;
+        _friendCount = (friendsRes.dataOrNull ?? []).length;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
     final garageController = context.watch<GarageController>();
     final user = profileController.userOrDefault;
+    final primaryVehicle = garageController.primaryVehicle;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
@@ -45,7 +78,7 @@ class MyProfileScreen extends StatelessWidget {
             child: SafeArea(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 100),
+                padding: const EdgeInsets.only(bottom: 120),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -55,68 +88,191 @@ class MyProfileScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Quick Overview Stats Bar
                           _buildStatsRow(user),
                           const SizedBox(height: AppSpacing.xl),
-                          Text('Recent Rides', style: AppTextStyles.headlineSm()),
-                          const SizedBox(height: AppSpacing.md),
-                          SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: 3,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: AppSpacing.md),
-                                  child: SizedBox(
-                                    width: 280,
-                                    child: RideCard(ride: MockData.recentRides[index % MockData.recentRides.length]),
-                                  ),
-                                );
-                              },
+
+                          // 1. MY RIDING SECTION
+                          _buildSectionHeader('MY RIDING'),
+                          const SizedBox(height: AppSpacing.sm),
+                          GlassCard(
+                            child: Column(
+                              children: [
+                                _buildNavTile(
+                                  icon: Icons.directions_bike_rounded,
+                                  iconColor: AppColors.circuitOrange,
+                                  title: 'Ride History & Telemetry',
+                                  subtitle: '${user.totalRides} total rides • ${user.totalDistanceKm.toStringAsFixed(1)} km recorded',
+                                  onTap: () => context.push('/rides/history'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.bar_chart_rounded,
+                                  iconColor: Colors.cyanAccent,
+                                  title: 'Rider Analytics & Performance',
+                                  subtitle: 'Speed trends, elevation profiles & records',
+                                  onTap: () => context.push('/analytics'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.emoji_events_rounded,
+                                  iconColor: Colors.amber,
+                                  title: 'Achievements & Milestones',
+                                  subtitle: '${user.achievements.length} badges unlocked',
+                                  onTap: () => context.push('/achievements'),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xl),
-                          Text('Achievements', style: AppTextStyles.headlineSm()),
-                          const SizedBox(height: AppSpacing.md),
-                          Row(
-                            children: user.achievements
-                                .take(3)
-                                .map((a) => Padding(
-                                      padding: const EdgeInsets.only(right: AppSpacing.sm),
-                                      child: _buildAchievementBadge(a.split(' ')[0]),
-                                    ))
-                                .toList(),
+
+                          // 2. MY VEHICLES & GARAGE SECTION
+                          _buildSectionHeader('MY VEHICLES & GARAGE'),
+                          const SizedBox(height: AppSpacing.sm),
+                          GlassCard(
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.circuitOrange.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(Icons.two_wheeler_rounded, color: AppColors.circuitOrange, size: 24),
+                                  ),
+                                  title: Text(
+                                    primaryVehicle != null
+                                        ? '${primaryVehicle.brand} ${primaryVehicle.model}'
+                                        : (user.vehicles.isNotEmpty
+                                            ? '${user.vehicles[0].brand} ${user.vehicles[0].model}'
+                                            : 'No Vehicle Registered'),
+                                    style: AppTextStyles.headlineSm(),
+                                  ),
+                                  subtitle: Text(
+                                    primaryVehicle != null
+                                        ? 'Odometer: ${primaryVehicle.odometerKm.toStringAsFixed(0)} km • ${primaryVehicle.maskedRegistrationNumber}'
+                                        : 'Tap to add your motorcyle or scooter',
+                                    style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.onSurfaceVariant, size: 16),
+                                    onPressed: () => context.push('/profile/garage'),
+                                  ),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.build_rounded,
+                                  iconColor: Colors.lightBlueAccent,
+                                  title: 'Garage & Maintenance Hub',
+                                  subtitle: 'Service due in ${primaryVehicle?.serviceKmRemaining.toStringAsFixed(0) ?? "5,000"} km • Insurance & PUC status',
+                                  onTap: () => context.push('/profile/garage'),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: AppSpacing.xl),
-                          Text('My Vehicle', style: AppTextStyles.headlineSm()),
-                          const SizedBox(height: AppSpacing.md),
+
+                          // 3. FRIENDS SECTION
+                          _buildSectionHeader('FRIENDS & SQUAD'),
+                          const SizedBox(height: AppSpacing.sm),
                           GlassCard(
-                            child: Padding(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.two_wheeler_rounded, size: 40, color: AppColors.onSurface),
-                                  const SizedBox(width: AppSpacing.md),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          user.vehicles.isNotEmpty
-                                              ? '${user.vehicles[0].brand} ${user.vehicles[0].model}'
-                                              : 'No vehicle added',
-                                          style: AppTextStyles.headlineSm(),
-                                        ),
-                                        Text(
-                                          'Odometer: ${garageController.totalServiceCost > 0 ? "12,450 km" : "12,450 km"}',
-                                          style: AppTextStyles.labelCapsSm(color: Colors.greenAccent),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: Column(
+                              children: [
+                                _buildNavTile(
+                                  icon: Icons.people_rounded,
+                                  iconColor: Colors.greenAccent,
+                                  title: 'Friends & Community Hub',
+                                  subtitle: '$_friendCount friends connected • Snapchat-style memory stories',
+                                  onTap: () => context.push('/social/friends'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.bookmark_rounded,
+                                  iconColor: AppColors.circuitOrange,
+                                  title: 'Saved Community Posts',
+                                  subtitle: 'View your bookmarked rides and social moments',
+                                  onTap: () => context.push(AppRoutes.savedPosts),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+
+                          // 4. MEMORIES SECTION
+                          _buildSectionHeader('MEMORIES & JOURNAL'),
+                          const SizedBox(height: AppSpacing.sm),
+                          GlassCard(
+                            child: Column(
+                              children: [
+                                _buildNavTile(
+                                  icon: Icons.photo_library_rounded,
+                                  iconColor: Colors.purpleAccent,
+                                  title: 'Rider Memories & Journal',
+                                  subtitle: 'Photo journal, geotags & ride stories',
+                                  onTap: () => context.push('/memories'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.map_rounded,
+                                  iconColor: Colors.orangeAccent,
+                                  title: 'Geotagged Memory Map',
+                                  subtitle: 'Explore ride photos on interactive map',
+                                  onTap: () => context.push('/memories/map'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+
+                          // 5. SAFETY & TRAFFIC POINTS SECTION
+                          _buildSectionHeader('SAFETY & TRAFFIC POINTS'),
+                          const SizedBox(height: AppSpacing.sm),
+                          GlassCard(
+                            child: Column(
+                              children: [
+                                _buildNavTile(
+                                  icon: Icons.security_rounded,
+                                  iconColor: _safetyScore >= 90 ? Colors.greenAccent : Colors.orangeAccent,
+                                  title: 'Traffic Points & Safety Score',
+                                  subtitle: 'Safety Score: $_safetyScore / 100 • View overspeed & telemetry log',
+                                  onTap: () => context.push('/profile/safety-points'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.contact_phone_rounded,
+                                  iconColor: Colors.redAccent,
+                                  title: 'Emergency Contacts & SOS',
+                                  subtitle: 'Manage SOS contacts & crash detection settings',
+                                  onTap: () => context.push('/sos/contacts'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+
+                          // 6. SETTINGS SECTION
+                          _buildSectionHeader('APP SETTINGS & PRIVACY'),
+                          const SizedBox(height: AppSpacing.sm),
+                          GlassCard(
+                            child: Column(
+                              children: [
+                                _buildNavTile(
+                                  icon: Icons.notifications_active_rounded,
+                                  iconColor: AppColors.circuitOrange,
+                                  title: 'Notification Preferences',
+                                  subtitle: 'Quiet settings for safety, ride, and maintenance alerts',
+                                  onTap: () => context.push('/settings/notifications'),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
+                                  icon: Icons.lock_outline_rounded,
+                                  iconColor: AppColors.onSurfaceVariant,
+                                  title: 'Privacy & Security Controls',
+                                  subtitle: 'Location permissions, friend visibility & memory sharing',
+                                  onTap: () => context.push('/settings/privacy'),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -146,66 +302,45 @@ class MyProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 36,
-                    backgroundImage: user.profilePhotoUrl.isNotEmpty
-                        ? NetworkImage(user.profilePhotoUrl) as ImageProvider
-                        : null,
-                    backgroundColor: AppColors.surfaceContainerHigh,
-                    child: user.profilePhotoUrl.isEmpty
-                        ? const Icon(Icons.person, size: 36, color: AppColors.onSurfaceVariant)
-                        : null,
+                    backgroundColor: AppColors.circuitOrange,
+                    child: Text(
+                      user.fullName.isNotEmpty ? user.fullName.substring(0, 1) : 'R',
+                      style: AppTextStyles.headlineLg(color: Colors.white),
+                    ),
                   ),
-
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(user.fullName, style: AppTextStyles.headlineMd()),
-                        Text('@${user.username}', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.circuitOrange,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(user.riderLevel.toUpperCase(), style: AppTextStyles.labelCapsSm(color: Colors.white)),
+                        Text(user.fullName, style: AppTextStyles.headlineLg(color: AppColors.onSurface)),
+                        Text('@${user.username}', style: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant)),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColors.circuitOrange.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColors.circuitOrange),
+                              ),
+                              child: Text(
+                                user.riderLevel,
+                                style: AppTextStyles.labelCapsSm(color: AppColors.circuitOrange),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text('${user.xp} XP', style: AppTextStyles.statLabel(color: Colors.amber)),
+                          ],
                         ),
                       ],
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit, color: AppColors.onSurface),
-                    onPressed: () => context.push('/edit_profile'),
+                    icon: const Icon(Icons.edit_outlined, color: AppColors.onSurfaceVariant),
+                    onPressed: () => context.push('/profile/edit'),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.settings, color: AppColors.onSurface),
-                    onPressed: () => context.push('/settings'),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.logout, color: Colors.redAccent),
-                    onPressed: () async {
-                      final authController = context.read<AuthController>();
-                      await authController.logout();
-                      if (context.mounted) {
-                        context.go('/login');
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              LinearProgressIndicator(
-                value: user.xp / 10000,
-                backgroundColor: AppColors.surfaceContainerHigh,
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.circuitOrange),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('XP Progress', style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
-                  Text('${user.xp} / 10000 XP', style: AppTextStyles.labelCapsSm(color: AppColors.circuitOrange)),
                 ],
               ),
             ],
@@ -217,35 +352,75 @@ class MyProfileScreen extends StatelessWidget {
 
   Widget _buildStatsRow(UserModel user) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildStatItem('${user.totalDistanceKm.toStringAsFixed(0)} KM', 'Distance'),
-        _buildStatItem('${user.totalRides}', 'Rides'),
-        _buildStatItem('68h 30m', 'Time'),
+        Expanded(child: _buildStatItem('Rides', '${user.totalRides}')),
+        const SizedBox(width: 6),
+        Expanded(child: _buildStatItem('Distance', '${user.totalDistanceKm.toStringAsFixed(0)} km')),
+        const SizedBox(width: 6),
+        Expanded(child: _buildStatItem('Safety', '$_safetyScore/100')),
+        const SizedBox(width: 6),
+        Expanded(child: _buildStatItem('Friends', '$_friendCount')),
       ],
     );
   }
 
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      children: [
-        Text(value, style: AppTextStyles.headlineMd()),
-        Text(label, style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
-      ],
+  Widget _buildStatItem(String label, String value) {
+    return GlassCard(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                value,
+                maxLines: 1,
+                style: AppTextStyles.headlineSm(color: AppColors.circuitOrange),
+              ),
+            ),
+            const SizedBox(height: 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                maxLines: 1,
+                style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildAchievementBadge(String emoji) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceContainerHigh,
-        shape: BoxShape.circle,
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Text(title, style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+    );
+  }
+
+  Widget _buildNavTile({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      onTap: onTap,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: iconColor.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: iconColor, size: 22),
       ),
-      child: Center(
-        child: Text(emoji, style: const TextStyle(fontSize: 24)),
-      ),
+      title: Text(title, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+      subtitle: Text(subtitle, style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.onSurfaceVariant, size: 16),
     );
   }
 }

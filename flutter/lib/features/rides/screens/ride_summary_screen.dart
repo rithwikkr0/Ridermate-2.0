@@ -6,7 +6,6 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/primary_button.dart';
-import '../../../core/widgets/secondary_button.dart';
 import '../../../core/widgets/real_map_view.dart';
 import '../../../core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
@@ -197,12 +196,20 @@ class RideSummaryScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: SecondaryButton(
-                          text: 'Share',
-                          onPressed: () => context.go(AppRoutes.rideStory),
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: AppColors.circuitOrange),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          icon: const Icon(Icons.share, color: AppColors.circuitOrange, size: 18),
+                          label: const Text('COMMUNITY', style: TextStyle(color: AppColors.circuitOrange, fontWeight: FontWeight.bold)),
+                          onPressed: () {
+                            context.push(AppRoutes.createPost, extra: ride);
+                          },
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.md),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: PrimaryButton(
                           text: 'Save Ride',

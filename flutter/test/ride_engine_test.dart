@@ -11,7 +11,7 @@ import 'package:ridermate/core/errors/app_error.dart';
 import 'package:ridermate/core/services/location_service.dart';
 import 'package:ridermate/features/rides/controllers/ride_controller.dart';
 import 'package:ridermate/features/rides/models/ride_engine_model.dart';
-import 'package:ridermate/features/rides/models/route_model.dart';
+import 'package:ridermate/features/rides/models/active_ride_draft.dart';
 import 'package:ridermate/features/rides/repositories/ride_repository.dart';
 import 'package:ridermate/features/rides/services/statistics_engine.dart';
 import 'package:ridermate/features/rides/services/mock_ride_generator.dart';
@@ -84,6 +84,24 @@ class _InMemoryRideRepository implements RideRepository {
     int pageSize = 20,
   }) =>
       getAll();
+
+  ActiveRideDraft? _activeDraft;
+
+  @override
+  Future<Result<ActiveRideDraft?>> getActiveDraft(String userId) async =>
+      Result.success(_activeDraft);
+
+  @override
+  Future<Result<void>> saveActiveDraft(ActiveRideDraft draft) async {
+    _activeDraft = draft;
+    return Result.success(null);
+  }
+
+  @override
+  Future<Result<void>> clearActiveDraft(String userId) async {
+    _activeDraft = null;
+    return Result.success(null);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

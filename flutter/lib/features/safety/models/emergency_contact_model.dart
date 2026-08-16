@@ -63,12 +63,12 @@ class EmergencyContact {
     }
 
     return EmergencyContact(
-      id: map['id'] as String,
+      id: map['id'] as String? ?? '',
       userId: map['user_id'] as String? ?? '',
       name: map['name'] as String? ?? '',
-      phoneNumber: map['phone_number'] as String? ?? '',
-      relationship: map['relationship'] as String? ?? 'Contact',
-      isPrimary: (map['is_primary'] == 1 || map['is_primary'] == true),
+      phoneNumber: map['phone_number'] as String? ?? map['phone'] as String? ?? '',
+      relationship: map['relationship'] as String? ?? map['relation'] as String? ?? 'Contact',
+      isPrimary: (map['is_primary'] == 1 || map['is_primary'] == true || map['order_index'] == 0),
       createdAt: parseDate(map['created_at']),
       updatedAt: parseDate(map['updated_at']),
     );

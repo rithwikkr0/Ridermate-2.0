@@ -104,7 +104,6 @@ class OsrmRoutingService implements RoutePlanningService {
             final name = step['name']?.toString() ?? '';
             final distance = (step['distance'] as num?)?.toDouble() ?? 0.0;
             final maneuver = step['maneuver'] as Map<String, dynamic>?;
-            final type = maneuver?['type']?.toString() ?? 'straight';
             final modifier = maneuver?['modifier']?.toString() ?? '';
 
             TurnDirection dir = TurnDirection.straight;

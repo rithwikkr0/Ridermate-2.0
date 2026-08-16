@@ -51,6 +51,14 @@ class AppTextStyles {
     color: color,
   );
 
+  /// 15px / 20px / 600  — Small card headers
+  static TextStyle headlineXs({Color? color}) => GoogleFonts.hankenGrotesk(
+    fontSize: 15,
+    height: 20 / 15,
+    fontWeight: FontWeight.w600,
+    color: color,
+  );
+
   // ── Body ────────────────────────────────────────────────────
   /// 18px / 28px / 400
   static TextStyle bodyLg({Color? color}) => GoogleFonts.inter(

@@ -51,6 +51,8 @@ import '../../features/community/screens/squad_details_screen.dart';
 import '../../features/community/screens/group_chat_screen.dart';
 import '../../features/community/screens/community_challenges_screen.dart';
 import '../../features/community/screens/leaderboard_screen.dart';
+import '../../features/community/screens/create_post_screen.dart';
+import '../../features/community/screens/saved_posts_screen.dart';
 import '../../features/memories/screens/journal_dashboard_screen.dart';
 import '../../features/memories/screens/journal_search_screen.dart';
 import '../../features/memories/screens/collections_hub_screen.dart';
@@ -71,6 +73,8 @@ import '../../features/sos/screens/safety_history_screen.dart';
 import '../../features/sos/screens/safety_settings_screen.dart';
 import '../../features/profile/screens/my_profile_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
+import '../../features/garage/screens/garage_dashboard_screen.dart';
+import '../../features/safety/screens/traffic_points_screen.dart';
 import '../../features/settings/screens/settings_home_screen.dart';
 import '../../features/settings/screens/appearance_settings_screen.dart';
 import '../../features/settings/screens/privacy_security_screen.dart';
@@ -133,6 +137,8 @@ class AppRoutes {
   static const perfTrends       = '/stats/trends';
   static const personalRecords  = '/stats/records';
   static const socialFeed       = '/social';
+  static const createPost       = '/social/create';
+  static const savedPosts       = '/social/saved';
   static const friends          = '/social/friends';
   static const friendProfile    = '/social/friend';
   static const squads           = '/social/squads';
@@ -330,7 +336,10 @@ final appRouter = GoRouter(
             path: AppRoutes.profile,
             builder: (c, s) => const MyProfileScreen(),
             routes: [
-              GoRoute(path: 'edit', builder: (c, s) => const EditProfileScreen()),
+              GoRoute(path: 'edit',          builder: (c, s) => const EditProfileScreen()),
+              GoRoute(path: 'garage',        builder: (c, s) => const GarageDashboardScreen()),
+              GoRoute(path: 'friends',       builder: (c, s) => const FriendsHomeScreen()),
+              GoRoute(path: 'safety-points', builder: (c, s) => const TrafficPointsScreen()),
             ],
           ),
         ]),
@@ -357,6 +366,8 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.rideSuccess, builder: (c, s) => const SuccessRideSavedScreen()),
     GoRoute(path: AppRoutes.export,     builder: (c, s) => const ExportShareScreen()),
     GoRoute(path: AppRoutes.socialFeed, builder: (c, s) => const SocialFeedScreen()),
+    GoRoute(path: AppRoutes.createPost,  builder: (c, s) => const CreatePostScreen()),
+    GoRoute(path: AppRoutes.savedPosts,  builder: (c, s) => const SavedPostsScreen()),
     GoRoute(path: AppRoutes.friends,    builder: (c, s) => const FriendsHomeScreen()),
     GoRoute(path: AppRoutes.friendProfile, builder: (c, s) => const FriendProfileScreen()),
     GoRoute(path: AppRoutes.squads,     builder: (c, s) => const SquadsCommunityScreen()),

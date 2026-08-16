@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 enum RideMode { solo, group }
 
 enum GroupRideState { draft, inviting, waiting, active, completed }

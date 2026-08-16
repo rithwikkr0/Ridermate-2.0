@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_spacing.dart';
@@ -36,59 +36,65 @@ class StatsCard extends StatelessWidget {
     final iconColor = color ?? AppColors.circuitOrange;
     return GlassCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: Icon(icon, color: iconColor, size: AppSpacing.iconSm),
-              ),
-              if (trend != null)
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
-                    color: (trendPositive ? Colors.green : Colors.red).withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                    color: iconColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
-                  child: Text(
-                    trend!,
-                    style: AppTextStyles.labelCapsSm(
-                      color: trendPositive ? Colors.green : Colors.red,
+                  child: Icon(icon, color: iconColor, size: AppSpacing.iconSm),
+                ),
+                if (trend != null) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: (trendPositive ? Colors.green : Colors.red).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                    ),
+                    child: Text(
+                      trend!,
+                      style: AppTextStyles.labelCapsSm(
+                        color: trendPositive ? Colors.green : Colors.red,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            displayLabel.toUpperCase(),
-            style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant),
-          ),
-          const SizedBox(height: 2),
-          RichText(
-            text: TextSpan(
-              text: value,
-              style: AppTextStyles.displayStatSm(color: AppColors.onSurface),
-              children: [
-                if (unit.isNotEmpty)
-                  TextSpan(
-                    text: ' $unit',
-                    style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant),
-                  ),
+                ],
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              displayLabel.toUpperCase(),
+              style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(height: 2),
+            RichText(
+              text: TextSpan(
+                text: value,
+                style: AppTextStyles.displayStatSm(color: AppColors.onSurface),
+                children: [
+                  if (unit.isNotEmpty)
+                    TextSpan(
+                      text: ' $unit',
+                      style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

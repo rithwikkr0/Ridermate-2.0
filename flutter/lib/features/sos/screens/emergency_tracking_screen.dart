@@ -238,6 +238,54 @@ class _EmergencyTrackingScreenState extends State<EmergencyTrackingScreen>
                         ),
                       ),
                     ],
+                    if (primary != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFCC0000),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              icon: const Icon(Icons.send_rounded, size: 16),
+                              label: const Text('SMS Draft', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                              onPressed: () => sosController.dispatchSmsOnly(),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF25D366),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              icon: const Icon(Icons.chat_bubble_rounded, size: 16),
+                              label: const Text('WhatsApp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                              onPressed: () => sosController.dispatchWhatsAppOnly(),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                              icon: const Icon(Icons.phone_in_talk, size: 16),
+                              label: const Text('Call', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                              onPressed: () => sosController.dispatchCallOnly(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.md),
                     SizedBox(
                       width: double.infinity,

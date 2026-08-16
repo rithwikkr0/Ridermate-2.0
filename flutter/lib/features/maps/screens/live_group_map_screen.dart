@@ -166,7 +166,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
                       ),
                       onPressed: () {
                         Navigator.pop(ctx);
-                        final ride = _groupController.createGroupRide(
+                        _groupController.createGroupRide(
                           title: titleCtrl.text,
                           startLocation: fromCtrl.text,
                           destination: destCtrl.text,

@@ -37,19 +37,15 @@ import 'features/ai/controllers/ai_controller.dart';
 import 'features/ai/repositories/ai_repository.dart';
 import 'features/ai/services/ai_provider.dart';
 
-// Community — still mock; will be replaced in Phase 14
+// Community — Production SQLite Social Architecture
 import 'features/community/controllers/community_controller.dart';
-import 'features/community/repositories/community_repository.dart';
-import 'features/community/services/friend_manager_service.dart';
-import 'features/community/services/club_manager_service.dart';
-import 'features/community/services/challenge_engine_service.dart';
-import 'features/community/services/leaderboard_service.dart';
+import 'features/community/repositories/sqlite_post_repository.dart';
+import 'features/community/repositories/sqlite_friend_repository.dart';
+import 'features/community/repositories/sqlite_squad_repository.dart';
 
-// Garage — still mock; will be replaced in Phase 9
+// Garage — Real SQLite Persistence
 import 'features/garage/controllers/garage_controller.dart';
-import 'features/garage/repositories/garage_repository.dart';
-import 'features/garage/services/fuel_manager_service.dart';
-import 'features/garage/services/maintenance_service.dart';
+import 'features/garage/repositories/sqlite_garage_repository.dart';
 
 // Maps
 import 'features/maps/controllers/navigation_controller.dart';
@@ -117,44 +113,34 @@ void main() async {
   final aiProvider = MockAiProvider();
   final aiRepository = MockAiRepository(aiProvider);
 
-  // ── Community — mock until Phase 14 ──────────────────────────────────────
-  final friendManager = MockFriendManagerService();
-  final clubManager = MockClubManagerService();
-  final challengeEngine = MockChallengeEngineService();
-  final leaderboardService = MockLeaderboardService();
-  final communityRepository = MockCommunityRepository(
-    friendManager: friendManager,
-    clubManager: clubManager,
-    challengeEngine: challengeEngine,
-    leaderboardService: leaderboardService,
+  // ── Community — Real SQLite Persistence & Privacy ───────────────────────
+  final postRepository = SqlitePostRepository(dbService: databaseService);
+  final friendRepository = SqliteFriendRepository(dbService: databaseService);
+  final squadRepository = SqliteSquadRepository(dbService: databaseService);
+  final communityController = CommunityController(
+    postRepo: postRepository,
+    friendRepo: friendRepository,
+    squadRepo: squadRepository,
+    dbService: databaseService,
   );
 
-  // ── Garage — mock until Phase 9 ───────────────────────────────────────────
-  final fuelManagerService = MockFuelManagerService();
-  final maintenanceService = MockMaintenanceService();
-  final garageRepository = MockGarageRepository(
-    fuelManager: fuelManagerService,
-    maintenanceService: maintenanceService,
-  );
+  // ── Garage — Real SQLite Persistence ──────────────────────────────────────
+  final garageRepository = SqliteGarageRepository(dbService: databaseService);
+  final garageController = GarageController(garageRepository);
 
   // ── Weather — real HTTP; DEMO_KEY falls back to mock data ─────────────────
   final weatherService = OpenWeatherService();
 
-  // ── ProfileController starts with an empty repository.
-  // After login/session restore, AuthController updates it with the real
-  // SqliteUserRepository for the authenticated user.
-  // We create a temporary placeholder that points at a dummy userId;
-  // it will be replaced via updateRepository() after auth.
   final profileController = ProfileController(
     SqliteUserRepository(databaseService, userId: ''),
   );
 
-  // Build the NotificationController so we can pass it to AuthController.
+  // Build the NotificationController and SosController so we can pass them to AuthController.
   final notificationController = NotificationController();
+  final sosController = SosController();
 
   // Build AuthController with onUserChanged callback.
-  // This keeps NotificationController and RideController in sync with the
-  // authenticated user after every login / session-restore / logout.
+  // This keeps NotificationController, RideController, GarageController, SosController, and CommunityController in sync.
   final authController = AuthController(
     authService,
     sessionService,
@@ -162,6 +148,9 @@ void main() async {
     onUserChanged: (userId) {
       notificationController.refreshForUser(userId);
       rideController.setUserId(userId);
+      garageController.refreshForUser(userId);
+      sosController.refreshForUser(userId);
+      communityController.refreshForUser(userId);
     },
   );
 
@@ -172,12 +161,10 @@ void main() async {
         ChangeNotifierProvider(create: (_) => authController),
         ChangeNotifierProvider(create: (_) => profileController),
         ChangeNotifierProvider(create: (_) => rideController),
-        ChangeNotifierProvider(create: (_) => SosController()),
+        ChangeNotifierProvider(create: (_) => sosController),
         ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
-        ChangeNotifierProvider(
-            create: (_) => CommunityController(communityRepository)),
-        ChangeNotifierProvider(
-            create: (_) => GarageController(garageRepository)),
+        ChangeNotifierProvider(create: (_) => communityController),
+        ChangeNotifierProvider(create: (_) => garageController),
         ChangeNotifierProvider(create: (_) => NavigationController()),
         ChangeNotifierProvider(
             create: (_) => WeatherController(weatherService)),

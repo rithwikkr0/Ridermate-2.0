@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:ridermate/core/models/ride_point_model.dart';
 import 'package:ridermate/core/services/location_service.dart';
 import 'package:ridermate/core/errors/app_error.dart';
-import 'package:ridermate/core/errors/result.dart';
 
 void main() {
   group('GPS Location & Telemetry Unit Tests', () {

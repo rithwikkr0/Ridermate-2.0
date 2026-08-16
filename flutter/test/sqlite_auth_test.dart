@@ -18,7 +18,27 @@ void main() {
     setUp(() async {
       dbService = DatabaseService.instance;
       final db = await dbService.database;
-      try { await db.delete('users'); } catch (_) {}
+      await db.execute('DROP TABLE IF EXISTS users');
+      await db.execute('''
+        CREATE TABLE users (
+          id            TEXT PRIMARY KEY,
+          username      TEXT NOT NULL UNIQUE,
+          full_name     TEXT NOT NULL,
+          email         TEXT NOT NULL UNIQUE,
+          phone         TEXT NOT NULL DEFAULT '',
+          photo_url     TEXT NOT NULL DEFAULT '',
+          bio           TEXT NOT NULL DEFAULT '',
+          rider_level   TEXT NOT NULL DEFAULT 'Novice',
+          xp            INTEGER NOT NULL DEFAULT 0,
+          distance_km   REAL NOT NULL DEFAULT 0.0,
+          total_rides   INTEGER NOT NULL DEFAULT 0,
+          achievements  TEXT NOT NULL DEFAULT '[]',
+          preferences   TEXT NOT NULL DEFAULT '{}',
+          password_hash TEXT NOT NULL,
+          created_at    TEXT NOT NULL,
+          updated_at    TEXT NOT NULL
+        )
+      ''');
       try { await db.delete('vehicles'); } catch (_) {}
       try { await db.delete('emergency_contacts'); } catch (_) {}
       authService = SqliteAuthService(dbService);
@@ -81,7 +101,7 @@ void main() {
     test('Profile updates persist in SQLite database across reloads', () async {
       final regRes = await authService.register(
         'Rithwik Rider',
-        'rithwik@ridermate.app',
+        'rithwik_profile@ridermate.app',
         'securePassword123',
       );
       final initialUser = regRes.dataOrNull!;

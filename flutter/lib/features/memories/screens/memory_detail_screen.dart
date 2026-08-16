@@ -106,6 +106,17 @@ class MemoryDetailScreen extends StatelessWidget {
                       CircleAvatar(
                         backgroundColor: Colors.black.withValues(alpha: 0.6),
                         child: IconButton(
+                          icon: const Icon(Icons.share, color: AppColors.circuitOrange),
+                          tooltip: 'Share to Community',
+                          onPressed: () {
+                            context.push(AppRoutes.createPost, extra: targetMemory);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      CircleAvatar(
+                        backgroundColor: Colors.black.withValues(alpha: 0.6),
+                        child: IconButton(
                           icon: const Icon(Icons.edit, color: Colors.white),
                           onPressed: () {
                             memoryCtrl.initEditDraft(targetMemory);

@@ -5,6 +5,7 @@ import '../../../core/errors/app_error.dart';
 import '../../../core/services/database_service.dart';
 import '../models/ride_engine_model.dart';
 import '../models/route_model.dart';
+import '../models/active_ride_draft.dart';
 import 'ride_repository.dart';
 
 /// Real SQLite-backed ride repository.
@@ -175,9 +176,135 @@ class SqliteRideRepository implements RideRepository {
   }) =>
       getAll();
 
+  @override
+  Future<Result<ActiveRideDraft?>> getActiveDraft(String userId) async {
+    try {
+      final db = await _db;
+      final rows = await db.query(
+        'active_ride_draft',
+        where: 'user_id = ?',
+        whereArgs: [userId],
+        limit: 1,
+      );
+      if (rows.isEmpty) return Result.success(null);
+
+      final row = rows.first;
+      final draftId = row['id'] as String;
+
+      final pointRows = await db.query(
+        'active_ride_points',
+        where: 'draft_id = ?',
+        whereArgs: [draftId],
+        orderBy: 'point_index',
+      );
+
+      final points = pointRows
+          .map(
+            (p) => RoutePoint(
+              latitude: (p['latitude'] as num).toDouble(),
+              longitude: (p['longitude'] as num).toDouble(),
+              speedKmh: (p['speed'] as num).toDouble(),
+              timestamp: p['timestamp'] as int,
+              elevationMeters: (p['elevation'] as num).toDouble(),
+              headingDegrees: (p['heading'] as num).toDouble(),
+              accuracyMeters: (p['accuracy'] as num).toDouble(),
+            ),
+          )
+          .toList();
+
+      final draft = ActiveRideDraft(
+        id: draftId,
+        userId: row['user_id'] as String,
+        rideMode: row['ride_mode'] as String? ?? 'solo',
+        origin: row['origin'] as String? ?? '',
+        destination: row['destination'] as String? ?? '',
+        startTime: DateTime.fromMillisecondsSinceEpoch(row['start_time'] as int),
+        pausedTotal: Duration(milliseconds: row['paused_total_ms'] as int? ?? 0),
+        isPaused: (row['is_paused'] as int? ?? 0) == 1,
+        pausedAt: row['paused_at'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(row['paused_at'] as int),
+        distanceKm: (row['distance_km'] as num).toDouble(),
+        maxSpeedKmh: (row['max_speed'] as num).toDouble(),
+        points: points,
+      );
+
+      return Result.success(draft);
+    } catch (e) {
+      return Result.failure(StorageError('Unable to load active draft: $e'));
+    }
+  }
+
+  @override
+  Future<Result<void>> saveActiveDraft(ActiveRideDraft draft) async {
+    try {
+      final db = await _db;
+      await db.transaction((txn) async {
+        await txn.insert(
+          'active_ride_draft',
+          {
+            'id': draft.id,
+            'user_id': draft.userId,
+            'ride_mode': draft.rideMode,
+            'origin': draft.origin,
+            'destination': draft.destination,
+            'start_time': draft.startTime.millisecondsSinceEpoch,
+            'paused_total_ms': draft.pausedTotal.inMilliseconds,
+            'is_paused': draft.isPaused ? 1 : 0,
+            'paused_at': draft.pausedAt?.millisecondsSinceEpoch,
+            'distance_km': draft.distanceKm,
+            'max_speed': draft.maxSpeedKmh,
+            'updated_at': DateTime.now().millisecondsSinceEpoch,
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+
+        await txn.delete('active_ride_points', where: 'draft_id = ?', whereArgs: [draft.id]);
+
+        final batch = txn.batch();
+        for (var i = 0; i < draft.points.length; i++) {
+          final p = draft.points[i];
+          batch.insert('active_ride_points', {
+            'draft_id': draft.id,
+            'point_index': i,
+            'latitude': p.latitude,
+            'longitude': p.longitude,
+            'speed': p.speedKmh,
+            'timestamp': p.timestamp,
+            'elevation': p.elevationMeters,
+            'heading': p.headingDegrees,
+            'accuracy': p.accuracyMeters,
+          });
+        }
+        await batch.commit(noResult: true);
+      });
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(StorageError('Unable to save active draft: $e'));
+    }
+  }
+
+  @override
+  Future<Result<void>> clearActiveDraft(String userId) async {
+    try {
+      final db = await _db;
+      final rows = await db.query('active_ride_draft', columns: ['id'], where: 'user_id = ?', whereArgs: [userId]);
+      for (final r in rows) {
+        final id = r['id'] as String;
+        await db.delete('active_ride_points', where: 'draft_id = ?', whereArgs: [id]);
+      }
+      await db.delete('active_ride_draft', where: 'user_id = ?', whereArgs: [userId]);
+      return Result.success(null);
+    } catch (e) {
+      return Result.failure(StorageError('Unable to clear active draft: $e'));
+    }
+  }
+
   Future<void> clearRides() async {
     final db = await _db;
     await db.delete('ride_points');
     await db.delete('rides');
+    await db.delete('active_ride_points');
+    await db.delete('active_ride_draft');
   }
 }

@@ -5,6 +5,7 @@ import '../../../core/utils/geo_utils.dart';
 import '../../../providers/base_controller.dart';
 import '../models/ride_engine_model.dart';
 import '../models/route_model.dart';
+import '../models/active_ride_draft.dart';
 import '../repositories/ride_repository.dart';
 import '../services/statistics_engine.dart';
 import '../../../core/notifications/services/notification_service.dart';
@@ -146,7 +147,7 @@ class RideController extends BaseController {
 
   List<RoutePoint> get recordedPoints => List.unmodifiable(_points);
 
-  // ── History ────────────────────────────────────────────────────────────
+  // ── History & Active Ride Recovery ──────────────────────────────────────
   Future<void> loadHistory() async {
     final result = await repository.getAll();
     if (result.isSuccess && !_isDisposed) {
@@ -155,6 +156,7 @@ class RideController extends BaseController {
         ..addAll(result.dataOrNull!);
       notifyListeners();
     }
+    await restoreActiveRideIfAny();
   }
 
   // ── Start ──────────────────────────────────────────────────────────────
@@ -197,9 +199,9 @@ class RideController extends BaseController {
     _pausedTotal = Duration.zero;
     _lastPoint = null;
     _startedAt = DateTime.now();
-    _recordPoint(firstPoint);
-
     _transition(RideState.active);
+    _recordPoint(firstPoint);
+    await _persistActiveDraft();
 
     NotificationService.instance.notifyRideEvent(
       title: 'Ride Started',
@@ -281,6 +283,8 @@ class RideController extends BaseController {
     if (point.speed > _maxSpeedKmh) {
       _maxSpeedKmh = point.speed;
     }
+
+    _persistActiveDraft();
   }
 
   // ── GPS point validation ───────────────────────────────────────────────
@@ -322,6 +326,7 @@ class RideController extends BaseController {
     if (_rideState != RideState.active) return;
     _pausedAt = DateTime.now();
     _transition(RideState.paused);
+    _persistActiveDraft();
   }
 
   // ── Resume ─────────────────────────────────────────────────────────────
@@ -332,6 +337,80 @@ class RideController extends BaseController {
       _pausedAt = null;
     }
     _transition(RideState.active);
+    _persistActiveDraft();
+  }
+
+  // ── Active Ride Draft Persistence & Cold-Start Recovery ─────────────────
+  Future<void> _persistActiveDraft() async {
+    if (!isTracking || _startedAt == null) return;
+    final draft = ActiveRideDraft(
+      id: 'active_draft_${_currentUserId}_${_startedAt!.millisecondsSinceEpoch}',
+      userId: _currentUserId,
+      rideMode: _rideMode,
+      origin: _origin,
+      destination: _destination,
+      startTime: _startedAt!,
+      pausedTotal: _pausedTotal,
+      isPaused: isPaused,
+      pausedAt: _pausedAt,
+      distanceKm: _distanceKm,
+      maxSpeedKmh: _maxSpeedKmh,
+      points: List.unmodifiable(_points),
+    );
+    await repository.saveActiveDraft(draft);
+  }
+
+  Future<bool> restoreActiveRideIfAny() async {
+    final result = await repository.getActiveDraft(_currentUserId);
+    if (result.isFailure || result.dataOrNull == null) return false;
+
+    final draft = result.dataOrNull!;
+    if (draft.points.isEmpty) return false;
+
+    _rideMode = draft.rideMode;
+    _origin = draft.origin;
+    _destination = draft.destination;
+    _startedAt = draft.startTime;
+    _pausedTotal = draft.pausedTotal;
+    _pausedAt = draft.pausedAt;
+    _distanceKm = draft.distanceKm;
+    _maxSpeedKmh = draft.maxSpeedKmh;
+    _points.clear();
+    _points.addAll(draft.points);
+    _lastPoint = RidePointModel(
+      latitude: draft.points.last.latitude,
+      longitude: draft.points.last.longitude,
+      timestamp: draft.points.last.timestamp,
+      speed: draft.points.last.speedKmh,
+      heading: draft.points.last.headingDegrees,
+      accuracy: draft.points.last.accuracyMeters,
+    );
+    _lastAccuracyM = draft.points.last.accuracyMeters;
+
+    _transition(draft.isPaused ? RideState.paused : RideState.active);
+
+    _clockTimer?.cancel();
+    _clockTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => notifyListeners(),
+    );
+
+    _locationSub?.cancel();
+    _locationSub = locationService.getLocationStream().listen(
+      _onLocationUpdate,
+      onError: (e) => _fail('GPS stream error: $e'),
+    );
+
+    NotificationService.instance.notifyRideEvent(
+      title: 'Active Ride Recovered',
+      body: 'Resumed tracking ongoing ride (${_distanceKm.toStringAsFixed(1)} km).',
+      rideId: 'ride-${_startedAt!.millisecondsSinceEpoch}',
+      isCompleted: false,
+      userId: _currentUserId,
+    );
+
+    notifyListeners();
+    return true;
   }
 
   // ── Stop ───────────────────────────────────────────────────────────────
@@ -382,6 +461,8 @@ class RideController extends BaseController {
       return;
     }
 
+    await repository.clearActiveDraft(_currentUserId);
+
     selectedRide = ride;
     rides.insert(0, ride);
     _transition(RideState.completed);
@@ -404,6 +485,7 @@ class RideController extends BaseController {
     _points.clear();
     _lastPoint = null;
     _rideState = RideState.idle;
+    repository.clearActiveDraft(_currentUserId);
     notifyListeners();
   }
 

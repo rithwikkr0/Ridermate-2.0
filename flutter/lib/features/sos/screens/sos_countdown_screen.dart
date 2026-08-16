@@ -30,6 +30,19 @@ class _SosCountdownScreenState extends State<SosCountdownScreen> {
     });
   }
 
+  void _triggerImmediate({bool viaWhatsApp = false}) {
+    final rideController = context.read<RideController>();
+    final isRideActive = rideController.isRideActive;
+    final currentRide = rideController.currentRide;
+
+    context.read<SosController>().triggerImmediateSos(
+          rideId: isRideActive ? currentRide?.id : null,
+          rideDistanceKm: isRideActive ? currentRide?.distanceKm : null,
+          rideDuration: isRideActive ? currentRide?.duration : null,
+          viaWhatsApp: viaWhatsApp,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sosController = context.watch<SosController>();
@@ -54,32 +67,36 @@ class _SosCountdownScreenState extends State<SosCountdownScreen> {
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF660000), Color(0xFFFF1111)],
+            colors: [Color(0xFF4A0000), Color(0xFFE50914)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.warning_amber_rounded, size: 80, color: Colors.white),
-                const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: 10),
+                const Icon(Icons.warning_amber_rounded, size: 70, color: Colors.white),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'EMERGENCY SOS',
                   style: AppTextStyles.headlineLg(color: Colors.white).copyWith(letterSpacing: 2),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: 4),
                 Text(
-                  'Emergency mode will activate in',
+                  'Auto-dispatching distress SMS & call in',
                   style: AppTextStyles.bodyMd(color: Colors.white70),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.md),
+
+                // Countdown Circle
                 Container(
-                  width: 160,
-                  height: 160,
+                  width: 130,
+                  height: 130,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.15),
@@ -88,30 +105,82 @@ class _SosCountdownScreenState extends State<SosCountdownScreen> {
                   child: Center(
                     child: Text(
                       '${sosController.countdownSeconds}',
-                      style: AppTextStyles.displayStat(color: Colors.white).copyWith(fontSize: 100),
+                      style: AppTextStyles.displayStat(color: Colors.white).copyWith(fontSize: 75),
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.md),
+
+                // Target Contact Display
                 Text(
-                  'Notifying Primary Contact:',
+                  'Target Emergency Contact:',
                   style: AppTextStyles.labelCapsSm(color: Colors.white70),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   targetNames,
                   style: AppTextStyles.headlineSm(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 64),
+                const SizedBox(height: AppSpacing.lg),
+
+                // Instant One-Click Trigger Buttons
                 SizedBox(
                   width: double.infinity,
-                  height: 60,
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.send_rounded, color: Colors.white),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFFCC0000),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: () => _triggerImmediate(viaWhatsApp: false),
+                    label: Text(
+                      'SEND DRAFT SMS & CALL NOW',
+                      style: AppTextStyles.button(color: const Color(0xFFCC0000)).copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.chat_bubble_rounded, color: Colors.white),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF25D366),
+                      foregroundColor: Colors.white,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: () => _triggerImmediate(viaWhatsApp: true),
+                    label: Text(
+                      'SEND VIA WHATSAPP & CALL NOW',
+                      style: AppTextStyles.button(color: Colors.white).copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // Cancel Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.white, width: 2),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      backgroundColor: Colors.black.withValues(alpha: 0.2),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      backgroundColor: Colors.black.withValues(alpha: 0.25),
                     ),
                     onPressed: () {
                       context.read<SosController>().cancelSos();
@@ -120,9 +189,9 @@ class _SosCountdownScreenState extends State<SosCountdownScreen> {
                     child: Text(
                       'CANCEL SOS',
                       style: AppTextStyles.button(color: Colors.white).copyWith(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
+                        letterSpacing: 1.2,
                       ),
                     ),
                   ),

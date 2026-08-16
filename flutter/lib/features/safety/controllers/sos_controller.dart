@@ -67,6 +67,12 @@ class SosController extends BaseController {
   String get currentUserId => _cachedUserId;
   String get currentUserName => _cachedUserName;
 
+  /// Updates the cached user and reloads emergency contacts from SQLite.
+  void refreshForUser(String userId) {
+    _cachedUserId = userId.isNotEmpty ? userId : 'user_guest';
+    loadContacts();
+  }
+
   /// Loads emergency contacts for the authenticated user from SQLite.
   Future<void> loadContacts() async {
     final res = await _repository.getContacts(userId: _cachedUserId);
@@ -115,6 +121,22 @@ class SosController extends BaseController {
     setState(ViewState.loading);
   }
 
+  /// Triggers immediate SOS without waiting for countdown.
+  void triggerImmediateSos({
+    String? rideId,
+    double? rideDistanceKm,
+    Duration? rideDuration,
+    bool viaWhatsApp = false,
+  }) {
+    _countdownTimer?.cancel();
+    _activateEmergencyMode(
+      rideId: rideId,
+      rideDistanceKm: rideDistanceKm,
+      rideDuration: rideDuration,
+      viaWhatsApp: viaWhatsApp,
+    );
+  }
+
   /// Cancels the SOS sequence during countdown.
   void cancelSos() {
     _countdownTimer?.cancel();
@@ -134,11 +156,12 @@ class SosController extends BaseController {
     if (!_isDisposed) notifyListeners();
   }
 
-  /// Activates full emergency mode upon countdown completion.
+  /// Activates full emergency mode upon countdown completion or instant trigger.
   Future<void> _activateEmergencyMode({
     String? rideId,
     double? rideDistanceKm,
     Duration? rideDuration,
+    bool viaWhatsApp = false,
   }) async {
     sosState = SosState.activeEmergency;
     setState(ViewState.loading);
@@ -172,8 +195,24 @@ class SosController extends BaseController {
       }
     } catch (_) {}
 
+    // Load latest contacts
+    await loadContacts();
+    final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
+
     // 2. Create canonical SOS event
     final String eventId = 'sos_${DateTime.now().millisecondsSinceEpoch}';
+    final emergencyMessage = _smsService.buildEmergencyMessage(
+      riderName: _cachedUserName,
+      latitude: lat,
+      longitude: lng,
+      timestamp: DateTime.now(),
+      emergencyContactName: targetContact?.name,
+      emergencyContactPhone: targetContact?.phoneNumber,
+      emergencyContactRelationship: targetContact?.relationship,
+      rideDistanceKm: rideDistanceKm,
+      rideDuration: rideDuration,
+    );
+
     final event = SosEventModel(
       id: eventId,
       userId: _cachedUserId,
@@ -185,14 +224,7 @@ class SosController extends BaseController {
       locationTimestamp: locTime ?? DateTime.now(),
       startedAt: DateTime.now(),
       contactAttempts: [],
-      message: _smsService.buildEmergencyMessage(
-        riderName: _cachedUserName,
-        latitude: lat,
-        longitude: lng,
-        timestamp: DateTime.now(),
-        rideDistanceKm: rideDistanceKm,
-        rideDuration: rideDuration,
-      ),
+      message: emergencyMessage,
     );
 
     currentSosEvent = event;
@@ -200,19 +232,23 @@ class SosController extends BaseController {
     // 3. Save locally in SQLite (offline-first)
     await _repository.saveSosEvent(event);
 
-    // 4. Contact emergency contact (Primary first)
-    await loadContacts();
-    final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
-
+    // 4. Contact emergency contact
     List<String> attempts = [];
     if (targetContact != null) {
-      // Dispatch SMS
-      final smsRes = await _smsService.sendSms(targetContact.phoneNumber, event.message);
-      final smsStatus = smsRes.isSuccess ? 'SMS attempt sent' : 'SMS dispatch failed';
-      attempts.add('${targetContact.name} (${targetContact.phoneNumber}): $smsStatus');
-      timeline.logEvent('Emergency SMS', '${targetContact.name} (${targetContact.phoneNumber})', 'sms_icon');
+      if (viaWhatsApp) {
+        final waRes = await _smsService.sendWhatsApp(targetContact.phoneNumber, event.message);
+        final waStatus = waRes.isSuccess ? 'WhatsApp dispatch launched' : 'WhatsApp launch failed';
+        attempts.add('${targetContact.name} (${targetContact.phoneNumber}): $waStatus');
+        timeline.logEvent('Emergency WhatsApp', '${targetContact.name} (${targetContact.phoneNumber})', 'sms_icon');
+      } else {
+        // Dispatch SMS Draft
+        final smsRes = await _smsService.sendSms(targetContact.phoneNumber, event.message);
+        final smsStatus = smsRes.isSuccess ? 'SMS draft launched' : 'SMS dispatch failed';
+        attempts.add('${targetContact.name} (${targetContact.phoneNumber}): $smsStatus');
+        timeline.logEvent('Emergency SMS', '${targetContact.name} (${targetContact.phoneNumber})', 'sms_icon');
+      }
 
-      // Direct Call
+      // Next redirect to direct phone call
       final callRes = await _callService.placeCall(targetContact.phoneNumber);
       final callStatus = callRes.isSuccess ? 'Call initiated' : 'Call failed';
       attempts.add('${targetContact.name} (${targetContact.phoneNumber}): $callStatus');
@@ -235,6 +271,84 @@ class SosController extends BaseController {
 
     setState(ViewState.success);
     if (!_isDisposed) notifyListeners();
+  }
+
+  /// Dispatches instant draft SMS to primary emergency contact with live location and details,
+  /// then immediately redirects to the phone call dialer.
+  Future<void> dispatchEmergencyDraftAndCall({bool viaWhatsApp = false}) async {
+    await loadContacts();
+    final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
+    if (targetContact == null) return;
+
+    double? lat = currentSosEvent?.latitude;
+    double? lng = currentSosEvent?.longitude;
+    try {
+      final locRes = await _locationService.getCurrentLocation();
+      if (locRes.isSuccess && locRes.data != null) {
+        lat = locRes.data!.latitude;
+        lng = locRes.data!.longitude;
+      }
+    } catch (_) {}
+
+    final msg = _smsService.buildEmergencyMessage(
+      riderName: _cachedUserName,
+      latitude: lat,
+      longitude: lng,
+      timestamp: DateTime.now(),
+      emergencyContactName: targetContact.name,
+      emergencyContactPhone: targetContact.phoneNumber,
+      emergencyContactRelationship: targetContact.relationship,
+    );
+
+    if (viaWhatsApp) {
+      await _smsService.sendWhatsApp(targetContact.phoneNumber, msg);
+    } else {
+      await _smsService.sendSms(targetContact.phoneNumber, msg);
+    }
+
+    await _callService.placeCall(targetContact.phoneNumber);
+  }
+
+  /// One-click draft SMS dispatch
+  Future<void> dispatchSmsOnly() async {
+    await loadContacts();
+    final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
+    if (targetContact == null) return;
+
+    final msg = _smsService.buildEmergencyMessage(
+      riderName: _cachedUserName,
+      latitude: currentSosEvent?.latitude,
+      longitude: currentSosEvent?.longitude,
+      timestamp: DateTime.now(),
+      emergencyContactName: targetContact.name,
+      emergencyContactPhone: targetContact.phoneNumber,
+      emergencyContactRelationship: targetContact.relationship,
+    );
+    await _smsService.sendSms(targetContact.phoneNumber, msg);
+  }
+
+  /// One-click WhatsApp dispatch
+  Future<void> dispatchWhatsAppOnly() async {
+    await loadContacts();
+    final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
+    if (targetContact == null) return;
+
+    final msg = _smsService.buildEmergencyMessage(
+      riderName: _cachedUserName,
+      latitude: currentSosEvent?.latitude,
+      longitude: currentSosEvent?.longitude,
+      timestamp: DateTime.now(),
+      emergencyContactName: targetContact.name,
+      emergencyContactPhone: targetContact.phoneNumber,
+      emergencyContactRelationship: targetContact.relationship,
+    );
+    await _smsService.sendWhatsApp(targetContact.phoneNumber, msg);
+  }
+
+  /// One-click direct call
+  Future<void> dispatchCallOnly({String? overridePhone}) async {
+    final phone = overridePhone ?? primaryContact?.phoneNumber ?? (contacts.isNotEmpty ? contacts.first.phoneNumber : '112');
+    await _callService.placeCall(phone);
   }
 
   /// Starts live periodic GPS location tracking while emergency is active.

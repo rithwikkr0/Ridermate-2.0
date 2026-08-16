@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ridermate/features/maps/models/group_ride_model.dart';
-import 'package:ridermate/features/maps/models/navigation_route_model.dart';
 import 'package:ridermate/features/maps/services/nominatim_place_search_service.dart';
 import 'package:ridermate/features/maps/services/osrm_routing_service.dart';
 import 'package:ridermate/features/maps/controllers/group_ride_controller.dart';

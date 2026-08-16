@@ -53,38 +53,44 @@ class RmBottomNav extends StatelessWidget {
               ],
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(_items.length, (i) {
                 final active = i == currentIndex;
                 final item = _items[i];
-                return GestureDetector(
-                  onTap: () => onTap(i),
-                  behavior: HitTestBehavior.opaque,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: active
-                          ? AppColors.circuitOrange.withValues(alpha: 0.10)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          active ? item.activeIcon : item.icon,
-                          color: active ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
-                          size: AppSpacing.iconMd,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          item.label,
-                          style: AppTextStyles.labelCaps(
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () => onTap(i),
+                    behavior: HitTestBehavior.opaque,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: active
+                            ? AppColors.circuitOrange.withValues(alpha: 0.10)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            active ? item.activeIcon : item.icon,
                             color: active ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              item.label,
+                              style: AppTextStyles.labelCaps(
+                                color: active ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

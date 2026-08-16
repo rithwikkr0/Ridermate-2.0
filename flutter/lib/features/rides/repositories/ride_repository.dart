@@ -3,12 +3,18 @@ import '../../../repositories/base_repository.dart';
 import '../models/ride_engine_model.dart';
 import '../services/mock_ride_generator.dart';
 
+import '../models/active_ride_draft.dart';
+
 abstract class RideRepository implements BaseRepository<RideEngineModel, String> {
   Future<Result<List<RideEngineModel>>> getHistory({String? query, String? filter, int page = 1, int pageSize = 20});
+  Future<Result<ActiveRideDraft?>> getActiveDraft(String userId);
+  Future<Result<void>> saveActiveDraft(ActiveRideDraft draft);
+  Future<Result<void>> clearActiveDraft(String userId);
 }
 
 class MockRideRepository implements RideRepository {
   final List<RideEngineModel> _rides = MockRideGenerator.generateList(100);
+  ActiveRideDraft? _mockDraft;
 
   @override
   Future<Result<List<RideEngineModel>>> getAll() async {
@@ -42,5 +48,22 @@ class MockRideRepository implements RideRepository {
     final startIndex = (page - 1) * pageSize;
     final list = filtered.skip(startIndex).take(pageSize).toList();
     return Result.success(list);
+  }
+
+  @override
+  Future<Result<ActiveRideDraft?>> getActiveDraft(String userId) async {
+    return Result.success(_mockDraft);
+  }
+
+  @override
+  Future<Result<void>> saveActiveDraft(ActiveRideDraft draft) async {
+    _mockDraft = draft;
+    return Result.success(null);
+  }
+
+  @override
+  Future<Result<void>> clearActiveDraft(String userId) async {
+    _mockDraft = null;
+    return Result.success(null);
   }
 }

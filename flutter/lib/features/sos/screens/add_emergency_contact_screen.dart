@@ -6,6 +6,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/services/shared_preferences_storage_service.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../safety/controllers/sos_controller.dart';
 import '../../safety/models/emergency_contact_model.dart';
 import '../../safety/repositories/emergency_repository.dart';
@@ -27,13 +28,12 @@ class _AddEditEmergencyContactScreenState extends State<AddEditEmergencyContactS
   bool _isSaving = false;
 
   final List<String> _relationships = [
-    'Father',
-    'Mother',
+    'Parent',
     'Spouse',
+    'Sibling',
     'Friend',
-    'Brother',
-    'Sister',
-    'Guardian',
+    'Riding Partner',
+    'Doctor',
     'Other',
   ];
 
@@ -42,7 +42,7 @@ class _AddEditEmergencyContactScreenState extends State<AddEditEmergencyContactS
     super.initState();
     _nameController = TextEditingController(text: widget.contact?.name ?? '');
     _phoneController = TextEditingController(text: widget.contact?.phoneNumber ?? '');
-    _selectedRelationship = widget.contact?.relationship ?? 'Father';
+    _selectedRelationship = widget.contact?.relationship ?? 'Parent';
     if (!_relationships.contains(_selectedRelationship)) {
       _selectedRelationship = 'Other';
     }
@@ -60,7 +60,10 @@ class _AddEditEmergencyContactScreenState extends State<AddEditEmergencyContactS
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
-    final userId = (await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest';
+    final authUserId = context.read<AuthController>().currentUser?.id;
+    final userId = (authUserId != null && authUserId.isNotEmpty)
+        ? authUserId
+        : ((await SharedPreferencesStorageService().getString('user_id')) ?? 'user_guest');
     final repo = SqliteEmergencyRepository();
 
     final contact = EmergencyContact(

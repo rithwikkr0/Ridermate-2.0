@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -119,7 +119,7 @@ class GroupChatScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: RMTextField(
+                          child: RmTextField(
                             hintText: 'Type a message...',
                           ),
                         ),
