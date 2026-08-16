@@ -98,7 +98,7 @@ class NotificationService {
         ? userId
         : await _getUserId();
 
-    // 1. Throttle / Deduplication Check
+    // 1. In-memory throttle / deduplication check
     // Key: uid_type_entityId (or title hash if no entityId)
     final throttleKey = '${uid}_${type.name}_${entityId ?? title.hashCode}';
     if (throttleCooldown != null && _cooldowns.containsKey(throttleKey)) {
@@ -109,16 +109,29 @@ class NotificationService {
       }
     }
 
-    // 2. Preferences Check — emergency always bypasses
+    // 2. DB-level deduplication — suppress if same type+entityId seen in last hour.
+    //    Prevents duplicate entries after app restarts (complements in-memory throttle).
+    if (entityId != null && entityId.isNotEmpty && type != NotificationType.emergency) {
+      final isDup = await _repository.isDuplicate(
+        userId: uid,
+        type: type.name,
+        entityId: entityId,
+        window: throttleCooldown ?? const Duration(hours: 1),
+      );
+      if (isDup) return Result.success(null);
+    }
+
+    // 3. Preferences Check — emergency always bypasses
+    NotificationPreferences prefs = NotificationPreferences(userId: uid);
     if (type != NotificationType.emergency) {
       final prefsRes = await _repository.getPreferences(userId: uid);
-      final prefs = prefsRes.dataOrNull ?? NotificationPreferences(userId: uid);
+      prefs = prefsRes.dataOrNull ?? NotificationPreferences(userId: uid);
       if (!prefs.isCategoryEnabled(type)) {
         return Result.success(null); // Category disabled by user
       }
     }
 
-    // 3. Create canonical notification record
+    // 4. Create canonical notification record
     final notification = AppNotification(
       id: 'notif_${DateTime.now().millisecondsSinceEpoch}_${(title.hashCode ^ type.hashCode) & 0xFFFF}',
       userId: uid,
@@ -133,26 +146,32 @@ class NotificationService {
       imageUrl: imageUrl,
     );
 
-    // 4. Persist to SQLite
+    // 5. Persist to SQLite (always — even during quiet hours)
     await _repository.saveNotification(notification);
 
-    // 5. Get preferences for sound/vibration settings
-    final prefsRes = await _repository.getPreferences(userId: uid);
-    final prefs = prefsRes.dataOrNull ?? NotificationPreferences(userId: uid);
+    // 6. Reload prefs for sound/vibration (already loaded above for non-emergency)
+    if (type == NotificationType.emergency) {
+      final prefsRes = await _repository.getPreferences(userId: uid);
+      prefs = prefsRes.dataOrNull ?? NotificationPreferences(userId: uid);
+    }
 
-    // 6. Show Android system tray notification
-    await _localService.showNotification(
-      notification,
-      playSound: prefs.soundEnabled,
-      vibrate: prefs.vibrationEnabled,
-    );
+    // 7. Quiet hours check — emergency always bypasses quiet hours.
+    //    Notification is stored in DB above but OS tray push is skipped.
+    final inQuietHours = type != NotificationType.emergency && prefs.isInQuietHours();
+    if (!inQuietHours) {
+      await _localService.showNotification(
+        notification,
+        playSound: prefs.soundEnabled,
+        vibrate: prefs.vibrationEnabled,
+      );
+    }
 
-    // 7. Record throttle timestamp
+    // 8. Record throttle timestamp
     if (throttleCooldown != null) {
       _cooldowns[throttleKey] = DateTime.now();
     }
 
-    // 8. Broadcast to reactive UI stream
+    // 9. Broadcast to reactive UI stream
     if (!_notificationStreamController.isClosed) {
       _notificationStreamController.add(notification);
     }
@@ -309,6 +328,30 @@ class NotificationService {
       priority: NotificationPriority.high,
       route: '/achievements',
       entityId: achievementId,
+      userId: userId,
+    );
+  }
+
+  /// Social notification — friend accepted, post liked, post commented.
+  ///
+  /// [actorName] is the display name of the user who performed the action.
+  /// [postId] / [requestId] is stored as entityId for deduplication.
+  /// Throttled to 5 minutes to avoid spam from rapid-fire likes.
+  Future<Result<AppNotification?>> notifySocial({
+    required String title,
+    required String body,
+    String? entityId,
+    String? userId,
+    Duration cooldown = const Duration(minutes: 5),
+  }) async {
+    return notify(
+      title: title,
+      body: body,
+      type: NotificationType.social,
+      priority: NotificationPriority.normal,
+      route: '/social',
+      entityId: entityId,
+      throttleCooldown: cooldown,
       userId: userId,
     );
   }

@@ -21,6 +21,15 @@ abstract class NotificationRepository {
   Future<Result<bool>> clearAllNotifications({required String userId});
   Future<Result<NotificationPreferences>> getPreferences({required String userId});
   Future<Result<NotificationPreferences>> savePreferences(NotificationPreferences preferences);
+
+  /// Returns true if a notification of the same [type] and [entityId] already
+  /// exists for [userId] within the last [window] duration.
+  Future<bool> isDuplicate({
+    required String userId,
+    required String type,
+    String? entityId,
+    Duration window = const Duration(hours: 1),
+  });
 }
 
 class SqliteNotificationRepository implements NotificationRepository {
@@ -194,6 +203,36 @@ class SqliteNotificationRepository implements NotificationRepository {
       return Result.success(preferences);
     } catch (e) {
       return Result.failure(StorageError('Failed to save notification preferences: $e'));
+    }
+  }
+
+  /// Queries SQLite to detect a duplicate notification within [window].
+  ///
+  /// A duplicate is defined as a row with identical user_id + type + entity_id
+  /// created within the lookback window. When entityId is null, the check
+  /// falls back to title-hash matching via the in-memory throttle instead
+  /// (so this method returns false for null entityId).
+  @override
+  Future<bool> isDuplicate({
+    required String userId,
+    required String type,
+    String? entityId,
+    Duration window = const Duration(hours: 1),
+  }) async {
+    if (entityId == null || entityId.isEmpty) return false;
+    try {
+      final db = await _db;
+      final cutoff = DateTime.now().subtract(window).toIso8601String();
+      final rows = await db.query(
+        'notifications',
+        columns: ['id'],
+        where: 'user_id = ? AND type = ? AND entity_id = ? AND created_at >= ?',
+        whereArgs: [userId, type, entityId, cutoff],
+        limit: 1,
+      );
+      return rows.isNotEmpty;
+    } catch (_) {
+      return false;
     }
   }
 }

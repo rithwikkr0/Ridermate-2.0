@@ -144,6 +144,52 @@ class NotificationSettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: AppSpacing.lg),
+            _buildSectionHeader('QUIET HOURS'),
+            const SizedBox(height: AppSpacing.sm),
+            GlassCard(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.circuitOrange.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.bedtime_rounded, color: AppColors.circuitOrange, size: 20),
+                    ),
+                    title: Text('Quiet Hours', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+                    subtitle: Text(
+                      'Do Not Disturb: ${prefs.quietHoursStart} – ${prefs.quietHoursEnd}\nNotifications saved but OS push is silenced',
+                      style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+                    isThreeLine: true,
+                  ),
+                  const Divider(color: AppColors.glassBorder, height: 1),
+                  _buildTimeTile(
+                    context: context,
+                    icon: Icons.nights_stay_rounded,
+                    label: 'Start time',
+                    currentTime: prefs.quietHoursStart,
+                    onChanged: (time) => controller.updatePreferences(
+                      prefs.copyWith(quietHoursStart: time),
+                    ),
+                  ),
+                  const Divider(color: AppColors.glassBorder, height: 1),
+                  _buildTimeTile(
+                    context: context,
+                    icon: Icons.wb_sunny_rounded,
+                    label: 'End time',
+                    currentTime: prefs.quietHoursEnd,
+                    onChanged: (time) => controller.updatePreferences(
+                      prefs.copyWith(quietHoursEnd: time),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -154,6 +200,49 @@ class NotificationSettingsScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 8),
       child: Text(title, style: AppTextStyles.labelCapsSm(color: AppColors.onSurfaceVariant)),
+    );
+  }
+
+  Widget _buildTimeTile({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required String currentTime,
+    required ValueChanged<String> onChanged,
+  }) {
+    final parts = currentTime.split(':');
+    final hour = int.tryParse(parts.isNotEmpty ? parts[0] : '22') ?? 22;
+    final minute = int.tryParse(parts.length > 1 ? parts[1] : '00') ?? 0;
+
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: AppColors.circuitOrange.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: AppColors.circuitOrange, size: 20),
+      ),
+      title: Text(label, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+      trailing: Text(
+        currentTime,
+        style: AppTextStyles.bodyMd(color: AppColors.circuitOrange),
+      ),
+      onTap: () async {
+        final picked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(hour: hour, minute: minute),
+          builder: (ctx, child) => MediaQuery(
+            data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          ),
+        );
+        if (picked != null) {
+          final formatted =
+              '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+          onChanged(formatted);
+        }
+      },
     );
   }
 

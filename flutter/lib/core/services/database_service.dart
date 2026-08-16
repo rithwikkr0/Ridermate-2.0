@@ -13,7 +13,7 @@ class DatabaseService {
   Future<Database> get database async =>
       _database ??= await _openDatabase();
 
-  static const int _version = 11;
+  static const int _version = 12;
 
   Future<Database> _openDatabase() async {
     final path = join(await getDatabasesPath(), 'ridermate.db');
@@ -112,20 +112,27 @@ class DatabaseService {
     // ── Active Ride Cold-Start Draft ──────────────────────
     await _createActiveRideDraftTables(db);
 
-    // ── Gamification ──────────────────────────────────────
-    await _createGamificationTables(db);
 
     // ── Vehicle Intelligence & Challans ───────────────────
     await _createVehicleAndChallanExtensions(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 12) {
+      // Add quiet hours columns to notification_preferences (safe — wrapped in try/catch)
+      try {
+        await db.execute(
+            "ALTER TABLE notification_preferences ADD COLUMN quiet_hours_start TEXT NOT NULL DEFAULT '22:00'");
+      } catch (_) {}
+      try {
+        await db.execute(
+            "ALTER TABLE notification_preferences ADD COLUMN quiet_hours_end TEXT NOT NULL DEFAULT '07:00'");
+      } catch (_) {}
+    }
     if (oldVersion < 11) {
       await _createVehicleAndChallanExtensions(db);
     }
-    if (oldVersion < 11) {
-      await _createGamificationTables(db);
-    }
+
     if (oldVersion < 10) {
       await _createCommunitySocialTables(db);
     }
@@ -499,7 +506,9 @@ class DatabaseService {
         achievement_enabled INTEGER NOT NULL DEFAULT 1,
         system_enabled      INTEGER NOT NULL DEFAULT 1,
         sound_enabled       INTEGER NOT NULL DEFAULT 1,
-        vibration_enabled   INTEGER NOT NULL DEFAULT 1
+        vibration_enabled   INTEGER NOT NULL DEFAULT 1,
+        quiet_hours_start   TEXT NOT NULL DEFAULT '22:00',
+        quiet_hours_end     TEXT NOT NULL DEFAULT '07:00'
       )
     ''');
   }

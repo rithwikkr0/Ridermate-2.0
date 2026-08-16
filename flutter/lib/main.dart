@@ -13,6 +13,8 @@ import 'core/notifications/controllers/notification_controller.dart';
 import 'core/gamification/sqlite_gamification_repository.dart';
 import 'core/gamification/gamification_controller.dart';
 import 'core/gamification/challenge_seeder.dart';
+import 'core/sync/offline_sync_engine.dart';
+import 'core/services/live_location_service.dart';
 
 // Auth
 import 'features/auth/controllers/auth_controller.dart';
@@ -162,6 +164,7 @@ void main() async {
       garageController.refreshForUser(userId);
       sosController.refreshForUser(userId);
       communityController.refreshForUser(userId);
+      gamificationController.setUserId(userId);
       aiController.refreshForUser(userId);
     },
   );
@@ -183,6 +186,8 @@ void main() async {
             create: (_) => WeatherController(weatherService)),
         ChangeNotifierProvider(create: (_) => MemoryController(memoryRepository, locationService)),
         ChangeNotifierProvider(create: (_) => notificationController),
+        ChangeNotifierProvider(create: (_) => OfflineSyncEngine.instance),
+        ChangeNotifierProvider(create: (_) => LiveLocationService.instance),
       ],
       child: const RiderMateApp(),
     ),

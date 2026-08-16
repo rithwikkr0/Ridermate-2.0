@@ -43,7 +43,9 @@ void main() {
           service_interval_km  REAL NOT NULL DEFAULT 5000.0,
           service_interval_days INTEGER NOT NULL DEFAULT 180,
           is_default           INTEGER NOT NULL DEFAULT 0,
-          is_primary           INTEGER NOT NULL DEFAULT 0
+          is_primary           INTEGER NOT NULL DEFAULT 0,
+          documents_json       TEXT NOT NULL DEFAULT '[]',
+          notes                TEXT NOT NULL DEFAULT ''
         )
       ''');
       await db.execute('''

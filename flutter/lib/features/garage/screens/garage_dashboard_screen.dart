@@ -10,6 +10,7 @@ import '../../../core/widgets/glass_card.dart';
 
 import '../controllers/garage_controller.dart';
 import '../models/garage_models.dart';
+import '../../../core/vehicle_intelligence/vehicle_intelligence_service.dart';
 
 /// RiderMate 2.0 — Comprehensive Garage & Vehicle Management Dashboard Screen
 class GarageDashboardScreen extends StatefulWidget {
@@ -357,8 +358,9 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
             title: Text(item.serviceType, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
             subtitle: Text('Odo: ${item.odometer.toStringAsFixed(0)} km • ${item.workshopName}',
                 style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
-            trailing: Text('₹${item.cost.toStringAsFixed(0)}', style: AppTextStyles.statLabel(color: Colors.greenAccent)),
+            trailing: Text('INR ${item.cost.toStringAsFixed(0)}', style: AppTextStyles.statLabel(color: Colors.greenAccent)),
           ),
+        );
       },
     );
   }
@@ -519,7 +521,6 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                     icon: const Icon(Icons.search, color: AppColors.circuitOrange),
                     onPressed: () async {
                       // Perform lookup
-                      import '../../../core/vehicle_intelligence/vehicle_intelligence_service.dart';
                       final service = VehicleIntelligenceService();
                       if (service.isValidIndianRegNumber(regCtrl.text)) {
                         final data = await service.lookupVehicle(regCtrl.text);

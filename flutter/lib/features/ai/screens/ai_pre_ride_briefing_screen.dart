@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/ai_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
@@ -66,7 +68,7 @@ class AiPreRideBriefingScreen extends StatelessWidget {
                   _buildChecklistCard(
                     icon: Icons.health_and_safety_outlined,
                     title: 'Recovery',
-                    subtitle: '92% Readiness',
+                    subtitle: '${context.watch<AiController>().readinessScore}% Readiness',
                     statusIcon: Icons.check_circle,
                     statusColor: AppColors.circuitOrange,
                   ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1),

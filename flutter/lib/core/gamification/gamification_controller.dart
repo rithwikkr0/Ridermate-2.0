@@ -81,7 +81,7 @@ class GamificationController extends BaseController {
       _leaderboard = leaderResult.dataOrNull!;
     }
 
-    setState(ViewState.idle);
+    setState(ViewState.initial);
   }
 
   Future<void> awardEvent(String eventType, int xp, String refId) async {

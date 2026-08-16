@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../../../core/errors/app_error.dart';
 import '../../../core/errors/result.dart';
+import '../../../core/notifications/services/notification_service.dart';
 import '../../../core/services/database_service.dart';
 import '../../rides/models/ride_engine_model.dart';
 import '../../memories/models/memory_model.dart';
@@ -194,8 +195,10 @@ class CommunityController extends ChangeNotifier {
   Future<void> toggleLike(String postId) async {
     // Optimistic UI update
     final index = _feedPosts.indexWhere((p) => p.id == postId);
+    bool wasLiked = false;
     if (index != -1) {
       final p = _feedPosts[index];
+      wasLiked = p.isLikedByMe;
       final newLiked = !p.isLikedByMe;
       final newCount = newLiked ? p.likeCount + 1 : (p.likeCount > 0 ? p.likeCount - 1 : 0);
       _feedPosts[index] = p.copyWith(isLikedByMe: newLiked, likeCount: newCount);
@@ -205,6 +208,15 @@ class CommunityController extends ChangeNotifier {
     final res = await _postRepo.toggleLike(postId: postId, userId: _currentUserId);
     if (!res.isSuccess) {
       await loadFeed();
+    } else if (!wasLiked) {
+      // Only notify on new likes, not unlikes
+      NotificationService.instance.notifySocial(
+        title: '❤️ New Like',
+        body: 'Someone liked your post!',
+        entityId: 'like_${postId}_$_currentUserId',
+        userId: _currentUserId,
+        cooldown: const Duration(minutes: 5),
+      );
     }
   }
 
@@ -259,6 +271,15 @@ class CommunityController extends ChangeNotifier {
         _feedPosts[index] = p.copyWith(commentCount: p.commentCount + 1);
         notifyListeners();
       }
+
+      // Notify about new comment
+      NotificationService.instance.notifySocial(
+        title: '💬 New Comment',
+        body: '$_currentUserName commented on a post.',
+        entityId: comment.id,
+        userId: _currentUserId,
+        cooldown: const Duration(minutes: 2),
+      );
     }
     return res;
   }
@@ -377,6 +398,14 @@ class CommunityController extends ChangeNotifier {
     if (res.isSuccess) {
       await loadFriends();
       await loadFeed();
+
+      // Notify the current user that the friend request was accepted
+      NotificationService.instance.notifySocial(
+        title: '🤝 Friend Request Accepted',
+        body: 'You are now friends!',
+        entityId: requestId,
+        userId: _currentUserId,
+      );
     }
     return res;
   }

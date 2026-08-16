@@ -39,8 +39,8 @@ class AzureSafetyCoachService {
         safetyEvents: [{'type': 'overspeed', 'count': overspeedCount}],
       );
 
-      if (result.isSuccess && result.value != null) {
-        final data = result.value!;
+      if (result.isSuccess && result.data != null) {
+        final data = result.data!;
         return SafetyAssessment(
           riskLevel: data['riskLevel'] ?? _getLocalRiskLevel(safetyScore),
           safetyMessage: data['message'] ?? _getLocalMessage(safetyScore),

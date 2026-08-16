@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/ai_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
@@ -48,7 +50,11 @@ class AiCoachInsightsScreen extends StatelessWidget {
                 children: [
                   Text('READINESS SCORE', style: AppTextStyles.labelCaps()).animate().fadeIn(duration: 300.ms),
                   const SizedBox(height: AppSpacing.md),
-                  Text('92', style: AppTextStyles.displayStat().copyWith(fontSize: 72, color: AppColors.circuitOrange)).animate().fadeIn(delay: 100.ms).scale(),
+                  Consumer<AiController>(
+                    builder: (context, controller, child) {
+                      return Text('${controller.readinessScore}', style: AppTextStyles.displayStat().copyWith(fontSize: 72, color: AppColors.circuitOrange)).animate().fadeIn(delay: 100.ms).scale();
+                    }
+                  ),
                   const SizedBox(height: AppSpacing.sm),
                   Text('Prime condition for a hard effort today.', style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant)).animate().fadeIn(delay: 200.ms),
                   const SizedBox(height: AppSpacing.xl),

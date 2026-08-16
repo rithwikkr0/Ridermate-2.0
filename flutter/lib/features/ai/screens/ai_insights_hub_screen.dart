@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/ai_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
@@ -58,7 +60,7 @@ class AiInsightsHubScreen extends StatelessWidget {
                     childAspectRatio: 1.0,
                     children: [
                       _buildCategoryCard('Performance', Icons.speed, '+12% efficiency', delay: 100),
-                      _buildCategoryCard('Recovery', Icons.health_and_safety, '92% ready', delay: 200),
+                      _buildCategoryCard('Recovery', Icons.health_and_safety, '${context.watch<AiController>().readinessScore}% ready', delay: 200),
                       _buildCategoryCard('Routes', Icons.map_outlined, '3 new suggested', delay: 300),
                       _buildCategoryCard('Weather', Icons.cloud_queue, 'Clear skies', delay: 400),
                     ],

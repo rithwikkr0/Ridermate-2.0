@@ -26,13 +26,13 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   @override
   Widget build(BuildContext context) {
     final gamification = context.watch<GamificationController>();
-    
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Achievements', style: AppTextStyles.h2),
+        title: Text('Achievements', style: AppTextStyles.h2()),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
           onPressed: () => context.pop(),
@@ -73,9 +73,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
           children: [
             const Icon(Icons.stars, color: AppColors.circuitOrange, size: 48),
             const SizedBox(height: 12),
-            Text(gamification.level, style: AppTextStyles.h1),
+            Text(gamification.level, style: AppTextStyles.h1()),
             const SizedBox(height: 4),
-            Text('\${gamification.xp} XP', style: AppTextStyles.bodyText.copyWith(color: AppColors.circuitOrange)),
+            Text(
+              '${gamification.xp} XP',
+              style: AppTextStyles.bodyText(color: AppColors.circuitOrange),
+            ),
           ],
         ),
       ),
@@ -83,29 +86,35 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(title, style: AppTextStyles.h3);
+    return Text(title, style: AppTextStyles.h3());
   }
 
   Widget _buildChallenges(GamificationController gamification) {
     if (gamification.activeChallenges.isEmpty) {
-      return const Text('No active challenges right now.', style: AppTextStyles.bodyText);
+      return Text(
+        'No active challenges right now.',
+        style: AppTextStyles.bodyText(color: AppColors.onSurfaceVariant),
+      );
     }
     return Column(
       children: gamification.activeChallenges.map((c) {
-        final double progress = c['current_progress'] ?? 0.0;
-        final double target = c['target_value'] ?? 1.0;
+        final double progress = (c['current_progress'] as num?)?.toDouble() ?? 0.0;
+        final double target = (c['target_value'] as num?)?.toDouble() ?? 1.0;
         final double percent = (progress / target).clamp(0.0, 1.0);
-        
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: GlassCard(
             child: ListTile(
-              title: Text(c['title'], style: AppTextStyles.h4),
+              title: Text(c['title']?.toString() ?? '', style: AppTextStyles.h4()),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 8),
-                  Text(c['description'], style: AppTextStyles.caption),
+                  Text(
+                    c['description']?.toString() ?? '',
+                    style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                  ),
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
                     value: percent,
@@ -113,10 +122,16 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                     color: AppColors.circuitOrange,
                   ),
                   const SizedBox(height: 4),
-                  Text('\${progress.toStringAsFixed(0)} / \${target.toStringAsFixed(0)}', style: AppTextStyles.caption),
+                  Text(
+                    '${progress.toStringAsFixed(0)} / ${target.toStringAsFixed(0)}',
+                    style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                  ),
                 ],
               ),
-              trailing: Text('+\${c['xp_reward']} XP', style: AppTextStyles.bodyText.copyWith(color: AppColors.circuitOrange)),
+              trailing: Text(
+                '+${c['xp_reward']} XP',
+                style: AppTextStyles.bodyText(color: AppColors.circuitOrange),
+              ),
             ),
           ),
         );
@@ -126,7 +141,10 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
 
   Widget _buildAchievementsList(GamificationController gamification) {
     if (gamification.achievements.isEmpty) {
-      return const Text('Complete activities to unlock achievements!', style: AppTextStyles.bodyText);
+      return Text(
+        'Complete activities to unlock achievements!',
+        style: AppTextStyles.bodyText(color: AppColors.onSurfaceVariant),
+      );
     }
     return GridView.builder(
       shrinkWrap: true,
@@ -146,19 +164,19 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.emoji_events, color: AppColors.circuitOrange, size: 40),
+                const Icon(Icons.emoji_events, color: AppColors.circuitOrange, size: 40),
                 const SizedBox(height: 8),
                 Text(
-                  a['title'], 
-                  style: AppTextStyles.bodyText,
+                  a['title']?.toString() ?? '',
+                  style: AppTextStyles.bodyText(),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '+\${a['xp_reward']} XP',
-                  style: AppTextStyles.caption.copyWith(color: AppColors.circuitOrange),
+                  '+${a['xp_reward']} XP',
+                  style: AppTextStyles.caption(color: AppColors.circuitOrange),
                 ),
               ],
             ),

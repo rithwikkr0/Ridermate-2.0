@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import '../errors/app_error.dart';
 import '../errors/result.dart';
+import '../notifications/services/notification_service.dart';
 import '../services/database_service.dart';
 import 'gamification_repository.dart';
 import 'xp_config.dart';
@@ -46,13 +47,22 @@ class SqliteGamificationRepository implements GamificationRepository {
       bool awarded = false;
       await db.transaction((txn) async {
         // Try inserting into xp_events. UNIQUE constraint prevents duplicates.
-        final id = '\${userId}_\${eventType}_\${referenceId}_\${DateTime.now().millisecondsSinceEpoch}';
-        int inserted = await txn.rawInsert('''
-          INSERT OR IGNORE INTO xp_events (id, user_id, event_type, xp_amount, reference_id, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        ''', [id, userId, eventType, xpAmount, referenceId, DateTime.now().toIso8601String()]);
-
-        if (inserted > 0) {
+        final id = '${userId}_${eventType}_${referenceId}_${DateTime.now().millisecondsSinceEpoch}';
+        
+        final existing = await txn.query('xp_events', 
+            where: 'user_id = ? AND event_type = ? AND reference_id = ?',
+            whereArgs: [userId, eventType, referenceId]);
+            
+        if (existing.isEmpty) {
+          await txn.insert('xp_events', {
+            'id': id,
+            'user_id': userId,
+            'event_type': eventType,
+            'xp_amount': xpAmount,
+            'reference_id': referenceId,
+            'created_at': DateTime.now().toIso8601String(),
+          });
+          
           await txn.rawUpdate('''
             UPDATE users SET xp = xp + ? WHERE id = ?
           ''', [xpAmount, userId]);
@@ -126,7 +136,7 @@ class SqliteGamificationRepository implements GamificationRepository {
         final existing = await txn.query('user_challenges', where: 'user_id = ? AND challenge_id = ?', whereArgs: [userId, challengeId]);
         
         if (existing.isEmpty) {
-          final id = '\${userId}_$challengeId';
+          final id = '${userId}_$challengeId';
           await txn.insert('user_challenges', {
             'id': id,
             'user_id': userId,
@@ -162,7 +172,7 @@ class SqliteGamificationRepository implements GamificationRepository {
   Future<Result<bool>> unlockAchievement(String userId, String type, String title, String description, int xpReward, String icon) async {
     try {
       final db = await _dbService.database;
-      final id = '\${userId}_$type';
+      final id = '${userId}_$type';
       final existing = await db.query('achievements', where: 'id = ?', whereArgs: [id]);
       if (existing.isNotEmpty) return Result.success(false);
 
@@ -176,6 +186,15 @@ class SqliteGamificationRepository implements GamificationRepository {
         'icon': icon,
         'unlocked_at': DateTime.now().toIso8601String(),
       });
+
+      // Notify user about unlocked achievement
+      NotificationService.instance.notifyAchievement(
+        title: '🏆 Achievement Unlocked!',
+        body: title,
+        achievementId: id,
+        userId: userId,
+      );
+
       return Result.success(true);
     } catch (e) {
       return Result.failure(StorageError('Failed to unlock achievement: $e'));

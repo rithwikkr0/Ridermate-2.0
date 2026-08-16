@@ -11,11 +11,14 @@ class LeaderboardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gamification = context.watch<GamificationController>();
-    
+
     if (gamification.leaderboard.isEmpty) {
-      return const Text('No leaderboard data yet.', style: AppTextStyles.bodyText);
+      return Text(
+        'No leaderboard data yet.',
+        style: AppTextStyles.bodyText(color: AppColors.onSurfaceVariant),
+      );
     }
-    
+
     return GlassCard(
       child: ListView.builder(
         shrinkWrap: true,
@@ -24,17 +27,33 @@ class LeaderboardWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final user = gamification.leaderboard[index];
           final bool isTop3 = index < 3;
-          
+
           return ListTile(
             leading: CircleAvatar(
-              backgroundColor: isTop3 ? AppColors.circuitOrange : AppColors.surfaceContainerHigh,
-              child: Text('\${index + 1}', style: AppTextStyles.h4.copyWith(
-                color: isTop3 ? AppColors.onSurfaceLight : AppColors.onSurface,
-              )),
+              backgroundColor: isTop3
+                  ? AppColors.circuitOrange
+                  : AppColors.surfaceContainerHigh,
+              child: Text(
+                '${index + 1}',
+                style: AppTextStyles.h4(
+                  color: isTop3
+                      ? AppColors.onSurfaceLight
+                      : AppColors.onSurface,
+                ),
+              ),
             ),
-            title: Text(user['username'] ?? 'Rider', style: AppTextStyles.bodyText),
-            subtitle: Text(user['rider_level'] ?? 'Novice', style: AppTextStyles.caption),
-            trailing: Text('\${user['xp']} XP', style: AppTextStyles.h4.copyWith(color: AppColors.circuitOrange)),
+            title: Text(
+              user['username']?.toString() ?? 'Rider',
+              style: AppTextStyles.bodyText(),
+            ),
+            subtitle: Text(
+              user['rider_level']?.toString() ?? 'Novice',
+              style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+            ),
+            trailing: Text(
+              '${user['xp']} XP',
+              style: AppTextStyles.h4(color: AppColors.circuitOrange),
+            ),
           );
         },
       ),

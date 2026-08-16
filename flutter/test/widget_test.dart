@@ -27,11 +27,15 @@ import 'package:ridermate/features/weather/services/weather_service.dart';
 
 void main() {
   testWidgets('App launches successfully', (WidgetTester tester) async {
-    // Suppress network image errors in headless test environment
+    // Suppress network image/tile errors in headless test environment
     final originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
-      if (details.toString().contains('NetworkImageLoadException') ||
-          details.toString().contains('HTTP request failed')) {
+      final str = details.toString();
+      if (str.contains('NetworkImageLoadException') ||
+          str.contains('HTTP request failed') ||
+          str.contains('ClientException') ||
+          str.contains('openstreetmap.org') ||
+          str.contains('tile.')) {
         return; // Suppress expected test environment network errors
       }
       originalOnError?.call(details);

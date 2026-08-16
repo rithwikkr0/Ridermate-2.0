@@ -6,7 +6,6 @@ import '../repositories/sqlite_garage_repository.dart';
 import '../repositories/challan_repository.dart';
 import '../repositories/sqlite_challan_repository.dart';
 import '../models/challan_model.dart';
-import '../models/vehicle_model.dart';
 import '../services/garage_reminder_engine.dart';
 
 /// RiderMate 2.0 — Production Garage Controller
