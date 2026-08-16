@@ -14,6 +14,11 @@ class NotificationPreferences {
   final bool soundEnabled;
   final bool vibrationEnabled;
 
+  /// Quiet hours — 24h "HH:mm" format. Default: 22:00 → 07:00.
+  /// Emergency notifications always bypass quiet hours.
+  final String quietHoursStart;
+  final String quietHoursEnd;
+
   const NotificationPreferences({
     required this.userId,
     this.emergencyEnabled = true,
@@ -26,6 +31,8 @@ class NotificationPreferences {
     this.systemEnabled = true,
     this.soundEnabled = true,
     this.vibrationEnabled = true,
+    this.quietHoursStart = '22:00',
+    this.quietHoursEnd = '07:00',
   });
 
   bool isCategoryEnabled(NotificationType type) {
@@ -49,6 +56,32 @@ class NotificationPreferences {
     }
   }
 
+  /// Returns true if [now] falls within the quiet hours window.
+  /// Handles overnight windows (e.g. 22:00 → 07:00).
+  /// Emergency notifications always bypass this check.
+  bool isInQuietHours([DateTime? now]) {
+    try {
+      final current = now ?? DateTime.now();
+      final startParts = quietHoursStart.split(':');
+      final endParts = quietHoursEnd.split(':');
+      if (startParts.length < 2 || endParts.length < 2) return false;
+
+      final startMinutes = int.parse(startParts[0]) * 60 + int.parse(startParts[1]);
+      final endMinutes = int.parse(endParts[0]) * 60 + int.parse(endParts[1]);
+      final nowMinutes = current.hour * 60 + current.minute;
+
+      if (startMinutes <= endMinutes) {
+        // Same-day window (e.g. 09:00 → 17:00)
+        return nowMinutes >= startMinutes && nowMinutes < endMinutes;
+      } else {
+        // Overnight window (e.g. 22:00 → 07:00)
+        return nowMinutes >= startMinutes || nowMinutes < endMinutes;
+      }
+    } catch (_) {
+      return false;
+    }
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'user_id': userId,
@@ -62,6 +95,8 @@ class NotificationPreferences {
       'system_enabled': systemEnabled ? 1 : 0,
       'sound_enabled': soundEnabled ? 1 : 0,
       'vibration_enabled': vibrationEnabled ? 1 : 0,
+      'quiet_hours_start': quietHoursStart,
+      'quiet_hours_end': quietHoursEnd,
     };
   }
 
@@ -78,6 +113,8 @@ class NotificationPreferences {
       systemEnabled: (map['system_enabled'] as int? ?? 1) == 1,
       soundEnabled: (map['sound_enabled'] as int? ?? 1) == 1,
       vibrationEnabled: (map['vibration_enabled'] as int? ?? 1) == 1,
+      quietHoursStart: map['quiet_hours_start'] as String? ?? '22:00',
+      quietHoursEnd: map['quiet_hours_end'] as String? ?? '07:00',
     );
   }
 
@@ -92,6 +129,8 @@ class NotificationPreferences {
     bool? systemEnabled,
     bool? soundEnabled,
     bool? vibrationEnabled,
+    String? quietHoursStart,
+    String? quietHoursEnd,
   }) {
     return NotificationPreferences(
       userId: userId ?? this.userId,
@@ -105,6 +144,8 @@ class NotificationPreferences {
       systemEnabled: systemEnabled ?? this.systemEnabled,
       soundEnabled: soundEnabled ?? this.soundEnabled,
       vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
+      quietHoursStart: quietHoursStart ?? this.quietHoursStart,
+      quietHoursEnd: quietHoursEnd ?? this.quietHoursEnd,
     );
   }
 }

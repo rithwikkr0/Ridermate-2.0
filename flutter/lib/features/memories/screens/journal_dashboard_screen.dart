@@ -222,7 +222,7 @@ class _JournalDashboardScreenState extends State<JournalDashboardScreen> {
                     : Image.file(
                         File(memory.imagePath),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (context, error, stackTrace) => Container(
                           color: AppColors.surfaceContainerHigh,
                           child: const Center(
                             child: Icon(

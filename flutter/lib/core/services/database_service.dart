@@ -114,9 +114,15 @@ class DatabaseService {
 
     // ── Gamification ──────────────────────────────────────
     await _createGamificationTables(db);
+
+    // ── Vehicle Intelligence & Challans ───────────────────
+    await _createVehicleAndChallanExtensions(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 11) {
+      await _createVehicleAndChallanExtensions(db);
+    }
     if (oldVersion < 11) {
       await _createGamificationTables(db);
     }
@@ -861,5 +867,106 @@ class DatabaseService {
       await db.close();
       _database = null;
     }
+  }
+
+  static Future<void> _createVehicleAndChallanExtensions(Database db) async {
+    // Add documents column to vehicles if not exists
+    try { await db.execute("ALTER TABLE vehicles ADD COLUMN documents_json TEXT NOT NULL DEFAULT '[]'"); } catch (_) {}
+    // Add notes column to vehicles if not exists  
+    try { await db.execute("ALTER TABLE vehicles ADD COLUMN notes TEXT NOT NULL DEFAULT ''"); } catch (_) {}
+    
+    // Create challans table
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS challans (
+        id             TEXT PRIMARY KEY,
+        vehicle_id     TEXT NOT NULL,
+        user_id        TEXT NOT NULL,
+        challan_number TEXT NOT NULL DEFAULT '',
+        amount         REAL NOT NULL DEFAULT 0.0,
+        date           TEXT NOT NULL,
+        authority      TEXT NOT NULL DEFAULT '',
+        offense        TEXT NOT NULL DEFAULT '',
+        status         TEXT NOT NULL DEFAULT 'pending',
+        source         TEXT NOT NULL DEFAULT 'manual',
+        created_at     TEXT NOT NULL,
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_challans_vehicle_id ON challans(vehicle_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_challans_user_id ON challans(user_id)');
+    
+    // Create live_location_sessions table (for live location feature)
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS live_location_sessions (
+        id            TEXT PRIMARY KEY,
+        user_id       TEXT NOT NULL,
+        session_token TEXT NOT NULL UNIQUE,
+        expires_at    TEXT NOT NULL,
+        created_at    TEXT NOT NULL,
+        stopped_at    TEXT,
+        is_active     INTEGER NOT NULL DEFAULT 1,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_live_location_user_id ON live_location_sessions(user_id)');
+    
+    // Create gamification tables (added by vehicle builder since it owns DB version)
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS achievements (
+        id          TEXT PRIMARY KEY,
+        user_id     TEXT NOT NULL,
+        type        TEXT NOT NULL,
+        title       TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        xp_reward   INTEGER NOT NULL DEFAULT 0,
+        icon        TEXT NOT NULL DEFAULT 'emoji_events',
+        unlocked_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_achievements_user_id ON achievements(user_id)');
+    
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS challenges (
+        id           TEXT PRIMARY KEY,
+        title        TEXT NOT NULL,
+        description  TEXT NOT NULL DEFAULT '',
+        type         TEXT NOT NULL,
+        target_value REAL NOT NULL DEFAULT 1.0,
+        xp_reward    INTEGER NOT NULL DEFAULT 100,
+        start_date   TEXT NOT NULL,
+        end_date     TEXT NOT NULL,
+        is_active    INTEGER NOT NULL DEFAULT 1
+      )
+    ''');
+    
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_challenges (
+        id           TEXT PRIMARY KEY,
+        user_id      TEXT NOT NULL,
+        challenge_id TEXT NOT NULL,
+        progress     REAL NOT NULL DEFAULT 0.0,
+        status       TEXT NOT NULL DEFAULT 'active',
+        started_at   TEXT NOT NULL,
+        completed_at TEXT,
+        UNIQUE(user_id, challenge_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_user_challenges_user_id ON user_challenges(user_id)');
+    
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS xp_events (
+        id          TEXT PRIMARY KEY,
+        user_id     TEXT NOT NULL,
+        event_type  TEXT NOT NULL,
+        xp_amount   INTEGER NOT NULL,
+        reference_id TEXT NOT NULL DEFAULT '',
+        created_at  TEXT NOT NULL,
+        UNIQUE(user_id, event_type, reference_id)
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_xp_events_user_id ON xp_events(user_id)');
   }
 }

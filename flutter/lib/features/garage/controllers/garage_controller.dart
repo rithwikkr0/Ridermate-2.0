@@ -3,25 +3,33 @@ import '../../../providers/base_controller.dart';
 import '../../../core/services/shared_preferences_storage_service.dart';
 import '../models/garage_models.dart';
 import '../repositories/sqlite_garage_repository.dart';
+import '../repositories/challan_repository.dart';
+import '../repositories/sqlite_challan_repository.dart';
+import '../models/challan_model.dart';
+import '../models/vehicle_model.dart';
 import '../services/garage_reminder_engine.dart';
 
 /// RiderMate 2.0 — Production Garage Controller
 class GarageController extends BaseController {
   final GarageRepository _repository;
+  final ChallanRepository _challanRepository;
   final SharedPreferencesStorageService _storageService;
 
   List<VehicleModel> vehicles = [];
   VehicleModel? primaryVehicle;
   List<MaintenanceRecord> serviceHistory = [];
   List<GarageReminder> reminders = [];
+  List<ChallanModel> challans = [];
 
   String _currentUserId = 'user_guest';
   bool _isDisposed = false;
 
   GarageController([
     GarageRepository? repository,
+    ChallanRepository? challanRepository,
     SharedPreferencesStorageService? storageService,
   ])  : _repository = repository ?? SqliteGarageRepository(),
+        _challanRepository = challanRepository ?? SqliteChallanRepository(),
         _storageService = storageService ?? SharedPreferencesStorageService() {
     _initAndLoad();
   }
@@ -67,8 +75,10 @@ class GarageController extends BaseController {
           userId: _currentUserId,
         );
         serviceHistory = sRes.dataOrNull ?? [];
+        await loadChallans(primaryVehicle!.id);
       } else {
         serviceHistory = [];
+        challans = [];
       }
 
       setState(ViewState.success);
@@ -88,6 +98,7 @@ class GarageController extends BaseController {
       userId: _currentUserId,
     );
     serviceHistory = sRes.dataOrNull ?? [];
+    await loadChallans(vehicle.id);
     if (!_isDisposed) notifyListeners();
   }
 
@@ -135,6 +146,24 @@ class GarageController extends BaseController {
     final res = await _repository.addMaintenanceRecord(toAdd);
     if (res.isSuccess) {
       await loadGarageData();
+    }
+  }
+
+  /// Loads challans for a vehicle
+  Future<void> loadChallans(String vehicleId) async {
+    final res = await _challanRepository.getChallansByVehicle(vehicleId);
+    if (res.isSuccess) {
+      challans = res.dataOrNull ?? [];
+      if (!_isDisposed) notifyListeners();
+    }
+  }
+
+  /// Adds a new challan
+  Future<void> addChallan(ChallanModel challan) async {
+    final toAdd = challan.copyWith(userId: _currentUserId);
+    final res = await _challanRepository.addChallan(toAdd);
+    if (res.isSuccess && primaryVehicle != null) {
+      await loadChallans(primaryVehicle!.id);
     }
   }
 

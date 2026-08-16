@@ -69,7 +69,7 @@ class _MemoryMapScreenState extends State<MemoryMapScreen> {
                   : Image.file(
                       File(mem.imagePath),
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(
+                      errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.photo_camera,
                         color: Colors.white,
                         size: 20,
@@ -148,7 +148,7 @@ class _MemoryMapScreenState extends State<MemoryMapScreen> {
                               : Image.file(
                                   File(_tappedMemory!.imagePath),
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => const Icon(
+                                  errorBuilder: (context, error, stackTrace) => const Icon(
                                     Icons.photo,
                                     color: AppColors.onSurfaceVariant,
                                   ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -26,7 +25,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -71,6 +70,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
             Tab(text: 'Primary Vehicle'),
             Tab(text: 'My Vehicles'),
             Tab(text: 'Service History'),
+            Tab(text: 'Challans'),
           ],
         ),
       ),
@@ -92,6 +92,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                 _buildPrimaryVehicleTab(context, controller, primaryVehicle),
                 _buildVehiclesListTab(context, controller),
                 _buildServiceHistoryTab(context, controller),
+                _buildChallansTab(context, controller),
               ],
             ),
           ),
@@ -297,7 +298,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: vehicles.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
         final v = vehicles[index];
         final isPrimary = v.id == controller.primaryVehicle?.id;
@@ -344,7 +345,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: history.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final item = history[index];
         return GlassCard(
@@ -357,6 +358,58 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
             subtitle: Text('Odo: ${item.odometer.toStringAsFixed(0)} km • ${item.workshopName}',
                 style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
             trailing: Text('₹${item.cost.toStringAsFixed(0)}', style: AppTextStyles.statLabel(color: Colors.greenAccent)),
+          ),
+      },
+    );
+  }
+
+  Widget _buildChallansTab(BuildContext context, GarageController controller) {
+    final challans = controller.challans;
+
+    if (challans.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.marginMobile),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.gavel_rounded, size: 64, color: AppColors.onSurfaceVariant),
+              const SizedBox(height: AppSpacing.md),
+              Text('No pending challans', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
+              const SizedBox(height: 6),
+              Text('You have no active challans logged for this vehicle.',
+                  style: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant), textAlign: TextAlign.center),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(AppSpacing.marginMobile),
+      itemCount: challans.length,
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, index) {
+        final challan = challans[index];
+        final isPending = challan.status.toLowerCase() == 'pending';
+        return GlassCard(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: isPending ? Colors.redAccent : Colors.greenAccent,
+              child: const Icon(Icons.receipt_long_rounded, color: Colors.white, size: 20),
+            ),
+            title: Text(challan.offense.isNotEmpty ? challan.offense : 'Traffic Violation', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+            subtitle: Text('${challan.challanNumber}\nDate: ${challan.date.toString().substring(0, 10)}',
+                style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
+            isThreeLine: true,
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('₹${challan.amount.toStringAsFixed(0)}', style: AppTextStyles.statLabel(color: isPending ? Colors.redAccent : Colors.greenAccent)),
+                Text(challan.status.toUpperCase(), style: AppTextStyles.caption(color: isPending ? Colors.redAccent : Colors.greenAccent)),
+              ],
+            ),
           ),
         );
       },
@@ -426,10 +479,11 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
         backgroundColor: const Color(0xFF1C1C1E),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Add Vehicle to Garage', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        content: StatefulBuilder(
+          builder: (context, setStateBuilder) => SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
               // Authorized API Warning Banner
               Container(
                 padding: const EdgeInsets.all(10),
@@ -444,7 +498,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Automatic vehicle verification is currently unavailable. Enter details manually.',
+                        'Enter registration number to auto-fetch details (if available), or enter manually.',
                         style: TextStyle(color: Colors.amber, fontSize: 12),
                       ),
                     ),
@@ -452,6 +506,38 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                 ),
               ),
               const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: regCtrl,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(labelText: 'Reg Number (e.g. KA01AB1234)', labelStyle: TextStyle(color: Colors.white70)),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search, color: AppColors.circuitOrange),
+                    onPressed: () async {
+                      // Perform lookup
+                      import '../../../core/vehicle_intelligence/vehicle_intelligence_service.dart';
+                      final service = VehicleIntelligenceService();
+                      if (service.isValidIndianRegNumber(regCtrl.text)) {
+                        final data = await service.lookupVehicle(regCtrl.text);
+                        if (data != null) {
+                          setStateBuilder(() {
+                            brandCtrl.text = data.makerModel.split(' ').first;
+                            modelCtrl.text = data.makerModel.replaceFirst(brandCtrl.text, '').trim();
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No details found. Enter manually.')));
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid Registration Number format.')));
+                      }
+                    },
+                  ),
+                ],
+              ),
               TextField(
                 controller: brandCtrl,
                 style: const TextStyle(color: Colors.white),
@@ -463,17 +549,13 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                 decoration: const InputDecoration(labelText: 'Model (e.g. Classic 350)', labelStyle: TextStyle(color: Colors.white70)),
               ),
               TextField(
-                controller: regCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Reg Number (e.g. KA01AB1234)', labelStyle: TextStyle(color: Colors.white70)),
-              ),
-              TextField(
                 controller: odoCtrl,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(labelText: 'Current Odometer (km)', labelStyle: TextStyle(color: Colors.white70)),
               ),
             ],
+            ),
           ),
         ),
         actions: [

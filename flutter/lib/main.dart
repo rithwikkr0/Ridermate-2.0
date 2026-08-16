@@ -10,6 +10,9 @@ import 'core/services/shared_preferences_storage_service.dart';
 import 'core/notifications/services/notification_service.dart';
 import 'core/notifications/services/local_notification_service.dart';
 import 'core/notifications/controllers/notification_controller.dart';
+import 'core/gamification/sqlite_gamification_repository.dart';
+import 'core/gamification/gamification_controller.dart';
+import 'core/gamification/challenge_seeder.dart';
 
 // Auth
 import 'features/auth/controllers/auth_controller.dart';
@@ -76,6 +79,9 @@ void main() async {
   // Warm up the database on startup so first operations are fast
   await databaseService.database;
 
+  // Seed default challenges for gamification
+  await ChallengeSeeder.seedDefaultChallenges();
+
   // Initialize Android local notifications platform
   await NotificationService.instance.initialize(
     onNotificationTap: (route, payload) {
@@ -109,6 +115,10 @@ void main() async {
   const locationService = DeviceLocationService();
   final rideController = RideController(rideRepository, locationService);
 
+  // ── Gamification ──────────────────────────────────────────────────────────
+  final gamificationRepository = SqliteGamificationRepository(dbService: databaseService);
+  final gamificationController = GamificationController(gamificationRepository);
+
   // ── AI — mock until Phase 13 ──────────────────────────────────────────────
   final aiProvider = MockAiProvider();
   final aiRepository = MockAiRepository(aiProvider);
@@ -138,6 +148,7 @@ void main() async {
   // Build the NotificationController and SosController so we can pass them to AuthController.
   final notificationController = NotificationController();
   final sosController = SosController();
+  final aiController = AiController(aiRepository);
 
   // Build AuthController with onUserChanged callback.
   // This keeps NotificationController, RideController, GarageController, SosController, and CommunityController in sync.
@@ -151,6 +162,7 @@ void main() async {
       garageController.refreshForUser(userId);
       sosController.refreshForUser(userId);
       communityController.refreshForUser(userId);
+      aiController.refreshForUser(userId);
     },
   );
 
@@ -162,9 +174,10 @@ void main() async {
         ChangeNotifierProvider(create: (_) => profileController),
         ChangeNotifierProvider(create: (_) => rideController),
         ChangeNotifierProvider(create: (_) => sosController),
-        ChangeNotifierProvider(create: (_) => AiController(aiRepository)),
+        ChangeNotifierProvider.value(value: aiController),
         ChangeNotifierProvider(create: (_) => communityController),
         ChangeNotifierProvider(create: (_) => garageController),
+        ChangeNotifierProvider(create: (_) => gamificationController),
         ChangeNotifierProvider(create: (_) => NavigationController()),
         ChangeNotifierProvider(
             create: (_) => WeatherController(weatherService)),

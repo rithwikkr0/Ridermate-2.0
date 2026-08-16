@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -195,7 +194,7 @@ class _TrafficPointsScreenState extends State<TrafficPointsScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: _violations.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                            separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
                             itemBuilder: (context, index) {
                               final v = _violations[index];
                               return GlassCard(

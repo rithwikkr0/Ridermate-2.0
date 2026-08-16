@@ -129,7 +129,7 @@ class _JournalSearchScreenState extends State<JournalSearchScreen> {
                                                 : Image.file(
                                                     File(memory.imagePath),
                                                     fit: BoxFit.cover,
-                                                    errorBuilder: (_, __, ___) => const Icon(
+                                                    errorBuilder: (context, error, stackTrace) => const Icon(
                                                       Icons.photo,
                                                       color: AppColors.onSurfaceVariant,
                                                     ),

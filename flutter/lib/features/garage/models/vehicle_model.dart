@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// RiderMate 2.0 — Production Vehicle Data Model
 class VehicleModel {
   final String id;
@@ -21,6 +23,8 @@ class VehicleModel {
   final int serviceIntervalDays;
   final bool isDefault;
   final bool isPrimary;
+  final List<Map<String, dynamic>> documents;
+  final String notes;
 
   const VehicleModel({
     required this.id,
@@ -44,6 +48,8 @@ class VehicleModel {
     this.serviceIntervalDays = 180,
     this.isDefault = false,
     this.isPrimary = false,
+    this.documents = const [],
+    this.notes = '',
   });
 
   /// Registration number with middle characters masked for privacy (e.g. KA01****34)
@@ -119,10 +125,20 @@ class VehicleModel {
       'service_interval_days': serviceIntervalDays,
       'is_default': isDefault ? 1 : 0,
       'is_primary': isPrimary ? 1 : 0,
+      'documents_json': jsonEncode(documents),
+      'notes': notes,
     };
   }
 
   factory VehicleModel.fromMap(Map<String, dynamic> map) {
+    List<Map<String, dynamic>> parsedDocs = [];
+    if (map['documents_json'] != null) {
+      try {
+        final decoded = jsonDecode(map['documents_json'] as String) as List;
+        parsedDocs = decoded.map((e) => Map<String, dynamic>.from(e)).toList();
+      } catch (_) {}
+    }
+    
     return VehicleModel(
       id: map['id'] as String,
       userId: map['user_id'] as String? ?? '',
@@ -145,6 +161,8 @@ class VehicleModel {
       serviceIntervalDays: (map['service_interval_days'] as num? ?? 180).toInt(),
       isDefault: (map['is_default'] as int? ?? 0) == 1,
       isPrimary: (map['is_primary'] as int? ?? 0) == 1,
+      documents: parsedDocs,
+      notes: map['notes'] as String? ?? '',
     );
   }
 
@@ -170,6 +188,8 @@ class VehicleModel {
     int? serviceIntervalDays,
     bool? isDefault,
     bool? isPrimary,
+    List<Map<String, dynamic>>? documents,
+    String? notes,
   }) {
     return VehicleModel(
       id: id ?? this.id,
@@ -193,6 +213,8 @@ class VehicleModel {
       serviceIntervalDays: serviceIntervalDays ?? this.serviceIntervalDays,
       isDefault: isDefault ?? this.isDefault,
       isPrimary: isPrimary ?? this.isPrimary,
+      documents: documents ?? this.documents,
+      notes: notes ?? this.notes,
     );
   }
 }

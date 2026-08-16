@@ -54,7 +54,7 @@ class PhotoViewerScreen extends StatelessWidget {
                   : Image.file(
                       File(memory.imagePath),
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => Center(
+                      errorBuilder: (context, error, stackTrace) => Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [

@@ -16,7 +16,6 @@ import '../../../core/constants/mock_data.dart';
 import '../../../core/router/app_router.dart';
 
 import '../../profile/controllers/profile_controller.dart';
-import '../../rides/controllers/ride_controller.dart';
 import '../../ai/controllers/ai_controller.dart';
 import '../../weather/controllers/weather_controller.dart';
 

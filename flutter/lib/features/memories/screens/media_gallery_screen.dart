@@ -161,7 +161,7 @@ class _MediaGalleryScreenState extends State<MediaGalleryScreen> {
                                   : Image.file(
                                       File(memory.imagePath),
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => const Center(
+                                      errorBuilder: (context, error, stackTrace) => const Center(
                                         child: Icon(
                                           Icons.broken_image,
                                           color: AppColors.onSurfaceVariant,

@@ -62,7 +62,7 @@ import '../../features/memories/screens/voice_note_recorder_screen.dart';
 import '../../features/memories/screens/create_memory_screen.dart';
 import '../../features/memories/screens/memory_map_screen.dart';
 import '../../features/memories/screens/memory_detail_screen.dart';
-import '../../features/achievements/screens/achievements_hub_screen.dart';
+import '../../features/achievements/screens/achievements_screen.dart';
 import '../../features/achievements/screens/goals_achievements_screen.dart';
 import '../../features/sos/screens/safety_center_screen.dart';
 import '../../features/sos/screens/sos_countdown_screen.dart';
@@ -393,7 +393,7 @@ final appRouter = GoRouter(
     GoRoute(path: '/journal/photo',     builder: (c, s) => const PhotoViewerScreen()),
     GoRoute(path: '/journal/detail',    builder: (c, s) => const MemoryDetailScreen()),
     GoRoute(path: '/journal/voice',     builder: (c, s) => const VoiceNoteRecorderScreen()),
-    GoRoute(path: AppRoutes.achievements, builder: (c, s) => const AchievementsHubScreen()),
+    GoRoute(path: AppRoutes.achievements, builder: (c, s) => const AchievementsScreen()),
     GoRoute(path: AppRoutes.goals,      builder: (c, s) => const GoalsAchievementsScreen()),
     GoRoute(path: AppRoutes.safety,     builder: (c, s) => const SafetyCenterScreen()),
     GoRoute(path: AppRoutes.sos,        builder: (c, s) => const SosCountdownScreen()),
