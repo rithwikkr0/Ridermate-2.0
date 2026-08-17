@@ -55,7 +55,7 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
           : ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.marginMobile),
               itemCount: community.savedPosts.length,
-              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
               itemBuilder: (ctx, i) {
                 final post = community.savedPosts[i];
                 return GlassCard(

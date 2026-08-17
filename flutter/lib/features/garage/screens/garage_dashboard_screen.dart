@@ -530,10 +530,10 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                             modelCtrl.text = data.makerModel.replaceFirst(brandCtrl.text, '').trim();
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No details found. Enter manually.')));
+                          if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('No details found. Enter manually.')));
                         }
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid Registration Number format.')));
+                        if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Invalid Registration Number format.')));
                       }
                     },
                   ),

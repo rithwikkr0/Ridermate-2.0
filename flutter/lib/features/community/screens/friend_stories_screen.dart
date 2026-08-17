@@ -6,7 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/widgets/glass_card.dart';
 
 class FriendStoryItem {
   final String id;
@@ -169,7 +168,7 @@ class _FriendStoriesScreenState extends State<FriendStoriesScreen> with SingleTi
                     Image.network(
                       story.imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (context, error, _) => Container(
                         color: const Color(0xFF1C1C1E),
                         child: const Center(
                           child: Icon(Icons.directions_bike_rounded, size: 80, color: AppColors.circuitOrange),

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../../auth/controllers/auth_controller.dart';
 import '../controllers/community_controller.dart';
-import '../models/friend_model.dart';
 import 'community_user_profile_screen.dart';
 import '../widgets/report_dialog.dart';
 
@@ -180,7 +177,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: _searchResults.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final u = _searchResults[i];
         final uid = u['id'] as String;
@@ -245,7 +242,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: community.friends.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final f = community.friends[i];
         return GlassCard(
@@ -325,7 +322,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: community.pendingRequests.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final req = community.pendingRequests[i];
         return GlassCard(
@@ -377,7 +374,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: community.sentRequests.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final req = community.sentRequests[i];
         return GlassCard(
@@ -408,7 +405,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: community.suggestedUsers.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final u = community.suggestedUsers[i];
         final uid = u['id'] as String;
@@ -465,7 +462,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.marginMobile),
       itemCount: community.blockedUsers.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (ctx, i) {
         final b = community.blockedUsers[i];
         return GlassCard(

@@ -44,10 +44,11 @@ class _LoginScreenState extends State<LoginScreen> {
           : 'password123';
 
       final authController = context.read<AuthController>();
+      final profileController = context.read<ProfileController>();
       await authController.login(email, password);
       if (authController.currentUser != null) {
         final userId = authController.currentUser!.id;
-        context.read<ProfileController>().updateRepository(
+        profileController.updateRepository(
           SqliteUserRepository(DatabaseService.instance, userId: userId),
         );
       }

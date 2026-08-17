@@ -216,7 +216,7 @@ class _AddEditEmergencyContactScreenState extends State<AddEditEmergencyContactS
                           'Will be called and texted first during SOS emergency',
                           style: AppTextStyles.bodyXs(color: AppColors.onSurfaceVariant),
                         ),
-                        activeColor: AppColors.circuitOrange,
+                        activeThumbColor: AppColors.circuitOrange,
                         contentPadding: EdgeInsets.zero,
                         onChanged: (val) => setState(() => _isPrimary = val),
                       ),

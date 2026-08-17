@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -87,10 +86,10 @@ class _SquadsCommunityScreenState extends State<SquadsCommunityScreen> {
                     description: descCtrl.text.trim(),
                     isPrivate: isPrivate,
                   );
-                  if (mounted) {
+                  if (ctx.mounted) {
                     Navigator.of(ctx).pop();
                     if (res.isSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(ctx).showSnackBar(
                         SnackBar(content: Text('Squad "${nameCtrl.text}" created! 🏍️'), backgroundColor: AppColors.circuitOrange),
                       );
                     }
@@ -136,14 +135,14 @@ class _SquadsCommunityScreenState extends State<SquadsCommunityScreen> {
                 if (matching.isNotEmpty) {
                   final res = await community.joinSquad(matching.first.id, inviteCode: code);
                   if (ctx.mounted) Navigator.of(ctx).pop();
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                  if (ctx.mounted) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
                       SnackBar(content: Text(res.isSuccess ? 'Joined squad!' : 'Failed: ${res.error?.message}')),
                     );
                   }
                 } else {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                  if (ctx.mounted) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
                       const SnackBar(content: Text('Invalid squad invite code'), backgroundColor: Colors.red),
                     );
                   }

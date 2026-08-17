@@ -1,4 +1,4 @@
-/// RiderMate 2.0 — Canonical Squad & Group Ride Models
+// RiderMate 2.0 — Canonical Squad & Group Ride Models
 
 class SquadModel {
   final String id;

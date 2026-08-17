@@ -194,7 +194,7 @@ class _CommunityUserProfileScreenState extends State<CommunityUserProfileScreen>
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _userPosts.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (ctx, i) {
                         final post = _userPosts[i];
                         return GlassCard(

@@ -238,7 +238,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (context, error, _) => Container(
                       height: 100,
                       color: AppColors.surfaceContainerHigh,
                       child: const Center(child: Text('Invalid image preview URL')),
@@ -261,7 +261,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: _selectedRide?.id ?? rideController.rides.first.id,
+                  initialValue: _selectedRide?.id ?? rideController.rides.first.id,
                   dropdownColor: AppColors.surfaceContainerHigh,
                   decoration: InputDecoration(
                     filled: true,
@@ -297,7 +297,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: _selectedMemory?.id ?? memoryController.memories.first.id,
+                  initialValue: _selectedMemory?.id ?? memoryController.memories.first.id,
                   dropdownColor: AppColors.surfaceContainerHigh,
                   decoration: InputDecoration(
                     filled: true,

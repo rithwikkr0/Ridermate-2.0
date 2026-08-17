@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 
 import '../../../core/errors/result.dart';
 import '../../../core/errors/app_error.dart';
@@ -249,7 +250,8 @@ class SqliteAuthService implements AuthService {
       }
       return Result.success(user);
     } catch (e, stack) {
-      print('SQLITE REGISTER CATCH ERROR: $e\n$stack');
+      // ignore: avoid_print
+      debugPrint('SQLITE REGISTER CATCH ERROR: $e\n$stack');
       return Result.failure(StorageError('Registration failed: $e'));
     }
   }

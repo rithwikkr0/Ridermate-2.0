@@ -18,11 +18,13 @@ sealed class Result<T> {
 }
 
 final class Success<T> extends Result<T> {
+  @override
   final T data;
   const Success(this.data);
 }
 
 final class Failure<T> extends Result<T> {
+  @override
   final AppError error;
   const Failure(this.error);
 }

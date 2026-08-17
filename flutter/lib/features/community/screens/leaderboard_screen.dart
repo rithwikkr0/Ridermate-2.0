@@ -7,7 +7,6 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../controllers/community_controller.dart';
-import '../models/community_models.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});

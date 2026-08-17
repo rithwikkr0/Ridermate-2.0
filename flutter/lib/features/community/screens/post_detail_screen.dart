@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/widgets/glass_card.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../controllers/community_controller.dart';
 import '../models/post_model.dart';
@@ -224,7 +223,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         _currentPost.mediaUrl,
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (context, error, _) => Container(
                           height: 160,
                           color: AppColors.surfaceContainerHigh,
                           child: const Center(child: Icon(Icons.image, size: 40, color: AppColors.onSurfaceVariant)),
@@ -343,7 +342,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _comments.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (ctx, i) => _commentTile(_comments[i], currentUserId, isOwner),
                     ),
                 ],

@@ -122,7 +122,7 @@ class SqliteFriendRepository implements FriendRepository {
         return Result.failure(ValidationError('Cannot send friend request to blocked user'));
       }
 
-      final reqId = 'freq_${DateTime.now().millisecondsSinceEpoch}_${senderId}';
+      final reqId = 'freq_${DateTime.now().millisecondsSinceEpoch}_$senderId';
       final req = FriendRequestModel(
         id: reqId,
         senderId: senderId,

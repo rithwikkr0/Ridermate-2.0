@@ -51,6 +51,7 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
 
   bool _isGpsEnabled = true;
   LocationPermission _permissionStatus = LocationPermission.whileInUse;
+  // ignore: unused_field
   String? _errorMessage;
   bool _hasTileError = false;
 

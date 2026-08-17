@@ -145,7 +145,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
                   const SizedBox(height: AppSpacing.sm),
                   ..._availableFriends.map(
                     (f) => CheckboxListTile(
-                      activeColor: AppColors.circuitOrange,
+                      activeThumbColor: AppColors.circuitOrange,
                       title: Text(f['name'], style: const TextStyle(color: Colors.white)),
                       value: f['selected'] as bool,
                       onChanged: (val) {
@@ -352,7 +352,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
                                   ),
                                   Switch(
                                     value: _groupController.isLocationSharingEnabled,
-                                    activeColor: AppColors.circuitOrange,
+                                    activeThumbColor: AppColors.circuitOrange,
                                     onChanged: (val) => _groupController.toggleLocationSharing(val),
                                   ),
                                 ],

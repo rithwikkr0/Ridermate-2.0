@@ -78,7 +78,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen> {
                   mediaUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800',
                   caption: controller.text.trim(),
                 );
-                if (mounted) Navigator.of(ctx).pop();
+                if (ctx.mounted) Navigator.of(ctx).pop();
               }
             },
             child: const Text('POST MOMENT', style: TextStyle(color: Colors.white)),
@@ -344,7 +344,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen> {
               child: Image.network(
                 story.mediaUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (context, error, _) => Container(
                   color: AppColors.surfaceContainerHigh,
                   child: const Icon(Icons.person, color: AppColors.onSurface),
                 ),
@@ -456,7 +456,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen> {
                     height: 180,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (context, error, _) => Container(
                       height: 120,
                       color: AppColors.surfaceContainerHigh,
                       child: const Center(child: Icon(Icons.image_not_supported, color: AppColors.onSurfaceVariant)),

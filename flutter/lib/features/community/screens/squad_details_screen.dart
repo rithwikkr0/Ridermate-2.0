@@ -120,10 +120,10 @@ class _SquadDetailsScreenState extends State<SquadDetailsScreen> {
                   startLocation: startCtrl.text.trim(),
                   destination: destCtrl.text.trim(),
                 );
-                if (mounted) {
+                if (ctx.mounted) {
                   Navigator.of(ctx).pop();
                   if (res.isSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(ctx).showSnackBar(
                       const SnackBar(content: Text('Group ride scheduled! 🏍️'), backgroundColor: AppColors.circuitOrange),
                     );
                   }

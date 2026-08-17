@@ -328,7 +328,7 @@ class _CreateMemoryScreenState extends State<CreateMemoryScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownButtonFormField<String?>(
-                            value: (memoryCtrl.draftRideId != null &&
+                            initialValue: (memoryCtrl.draftRideId != null &&
                                     rideCtrl.rides.any((r) => r.id == memoryCtrl.draftRideId))
                                 ? memoryCtrl.draftRideId
                                 : null,

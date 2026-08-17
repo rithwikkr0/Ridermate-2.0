@@ -76,12 +76,13 @@ class _ReportDialogState extends State<ReportDialog> {
             Text('Why are you reporting this?', style: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant)),
             const SizedBox(height: AppSpacing.sm),
             ..._reasons.map((reason) {
+              // ignore: deprecated_member_use
               return RadioListTile<String>(
                 value: reason,
                 groupValue: _selectedReason,
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                activeColor: AppColors.circuitOrange,
+                activeThumbColor: AppColors.circuitOrange,
                 title: Text(reason, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
                 onChanged: (val) {
                   if (val != null) setState(() => _selectedReason = val);

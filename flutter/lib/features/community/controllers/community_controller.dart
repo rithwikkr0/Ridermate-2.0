@@ -7,7 +7,6 @@ import '../../rides/models/ride_engine_model.dart';
 import '../../memories/models/memory_model.dart';
 import '../models/post_model.dart';
 import '../models/comment_model.dart';
-import '../models/friend_model.dart';
 import '../models/squad_model.dart';
 import '../models/story_model.dart';
 import '../models/community_models.dart';

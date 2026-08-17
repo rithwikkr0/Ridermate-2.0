@@ -98,7 +98,7 @@ class RmTopNav extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ),
                   )
-                else if (leadingWidget case final leading?) leading,
+                else if (leadingWidget case final w?) w,
 
                 const SizedBox(width: AppSpacing.sm),
 
