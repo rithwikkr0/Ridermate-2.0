@@ -95,7 +95,7 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
                           title: Text(e.value, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
                           value: e.key,
                           groupValue: _selectedMapStyle,
-                          activeThumbColor: AppColors.circuitOrange,
+                          activeColor: AppColors.circuitOrange,
                           onChanged: (val) => setState(() => _selectedMapStyle = val!),
                         );
                       }).toList(),

@@ -82,7 +82,7 @@ class _ReportDialogState extends State<ReportDialog> {
                 groupValue: _selectedReason,
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                activeThumbColor: AppColors.circuitOrange,
+                activeColor: AppColors.circuitOrange,
                 title: Text(reason, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
                 onChanged: (val) {
                   if (val != null) setState(() => _selectedReason = val);

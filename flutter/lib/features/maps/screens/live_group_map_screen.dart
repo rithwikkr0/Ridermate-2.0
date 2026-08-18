@@ -145,7 +145,7 @@ class _LiveGroupMapScreenState extends State<LiveGroupMapScreen> {
                   const SizedBox(height: AppSpacing.sm),
                   ..._availableFriends.map(
                     (f) => CheckboxListTile(
-                      activeThumbColor: AppColors.circuitOrange,
+                      activeColor: AppColors.circuitOrange,
                       title: Text(f['name'], style: const TextStyle(color: Colors.white)),
                       value: f['selected'] as bool,
                       onChanged: (val) {
