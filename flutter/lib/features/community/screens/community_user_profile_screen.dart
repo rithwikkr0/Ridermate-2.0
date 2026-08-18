@@ -297,7 +297,6 @@ class _CommunityUserProfileScreenState extends State<CommunityUserProfileScreen>
         );
 
       case FriendshipStatus.none:
-      default:
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(

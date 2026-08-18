@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import '../../providers/base_controller.dart';
 import 'gamification_repository.dart';
 import 'gamification_engine.dart';

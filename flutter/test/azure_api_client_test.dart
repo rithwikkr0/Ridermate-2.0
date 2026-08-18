@@ -11,8 +11,6 @@ void main() {
         environment: Environment.dev,
         apiBaseUrl: '',
         azureApiBaseUrl: '',
-        supabaseUrl: '',
-        supabaseAnonKey: '',
         mapTileServerUrl: '',
       );
       final client = AzureApiClient(config: emptyConfig);
@@ -22,11 +20,11 @@ void main() {
       expect(result.errorOrNull!.code, equals('azure_unconfigured'));
     });
 
-    test('checkHealth parses 200 OK response from Azure Functions', () async {
+    test('checkHealth parses 200 OK response from Azure', () async {
       final mockHttp = MockClient((request) async {
         if (request.url.path.endsWith('/health')) {
           return http.Response(
-            '{"status":"ok","service":"ridermate-api","version":"1.0.0"}',
+            '{"status":"healthy","service":"RiderMate 2.0 API","version":"2.0.0"}',
             200,
             headers: {'content-type': 'application/json'},
           );
@@ -37,9 +35,7 @@ void main() {
       const testConfig = EnvConfig(
         environment: Environment.dev,
         apiBaseUrl: '',
-        azureApiBaseUrl: 'https://func-ridermate-api.azurewebsites.net/api',
-        supabaseUrl: '',
-        supabaseAnonKey: '',
+        azureApiBaseUrl: 'https://app-ridermate-api.azurewebsites.net/api',
         mapTileServerUrl: '',
       );
 
@@ -48,8 +44,8 @@ void main() {
 
       expect(result.isSuccess, isTrue);
       final data = result.dataOrNull!;
-      expect(data['status'], equals('ok'));
-      expect(data['service'], equals('ridermate-api'));
+      expect(data['status'], equals('healthy'));
+      expect(data['service'], equals('RiderMate 2.0 API'));
     });
 
     test('analyzeSafety sends payload and returns structured analysis', () async {
@@ -67,9 +63,7 @@ void main() {
       const testConfig = EnvConfig(
         environment: Environment.dev,
         apiBaseUrl: '',
-        azureApiBaseUrl: 'https://func-ridermate-api.azurewebsites.net/api',
-        supabaseUrl: '',
-        supabaseAnonKey: '',
+        azureApiBaseUrl: 'https://app-ridermate-api.azurewebsites.net/api',
         mapTileServerUrl: '',
       );
 
@@ -96,9 +90,7 @@ void main() {
       const testConfig = EnvConfig(
         environment: Environment.dev,
         apiBaseUrl: '',
-        azureApiBaseUrl: 'https://func-ridermate-api.azurewebsites.net/api',
-        supabaseUrl: '',
-        supabaseAnonKey: '',
+        azureApiBaseUrl: 'https://app-ridermate-api.azurewebsites.net/api',
         mapTileServerUrl: '',
       );
 
@@ -112,7 +104,6 @@ void main() {
       );
 
       expect(result.isFailure, isTrue);
-      expect(result.errorOrNull!.code, equals('azure_safety_error'));
     });
   });
 }

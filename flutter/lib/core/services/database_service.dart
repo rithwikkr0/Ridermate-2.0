@@ -8,6 +8,8 @@ class DatabaseService {
   DatabaseService._();
   static final DatabaseService instance = DatabaseService._();
 
+  DatabaseService.forTesting(this._database);
+
   Database? _database;
 
   Future<Database> get database async =>

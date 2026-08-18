@@ -11,7 +11,6 @@ import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/rm_text_field.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/services/database_service.dart';
-import '../../../providers/base_controller.dart';
 import '../controllers/auth_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../profile/repositories/sqlite_user_repository.dart';
