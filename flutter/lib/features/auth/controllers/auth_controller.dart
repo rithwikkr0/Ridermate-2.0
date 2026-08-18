@@ -1,5 +1,6 @@
 import 'dart:math';
 import '../../../providers/base_controller.dart';
+import '../../../core/errors/result.dart';
 import '../models/auth_state.dart';
 import '../models/user_model.dart';
 import '../services/mock_auth_service.dart';
@@ -10,14 +11,13 @@ import '../../../core/services/database_service.dart';
 // Callback type — receives the authenticated userId, or 'user_guest' on logout
 typedef UserChangedCallback = void Function(String userId);
 
-/// RiderMate 2.0 — Auth Controller
+/// RiderMate 2.0 — Production Auth Controller
 class AuthController extends BaseController {
   final AuthService authService;
   final SessionService sessionService;
   final DatabaseService? databaseService;
 
   /// Optional callback invoked after every auth state change.
-  /// Wire to NotificationController.refreshForUser in main.dart.
   UserChangedCallback? onUserChanged;
 
   AuthState stateModel = AuthState.unauthenticated();
@@ -39,15 +39,13 @@ class AuthController extends BaseController {
       final userId = await sessionService.getUserId();
       final token = await sessionService.getAccessToken();
 
-      if (userId == null || token == null) {
-        final demoUser = UserModel.guest();
-        stateModel = AuthState.loggedIn(demoUser, 'demo_token');
-        onUserChanged?.call(demoUser.id);
-        setState(ViewState.success);
+      if (userId == null || userId.isEmpty || token == null || token.isEmpty) {
+        stateModel = AuthState.unauthenticated();
+        setState(ViewState.initial);
         return;
       }
 
-      // Load the user from the real database
+      // Load the user from the persistent database
       if (databaseService != null) {
         final repo = SqliteUserRepository(
           databaseService!,
@@ -62,7 +60,7 @@ class AuthController extends BaseController {
         }
       }
 
-      // Session exists but user not loadable — clear it
+      // Session exists but user not loadable — clear it safely
       await sessionService.clearSession();
       stateModel = AuthState.unauthenticated();
       setState(ViewState.initial);
@@ -74,10 +72,10 @@ class AuthController extends BaseController {
 
   // ── Login ────────────────────────────────────────────────────────────────
 
-  Future<void> login(String email, String password) async {
+  Future<Result<UserModel>> login(String email, String password) async {
     setState(ViewState.loading);
     stateModel = AuthState.loading();
-    final result = await authService.login(email, password);
+    final result = await authService.login(email.trim(), password);
 
     if (result.isSuccess) {
       final user = result.dataOrNull!;
@@ -90,19 +88,21 @@ class AuthController extends BaseController {
       stateModel = AuthState.loggedIn(user, token);
       onUserChanged?.call(user.id);
       setState(ViewState.success);
+      return Result.success(user);
     } else {
       stateModel = AuthState.error(result.errorOrNull!);
       setState(ViewState.error, error: result.errorOrNull!);
+      return Result.failure(result.errorOrNull!);
     }
   }
 
   // ── Register ─────────────────────────────────────────────────────────────
 
-  Future<void> register(
-      String fullName, String email, String password) async {
+  Future<Result<UserModel>> register(
+      String fullName, String email, String password, {String phone = ''}) async {
     setState(ViewState.loading);
     stateModel = AuthState.loading();
-    final result = await authService.register(fullName, email, password);
+    final result = await authService.register(fullName.trim(), email.trim(), password, phone: phone.trim());
 
     if (result.isSuccess) {
       final user = result.dataOrNull!;
@@ -115,10 +115,18 @@ class AuthController extends BaseController {
       stateModel = AuthState.loggedIn(user, token);
       onUserChanged?.call(user.id);
       setState(ViewState.success);
+      return Result.success(user);
     } else {
       stateModel = AuthState.error(result.errorOrNull!);
       setState(ViewState.error, error: result.errorOrNull!);
+      return Result.failure(result.errorOrNull!);
     }
+  }
+
+  // ── Password Reset ────────────────────────────────────────────────────────
+
+  Future<Result<bool>> sendPasswordReset(String email) async {
+    return await authService.sendPasswordReset(email.trim());
   }
 
   // ── Logout ───────────────────────────────────────────────────────────────
@@ -133,7 +141,7 @@ class AuthController extends BaseController {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  bool get isLoggedIn => stateModel.status == AuthStatus.loggedIn;
+  bool get isLoggedIn => stateModel.status == AuthStatus.loggedIn && stateModel.user != null;
   UserModel? get currentUser => stateModel.user;
 
   static String _generateToken(String userId) {

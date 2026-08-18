@@ -53,6 +53,39 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
+  Future<void> _showLogoutDialog() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surfaceContainerHigh,
+        title: Text('Log Out of RiderMate?', style: AppTextStyles.headlineSm(color: Colors.white)),
+        content: Text(
+          'Your local telemetry and recorded rides remain safely stored on this device.',
+          style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text('Cancel', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      final authController = context.read<AuthController>();
+      await authController.logout();
+      if (mounted) {
+        context.go(AppRoutes.login);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileController = context.watch<ProfileController>();
@@ -103,7 +136,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: AppColors.circuitOrange,
                                   title: 'Ride History & Telemetry',
                                   subtitle: '${user.totalRides} total rides • ${user.totalDistanceKm.toStringAsFixed(1)} km recorded',
-                                  onTap: () => context.push('/rides/history'),
+                                  onTap: () => context.push(AppRoutes.rideHistory),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -111,7 +144,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.cyanAccent,
                                   title: 'Rider Analytics & Performance',
                                   subtitle: 'Speed trends, elevation profiles & records',
-                                  onTap: () => context.push('/analytics'),
+                                  onTap: () => context.push(AppRoutes.stats),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -119,7 +152,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.amber,
                                   title: 'Achievements & Milestones',
                                   subtitle: '${user.achievements.length} badges unlocked',
-                                  onTap: () => context.push('/achievements'),
+                                  onTap: () => context.push(AppRoutes.achievements),
                                 ),
                               ],
                             ),
@@ -152,12 +185,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   subtitle: Text(
                                     primaryVehicle != null
                                         ? 'Odometer: ${primaryVehicle.odometerKm.toStringAsFixed(0)} km • ${primaryVehicle.maskedRegistrationNumber}'
-                                        : 'Tap to add your motorcyle or scooter',
+                                        : 'Tap to add your motorcycle or scooter',
                                     style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
                                   ),
                                   trailing: IconButton(
                                     icon: const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.onSurfaceVariant, size: 16),
-                                    onPressed: () => context.push('/profile/garage'),
+                                    onPressed: () => context.push(AppRoutes.garage),
                                   ),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
@@ -166,7 +199,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.lightBlueAccent,
                                   title: 'Garage & Maintenance Hub',
                                   subtitle: 'Service due in ${primaryVehicle?.serviceKmRemaining.toStringAsFixed(0) ?? "5,000"} km • Insurance & PUC status',
-                                  onTap: () => context.push('/profile/garage'),
+                                  onTap: () => context.push(AppRoutes.garage),
                                 ),
                               ],
                             ),
@@ -183,8 +216,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   icon: Icons.people_rounded,
                                   iconColor: Colors.greenAccent,
                                   title: 'Friends & Community Hub',
-                                  subtitle: '$_friendCount friends connected • Snapchat-style memory stories',
-                                  onTap: () => context.push('/social/friends'),
+                                  subtitle: '$_friendCount friends connected • Social stories & squads',
+                                  onTap: () => context.push(AppRoutes.friends),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -210,7 +243,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.purpleAccent,
                                   title: 'Rider Memories & Journal',
                                   subtitle: 'Photo journal, geotags & ride stories',
-                                  onTap: () => context.push('/memories'),
+                                  onTap: () => context.push(AppRoutes.memories),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -218,7 +251,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.orangeAccent,
                                   title: 'Geotagged Memory Map',
                                   subtitle: 'Explore ride photos on interactive map',
-                                  onTap: () => context.push('/memories/map'),
+                                  onTap: () => context.push(AppRoutes.memoryMap),
                                 ),
                               ],
                             ),
@@ -236,7 +269,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: _safetyScore >= 90 ? Colors.greenAccent : Colors.orangeAccent,
                                   title: 'Traffic Points & Safety Score',
                                   subtitle: 'Safety Score: $_safetyScore / 100 • View overspeed & telemetry log',
-                                  onTap: () => context.push('/profile/safety-points'),
+                                  onTap: () => context.push(AppRoutes.safetyPoints),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -244,25 +277,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: Colors.redAccent,
                                   title: 'Emergency Contacts & SOS',
                                   subtitle: 'Manage SOS contacts & crash detection settings',
-                                  onTap: () => context.push('/sos/contacts'),
+                                  onTap: () => context.push(AppRoutes.emergencyContacts),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xl),
 
-                          // 6. SETTINGS SECTION
+                          // 6. SETTINGS & APP PREFERENCES SECTION
                           _buildSectionHeader('APP SETTINGS & PRIVACY'),
                           const SizedBox(height: AppSpacing.sm),
                           GlassCard(
                             child: Column(
                               children: [
                                 _buildNavTile(
+                                  icon: Icons.settings_outlined,
+                                  iconColor: AppColors.onSurface,
+                                  title: 'Settings & Configurations',
+                                  subtitle: 'Preferences, appearance, privacy & hardware',
+                                  onTap: () => context.push(AppRoutes.settings),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
                                   icon: Icons.notifications_active_rounded,
                                   iconColor: AppColors.circuitOrange,
                                   title: 'Notification Preferences',
                                   subtitle: 'Quiet settings for safety, ride, and maintenance alerts',
-                                  onTap: () => context.push('/settings/notifications'),
+                                  onTap: () => context.push(AppRoutes.notificationSettings),
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
@@ -270,9 +311,29 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   iconColor: AppColors.onSurfaceVariant,
                                   title: 'Privacy & Security Controls',
                                   subtitle: 'Location permissions, friend visibility & memory sharing',
-                                  onTap: () => context.push('/settings/privacy'),
+                                  onTap: () => context.push(AppRoutes.privacySecurity),
                                 ),
                               ],
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xl),
+
+                          // 7. LOG OUT BUTTON
+                          GlassCard(
+                            child: ListTile(
+                              leading: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 22),
+                              ),
+                              title: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.redAccent)),
+                              subtitle: Text('Sign out of your account on this device',
+                                  style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
+                              trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.redAccent, size: 16),
+                              onTap: _showLogoutDialog,
                             ),
                           ),
                         ],
@@ -303,10 +364,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   CircleAvatar(
                     radius: 36,
                     backgroundColor: AppColors.circuitOrange,
-                    child: Text(
-                      user.fullName.isNotEmpty ? user.fullName.substring(0, 1) : 'R',
-                      style: AppTextStyles.headlineLg(color: Colors.white),
-                    ),
+                    backgroundImage: user.profilePhotoUrl.isNotEmpty ? NetworkImage(user.profilePhotoUrl) : null,
+                    child: user.profilePhotoUrl.isEmpty
+                        ? Text(
+                            user.fullName.isNotEmpty ? user.fullName.substring(0, 1) : 'R',
+                            style: AppTextStyles.headlineLg(color: Colors.white),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
@@ -339,7 +403,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined, color: AppColors.onSurfaceVariant),
-                    onPressed: () => context.push('/profile/edit'),
+                    onPressed: () => context.push(AppRoutes.editProfile),
                   ),
                 ],
               ),

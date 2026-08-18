@@ -23,8 +23,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -34,26 +37,40 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    try {
-      final email = _emailController.text.trim().isNotEmpty
-          ? _emailController.text.trim()
-          : 'demo@ridermate.app';
-      final password = _passwordController.text.trim().isNotEmpty
-          ? _passwordController.text.trim()
-          : 'password123';
+    setState(() => _errorMessage = null);
 
-      final authController = context.read<AuthController>();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty) {
+      setState(() => _errorMessage = 'Please enter your email address.');
+      return;
+    }
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      setState(() => _errorMessage = 'Please enter a valid email address.');
+      return;
+    }
+    if (password.isEmpty) {
+      setState(() => _errorMessage = 'Please enter your password.');
+      return;
+    }
+
+    final authController = context.read<AuthController>();
+    final result = await authController.login(email, password);
+
+    if (!mounted) return;
+
+    if (result.isSuccess && result.dataOrNull != null) {
+      final user = result.dataOrNull!;
       final profileController = context.read<ProfileController>();
-      await authController.login(email, password);
-      if (authController.currentUser != null) {
-        final userId = authController.currentUser!.id;
-        profileController.updateRepository(
-          SqliteUserRepository(DatabaseService.instance, userId: userId),
-        );
-      }
-    } catch (_) {}
-    if (mounted) {
+      profileController.updateRepository(
+        SqliteUserRepository(DatabaseService.instance, userId: user.id),
+      );
       context.go(AppRoutes.home);
+    } else {
+      setState(() {
+        _errorMessage = result.errorOrNull?.message ?? 'Incorrect email or password.';
+      });
     }
   }
 
@@ -66,15 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1571210862729-78a52d3779a2?q=80&w=1000&auto=format&fit=crop'),
-                fit: BoxFit.cover,
-                opacity: 0.3,
-              ),
-            ),
-          ),
+          // Background ambient gradient
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -82,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 end: Alignment.topCenter,
                 colors: [
                   AppColors.background,
-                  AppColors.background.withValues(alpha: 0.8),
+                  AppColors.background.withValues(alpha: 0.9),
                   Colors.transparent,
                 ],
               ),
@@ -96,114 +105,163 @@ class _LoginScreenState extends State<LoginScreen> {
               backgroundColor: Color(0x26FF6B00),
             ),
           ).animate().blur(begin: const Offset(60, 60)),
+
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.marginMobile),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'RiderMate',
-                      style: AppTextStyles.headlineLg().copyWith(color: Colors.white),
-                    ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.1),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Access your performance cockpit.',
-                      style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant),
-                    ).animate().fadeIn(delay: 200.ms, duration: 500.ms),
-                    const SizedBox(height: AppSpacing.md),
-                    PrimaryButton(
-                      text: 'ENTER COCKPIT',
-                      onPressed: _handleLogin,
-                      isFullWidth: true,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    GlassCard(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('EMAIL ADDRESS', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
-                            const SizedBox(height: AppSpacing.xs),
-                            RmTextField(
-                              controller: _emailController,
-                              hintText: 'rider@example.com',
-                              prefixIcon: Icons.mail_outline,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('PASSWORD', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
-                                GestureDetector(
-                                  onTap: () => context.go(AppRoutes.resetPassword),
-                                  child: Text('Forgot?', style: AppTextStyles.labelCaps().copyWith(color: AppColors.primary)),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            RmTextField(
-                              controller: _passwordController,
-                              hintText: '••••••••',
-                              prefixIcon: Icons.lock_outline,
-                              obscureText: true,
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            PrimaryButton(
-                              text: isLoading ? 'AUTHENTICATING...' : 'INITIALIZE LOGIN',
-                              onPressed: isLoading ? null : _handleLogin,
-                              isFullWidth: true,
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Row(
-                              children: [
-                                Expanded(child: Container(height: 1, color: Colors.white.withValues(alpha: 0.1))),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                                  child: Text('OR CONNECT WITH', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant.withValues(alpha: 0.5))),
-                                ),
-                                Expanded(child: Container(height: 1, color: Colors.white.withValues(alpha: 0.1))),
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: _handleLogin,
-                                    child: Container(
-                                      height: 44,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.surfaceContainerHigh,
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: AppColors.glassBorder),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // App Title & Tagline
+                      Text(
+                        'RiderMate',
+                        style: AppTextStyles.headlineLg().copyWith(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.1),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        'KINETIC PRECISION & RIDER SAFETY',
+                        style: AppTextStyles.labelCaps().copyWith(
+                          color: AppColors.circuitOrange,
+                          letterSpacing: 1.5,
+                        ),
+                      ).animate().fadeIn(delay: 200.ms, duration: 500.ms),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Access your high-performance cockpit.',
+                        style: AppTextStyles.bodyMd().copyWith(color: AppColors.onSurfaceVariant),
+                      ).animate().fadeIn(delay: 300.ms, duration: 500.ms),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Glass Login Card
+                      GlassCard(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'EMAIL ADDRESS',
+                                style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              RmTextField(
+                                controller: _emailController,
+                                hintText: 'rider@example.com',
+                                prefixIcon: Icons.mail_outline,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'PASSWORD',
+                                    style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => context.push(AppRoutes.resetPassword),
+                                    child: Text(
+                                      'Forgot Password?',
+                                      style: AppTextStyles.labelCaps().copyWith(
+                                        color: AppColors.circuitOrange,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      child: const Center(child: Icon(Icons.g_mobiledata, color: Colors.white, size: 28)),
                                     ),
                                   ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              RmTextField(
+                                controller: _passwordController,
+                                hintText: '••••••••',
+                                prefixIcon: Icons.lock_outline,
+                                obscureText: _obscurePassword,
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) => _handleLogin(),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                    color: AppColors.onSurfaceVariant,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
                                 ),
+                              ),
+
+                              // Error Alert Message
+                              if (_errorMessage != null) ...[
+                                const SizedBox(height: AppSpacing.md),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.error_outline, color: Colors.redAccent, size: 18),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          _errorMessage!,
+                                          style: AppTextStyles.bodySm().copyWith(color: Colors.redAccent),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ).animate().fadeIn(duration: 200.ms),
                               ],
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Text("Don't have an account? ", style: AppTextStyles.bodySm().copyWith(color: AppColors.onSurfaceVariant)),
-                                GestureDetector(
-                                  onTap: () => context.go(AppRoutes.register),
-                                  child: Text('Register', style: AppTextStyles.bodySm().copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+
+                              const SizedBox(height: AppSpacing.lg),
+                              PrimaryButton(
+                                text: isLoading ? 'AUTHENTICATING...' : 'ENTER COCKPIT',
+                                onPressed: isLoading ? null : _handleLogin,
+                                isFullWidth: true,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+
+                              // Navigation to Register
+                              Center(
+                                child: Wrap(
+                                  alignment: WrapAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Don't have an account? ",
+                                      style: AppTextStyles.bodySm().copyWith(color: AppColors.onSurfaceVariant),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => context.push(AppRoutes.register),
+                                      child: Text(
+                                        'Register Here',
+                                        style: AppTextStyles.bodySm().copyWith(
+                                          color: AppColors.circuitOrange,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ).animate().fadeIn(delay: 300.ms, duration: 500.ms).slideY(begin: 0.2),
-                  ],
+                      ).animate().fadeIn(delay: 300.ms, duration: 500.ms).slideY(begin: 0.2),
+                    ],
+                  ),
                 ),
               ),
             ),

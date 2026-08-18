@@ -6,11 +6,44 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/router/app_router.dart';
 import '../../auth/controllers/auth_controller.dart';
-
 
 class SettingsHomeScreen extends StatelessWidget {
   const SettingsHomeScreen({super.key});
+
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.surfaceContainerHigh,
+        title: Text('Log Out of RiderMate?', style: AppTextStyles.headlineSm(color: Colors.white)),
+        content: Text(
+          'Your local telemetry, recorded rides, and offline cache will be securely preserved.',
+          style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text('Cancel', style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      final authController = context.read<AuthController>();
+      await authController.logout();
+      if (context.mounted) {
+        context.go(AppRoutes.login);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,46 +84,41 @@ class SettingsHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('ACCOUNT', [
-                    _buildTile(Icons.person_outline, 'Edit Profile', () => context.push('/edit_profile')),
-                    _buildTile(Icons.security, 'Privacy & Security', () => context.push('/privacy_security')),
-                    _buildTile(Icons.link, 'Connected Accounts', () {}),
+                    _buildTile(Icons.person_outline, 'Edit Profile', () => context.push(AppRoutes.editProfile)),
+                    _buildTile(Icons.security, 'Privacy & Security', () => context.push(AppRoutes.privacySecurity)),
+                    _buildTile(Icons.link, 'Connected Cloud Status', () => context.push(AppRoutes.profile)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('PREFERENCES', [
-                    _buildTile(Icons.notifications_outlined, 'Notification Settings', () => context.push('/settings/notifications')),
-                    _buildTile(Icons.palette_outlined, 'Appearance', () => context.push('/appearance_settings')),
-                    _buildTile(Icons.navigation_outlined, 'Navigation Settings', () {}),
-                    _buildTile(Icons.straighten, 'Units', () {}),
+                    _buildTile(Icons.notifications_outlined, 'Notification Settings', () => context.push(AppRoutes.notificationSettings)),
+                    _buildTile(Icons.palette_outlined, 'Appearance', () => context.push(AppRoutes.appearance)),
+                    _buildTile(Icons.navigation_outlined, 'Navigation Settings', () => context.push(AppRoutes.navSettings)),
+                    _buildTile(Icons.straighten, 'Units & Measurement', () => context.push(AppRoutes.appearance)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
-                  _buildSection('SAFETY', [
-                    _buildTile(Icons.health_and_safety_outlined, 'Safety Settings', () => context.push('/safety_settings')),
-                    _buildTile(Icons.contact_phone_outlined, 'Emergency Contacts', () => context.push('/emergency_contacts')),
+                  _buildSection('SAFETY & EMERGENCY', [
+                    _buildTile(Icons.health_and_safety_outlined, 'Safety & Crash Detection', () => context.push(AppRoutes.safetySettings)),
+                    _buildTile(Icons.contact_phone_outlined, 'Emergency SOS Contacts', () => context.push(AppRoutes.emergencyContacts)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
-                  _buildSection('SUPPORT', [
-                    _buildTile(Icons.help_outline, 'Help & Support', () => context.push('/help_support')),
-                    _buildTile(Icons.description_outlined, 'Terms of Service', () {}),
-                    _buildTile(Icons.privacy_tip_outlined, 'Privacy Policy', () {}),
-                    _buildTile(Icons.info_outline, 'About', () {}),
+                  _buildSection('SUPPORT & LEGAL', [
+                    _buildTile(Icons.help_outline, 'Help & Support', () => context.push(AppRoutes.helpSupport)),
+                    _buildTile(Icons.description_outlined, 'Terms of Service', () => context.push(AppRoutes.terms)),
+                    _buildTile(Icons.privacy_tip_outlined, 'Privacy Policy', () => context.push(AppRoutes.privacyPolicy)),
+                    _buildTile(Icons.info_outline, 'About RiderMate 2.0', () => context.push(AppRoutes.helpSupport)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('HARDWARE & TELEMETRY', [
-                    _buildTile(Icons.gps_fixed, 'GPS Verification & Debug', () => context.push('/gps-debug')),
+                    _buildTile(Icons.gps_fixed, 'GPS Verification & Diagnostics', () => context.push(AppRoutes.gpsDebug)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('SESSION', [
-
                     ListTile(
                       leading: const Icon(Icons.logout, color: Colors.redAccent),
                       title: Text('Log Out', style: AppTextStyles.bodyMd(color: Colors.redAccent)),
-                      onTap: () async {
-                        final authController = context.read<AuthController>();
-                        await authController.logout();
-                        if (context.mounted) {
-                          context.go('/login');
-                        }
-                      },
+                      subtitle: Text('Sign out of your pilot account', style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.redAccent),
+                      onTap: () => _showLogoutDialog(context),
                     ),
                   ]),
                 ],
@@ -101,7 +129,6 @@ class SettingsHomeScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildSection(String title, List<Widget> children) {
     return Column(

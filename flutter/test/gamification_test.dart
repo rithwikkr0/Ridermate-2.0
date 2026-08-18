@@ -108,7 +108,6 @@ void main() {
 
   test('Double-award prevention works', () async {
     final res1 = await repository.awardXP('test_user_1', 'RIDE_EVENT_2', 100, 'ride_2');
-    if (!res1.isSuccess) print('ERROR: ${(res1.errorOrNull as dynamic)?.message}');
     expect(res1.isSuccess, isTrue);
     expect(res1.dataOrNull, isTrue);
 

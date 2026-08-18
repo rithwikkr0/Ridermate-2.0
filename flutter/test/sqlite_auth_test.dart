@@ -60,9 +60,6 @@ void main() {
         'securePassword123',
       );
 
-      if (res.isFailure) {
-        print('REGISTER ERROR: ${res.errorOrNull}');
-      }
       expect(res.isSuccess, isTrue);
       final user = res.dataOrNull!;
       expect(user.fullName, equals('Rithwik Rider'));

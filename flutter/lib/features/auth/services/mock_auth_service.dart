@@ -6,7 +6,7 @@ import '../../profile/models/emergency_contact_model.dart';
 
 abstract class AuthService {
   Future<Result<UserModel>> login(String email, String password);
-  Future<Result<UserModel>> register(String fullName, String email, String password);
+  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = ''});
   Future<Result<bool>> verifyOtp(String email, String otpCode);
   Future<Result<bool>> sendPasswordReset(String email);
   Future<Result<void>> logout();
@@ -58,7 +58,7 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<Result<UserModel>> register(String fullName, String email, String password) async {
+  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = ''}) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return Result.success(mockUser);
   }

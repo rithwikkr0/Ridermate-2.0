@@ -197,7 +197,7 @@ class SqliteAuthService implements AuthService {
 
   @override
   Future<Result<UserModel>> register(
-      String fullName, String email, String password) async {
+      String fullName, String email, String password, {String phone = ''}) async {
     try {
       final db = await _db.database;
       final normalEmail = email.toLowerCase().trim();
@@ -228,7 +228,7 @@ class SqliteAuthService implements AuthService {
         'username': username,
         'full_name': fullName.trim(),
         'email': normalEmail,
-        'phone': '',
+        'phone': phone.trim(),
         'photo_url': '',
         'bio': '',
         'rider_level': 'Novice',
