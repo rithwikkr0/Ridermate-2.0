@@ -2,10 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from app.core.config import settings
 
+import os
+
 # If DATABASE_URL is not set or empty, fallback to SQLite cloud database
 database_url = settings.DATABASE_URL
 if not database_url:
-    database_url = "sqlite:///./ridermate_cloud.db"
+    if os.path.exists("/home") and os.access("/home", os.W_OK):
+        database_url = "sqlite:////home/ridermate_cloud.db"
+    else:
+        database_url = "sqlite:///./ridermate_cloud.db"
 
 # Handle PostgreSQL vs SQLite connect args
 connect_args = {}

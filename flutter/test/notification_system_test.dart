@@ -46,7 +46,9 @@ Future<void> _recreateNotificationTables() async {
       achievement_enabled INTEGER NOT NULL DEFAULT 1,
       system_enabled      INTEGER NOT NULL DEFAULT 1,
       sound_enabled       INTEGER NOT NULL DEFAULT 1,
-      vibration_enabled   INTEGER NOT NULL DEFAULT 1
+      vibration_enabled   INTEGER NOT NULL DEFAULT 1,
+      quiet_hours_start   TEXT NOT NULL DEFAULT '22:00',
+      quiet_hours_end     TEXT NOT NULL DEFAULT '07:00'
     )
   ''');
 }

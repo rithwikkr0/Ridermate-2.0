@@ -1,3 +1,10 @@
+import os
+import sys
+
+_BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _BACKEND_DIR not in sys.path:
+    sys.path.insert(0, _BACKEND_DIR)
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -218,3 +225,32 @@ def test_ride_sync_with_idempotency():
     )
     assert sync_resp.status_code == 201
     assert sync_resp.json()["ride_id"] == "ride_uuid_1001"
+
+
+def test_media_upload_and_sas():
+    login_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "rider1@ridermate.app", "password": "SecurePassword123!"},
+    )
+    token = login_resp.json()["access_token"]
+
+    # Upload test image
+    file_payload = {"file": ("test_avatar.jpg", b"fake_image_bytes_1234567890", "image/jpeg")}
+    upload_resp = client.post(
+        "/api/v1/media/upload",
+        files=file_payload,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert upload_resp.status_code == 200
+    data = upload_resp.json()
+    assert "url" in data
+    assert "blob_name" in data
+
+    # Query SAS URL
+    sas_resp = client.get(
+        f"/api/v1/media/sas-url?blob_name={data['blob_name']}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert sas_resp.status_code == 200
+    assert "url" in sas_resp.json()
+

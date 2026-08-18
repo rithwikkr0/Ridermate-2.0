@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../errors/app_error.dart';
 import '../errors/result.dart';
 import '../notifications/services/notification_service.dart';
