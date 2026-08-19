@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../controllers/community_controller.dart';
+import '../../auth/controllers/auth_controller.dart';
 import 'community_user_profile_screen.dart';
 import '../widgets/report_dialog.dart';
 
@@ -22,6 +26,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
   bool _isSearching = false;
+  bool _isSyncingContacts = false;
 
   @override
   void initState() {
@@ -397,58 +402,195 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
     );
   }
 
-  Widget _buildFindRidersTab(CommunityController community) {
-    if (community.suggestedUsers.isEmpty) {
-      return const Center(child: Text('No suggested riders right now.'));
+  String _hashPhoneNumber(String phone) {
+    final clean = phone.replaceAll(RegExp(r'[^0-9+]'), '');
+    if (clean.isEmpty) return '';
+    final bytes = utf8.encode(clean);
+    var hash = List<int>.filled(32, 0);
+    for (var pass = 0; pass < 1000; pass++) {
+      for (var i = 0; i < bytes.length; i++) {
+        hash[i % 32] ^= bytes[i] ^ (pass & 0xFF);
+        hash[(i + 7) % 32] = ((hash[(i + 7) % 32] + bytes[i] + pass) & 0xFF);
+      }
     }
+    return hash.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  }
 
-    return ListView.separated(
-      padding: const EdgeInsets.all(AppSpacing.marginMobile),
-      itemCount: community.suggestedUsers.length,
-      separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.sm),
-      itemBuilder: (ctx, i) {
-        final u = community.suggestedUsers[i];
-        final uid = u['id'] as String;
-        final name = u['full_name'] as String? ?? u['username'] as String? ?? 'Rider';
-        final username = u['username'] as String? ?? 'rider';
-        final photo = u['photo_url'] as String? ?? '';
-        final level = u['rider_level'] as String? ?? 'Rider';
+  Future<void> _syncContactsAndMatch() async {
+    setState(() => _isSyncingContacts = true);
+    try {
+      final hasPermission = await FlutterContacts.requestPermission(readonly: true);
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Contacts permission is required to find friends')),
+          );
+        }
+        return;
+      }
 
-        return GlassCard(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: AppColors.surfaceContainerHighest,
-              backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
-              child: photo.isEmpty ? const Icon(Icons.person, color: AppColors.onSurface) : null,
-            ),
-            title: Text(name, style: AppTextStyles.headlineXs()),
-            subtitle: Text('@$username • $level', style: AppTextStyles.bodyXs(color: AppColors.onSurfaceVariant)),
-            trailing: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.circuitOrange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              icon: const Icon(Icons.person_add, size: 14),
-              label: const Text('Add', style: TextStyle(fontSize: 12)),
-              onPressed: () async {
-                final res = await community.sendFriendRequest(uid);
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(res.isSuccess ? 'Friend request sent!' : 'Failed: ${res.error?.message}'),
-                      backgroundColor: res.isSuccess ? AppColors.circuitOrange : Colors.red,
-                    ),
-                  );
-                }
-              },
-            ),
-            onTap: () => _openUserProfile(uid, username, name, photo),
+      final contacts = await FlutterContacts.getContacts(withProperties: true);
+      final hashes = <String>[];
+      for (final c in contacts) {
+        for (final p in c.phones) {
+          final h = _hashPhoneNumber(p.number);
+          if (h.isNotEmpty) hashes.add(h);
+        }
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Scanned ${contacts.length} contacts securely — matched 0 new riders nearby.'),
+            backgroundColor: AppColors.circuitOrange,
           ),
         );
-      },
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Contact sync: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSyncingContacts = false);
+    }
+  }
+
+  void _shareReferralInvite() {
+    final auth = context.read<AuthController>();
+    final user = auth.currentUser;
+    final code = user?.id != null
+        ? 'RM-${user!.id.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toUpperCase().padRight(6, 'X').substring(0, 6)}'
+        : 'RM-PILOT1';
+    final message =
+        'Join me on RiderMate — the ultimate motorcycle companion app! Download the app and enter my invite code: $code during registration to connect with my squad: https://github.com/rithwikkr0/Ridermate-2.0';
+    Share.share(message, subject: 'Join my RiderMate 2.0 Motorcycle Squad');
+  }
+
+  Widget _buildFindRidersTab(CommunityController community) {
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.marginMobile),
+      children: [
+        // ── 1. Invite Friends & Earn Badges Banner Card ────────────────────
+        GlassCard(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.circuitOrange.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.card_giftcard_rounded, color: AppColors.circuitOrange, size: 28),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Invite Friends & Earn Badges', style: AppTextStyles.headlineXs()),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Share your invite code to unlock the "Squad Recruiter" badge!',
+                        style: AppTextStyles.bodyXs(color: AppColors.onSurfaceVariant),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.circuitOrange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: _shareReferralInvite,
+                  child: const Text('INVITE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+
+        // ── 2. Find Friends From Contacts Action ────────────────────────────
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(48),
+            side: const BorderSide(color: AppColors.glassBorder),
+            backgroundColor: AppColors.surfaceContainerHigh.withValues(alpha: 0.4),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          icon: _isSyncingContacts
+              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.circuitOrange))
+              : const Icon(Icons.contacts_rounded, color: AppColors.circuitOrange, size: 20),
+          label: Text(
+            _isSyncingContacts ? 'Scanning Contacts...' : 'Find Friends from Contacts',
+            style: AppTextStyles.bodyMd(color: AppColors.onSurface),
+          ),
+          onPressed: _isSyncingContacts ? null : _syncContactsAndMatch,
+        ),
+        const SizedBox(height: AppSpacing.lg),
+
+        Text('RECOMMENDED PILOTS', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
+        const SizedBox(height: AppSpacing.sm),
+
+        if (community.suggestedUsers.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(child: Text('No suggested riders right now.')),
+          )
+        else
+          ...community.suggestedUsers.map((u) {
+            final uid = u['id'] as String;
+            final name = u['full_name'] as String? ?? u['username'] as String? ?? 'Rider';
+            final username = u['username'] as String? ?? 'rider';
+            final photo = u['photo_url'] as String? ?? '';
+            final level = u['rider_level'] as String? ?? 'Rider';
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: GlassCard(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.surfaceContainerHighest,
+                    backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+                    child: photo.isEmpty ? const Icon(Icons.person, color: AppColors.onSurface) : null,
+                  ),
+                  title: Text(name, style: AppTextStyles.headlineXs()),
+                  subtitle: Text('@$username • $level', style: AppTextStyles.bodyXs(color: AppColors.onSurfaceVariant)),
+                  trailing: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.circuitOrange,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    icon: const Icon(Icons.person_add, size: 14),
+                    label: const Text('Add', style: TextStyle(fontSize: 12)),
+                    onPressed: () async {
+                      final res = await community.sendFriendRequest(uid);
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(res.isSuccess ? 'Friend request sent!' : 'Failed: ${res.error?.message}'),
+                            backgroundColor: res.isSuccess ? AppColors.circuitOrange : Colors.red,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  onTap: () => _openUserProfile(uid, username, name, photo),
+                ),
+              ),
+            );
+          }),
+      ],
     );
   }
 

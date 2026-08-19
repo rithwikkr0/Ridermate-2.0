@@ -254,3 +254,66 @@ def test_media_upload_and_sas():
     assert sas_resp.status_code == 200
     assert "url" in sas_resp.json()
 
+
+def test_google_sign_in():
+    resp = client.post(
+        "/api/v1/auth/google",
+        json={
+            "id_token": "simulated_google_jwt_token",
+            "email": "googlerider@gmail.com",
+            "full_name": "Google Explorer",
+            "photo_url": "https://example.com/avatar.jpg",
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "access_token" in data
+    assert data["user"]["email"] == "googlerider@gmail.com"
+    assert data["user"]["username"].startswith("googlerider")
+
+
+def test_phone_otp_and_verification():
+    login_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "rider1@ridermate.app", "password": "SecurePassword123!"},
+    )
+    token = login_resp.json()["access_token"]
+
+    # 1. Send OTP
+    send_resp = client.post("/api/v1/auth/phone/send-otp", json={"phone": "+919876543210"})
+    assert send_resp.status_code == 200
+    assert send_resp.json()["status"] == "success"
+
+    # 2. Verify OTP
+    verify_resp = client.post(
+        "/api/v1/auth/phone/verify-otp",
+        json={"phone": "+919876543210", "otp": "123456"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert verify_resp.status_code == 200
+    user_data = verify_resp.json()
+    assert user_data["phone"] == "+919876543210"
+
+
+def test_contact_matching_privacy():
+    login_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "rider2@ridermate.app", "password": "SecurePassword123!"},
+    )
+    token = login_resp.json()["access_token"]
+
+    # Compute SHA-256 hash of rider1's phone "+919876543210"
+    import hashlib
+    h = hashlib.sha256("+919876543210".encode("utf-8")).hexdigest()
+
+    match_resp = client.post(
+        "/api/v1/friends/match-contacts",
+        json={"phone_hashes": [h, "0" * 64]},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert match_resp.status_code == 200
+    matches = match_resp.json()["matches"]
+    assert len(matches) >= 1
+    assert matches[0]["username"] == "rithwik"
+
+

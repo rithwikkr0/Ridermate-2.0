@@ -217,17 +217,26 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
             },
           ),
           children: [
-            // OpenStreetMap Standard Tiles
-            TileLayer(
-              urlTemplate:
-                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.ridermate.ridermate',
-              errorTileCallback: (tile, error, stackTrace) {
-                if (!_hasTileError) {
-                  setState(() {
-                    _hasTileError = true;
-                  });
-                }
+            // Theme-Aware Map Tiles (CartoDB Dark Matter / Positron)
+            Builder(
+              builder: (ctx) {
+                final isDark = Theme.of(ctx).brightness == Brightness.dark;
+                final tileUrl = isDark
+                    ? 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
+                    : 'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png';
+
+                return TileLayer(
+                  urlTemplate: tileUrl,
+                  userAgentPackageName: 'com.ridermate.ridermate',
+                  tileProvider: NetworkTileProvider(),
+                  errorTileCallback: (tile, error, stackTrace) {
+                    if (!_hasTileError) {
+                      setState(() {
+                        _hasTileError = true;
+                      });
+                    }
+                  },
+                );
               },
             ),
 

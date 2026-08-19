@@ -6,6 +6,7 @@ import '../../features/auth/screens/splash_screen.dart';
 import '../../features/onboarding/screens/onboarding_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/auth/screens/add_bike_onboarding_screen.dart';
 import '../../features/auth/screens/otp_screen.dart';
 import '../../features/auth/screens/reset_password_screen.dart';
 import '../../features/auth/screens/permission_screen.dart';
@@ -86,6 +87,7 @@ class AppRoutes {
   static const onboarding       = '/onboarding';
   static const login            = '/login';
   static const register         = '/register';
+  static const addBikeOnboarding = '/auth/add-bike';
   static const otp              = '/otp';
   static const resetPassword    = '/reset-password';
   static const permission       = '/permission';
@@ -236,6 +238,7 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.onboarding,    builder: (c, s) => const OnboardingScreen()),
     GoRoute(path: AppRoutes.login,         builder: (c, s) => const LoginScreen()),
     GoRoute(path: AppRoutes.register,      builder: (c, s) => const RegisterScreen()),
+    GoRoute(path: AppRoutes.addBikeOnboarding, builder: (c, s) => const AddBikeOnboardingScreen()),
     GoRoute(path: AppRoutes.otp,           builder: (c, s) => const OtpScreen()),
     GoRoute(path: AppRoutes.resetPassword, builder: (c, s) => const ResetPasswordScreen()),
     GoRoute(path: AppRoutes.permission,    builder: (c, s) => const PermissionScreen()),

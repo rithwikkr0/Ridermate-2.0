@@ -1,6 +1,6 @@
 import 'package:permission_handler/permission_handler.dart' as platform;
 
-enum AppPermission { location, notification, activityRecognition, camera }
+enum AppPermission { location, notification, activityRecognition, camera, contacts }
 
 enum PermissionStatus { granted, denied, permanentlyDenied }
 
@@ -15,6 +15,7 @@ class MockPermissionService implements PermissionService {
     AppPermission.notification: PermissionStatus.granted,
     AppPermission.activityRecognition: PermissionStatus.granted,
     AppPermission.camera: PermissionStatus.granted,
+    AppPermission.contacts: PermissionStatus.granted,
   };
 
   @override
@@ -38,6 +39,7 @@ class AndroidPermissionService implements PermissionService {
       AppPermission.notification => platform.Permission.notification,
       AppPermission.activityRecognition => platform.Permission.activityRecognition,
       AppPermission.camera => platform.Permission.camera,
+      AppPermission.contacts => platform.Permission.contacts,
     };
   }
 

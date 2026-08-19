@@ -3,6 +3,8 @@ from typing import List, Optional
 from sqlalchemy import String, Integer, Float, Boolean, DateTime, Date, ForeignKey, Text, func, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import uuid
+import random
+import string
 
 
 class Base(DeclarativeBase):
@@ -11,6 +13,11 @@ class Base(DeclarativeBase):
 
 def generate_uuid() -> str:
     return str(uuid.uuid4())
+
+
+def generate_referral_code() -> str:
+    chars = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return f"RM-{chars}"
 
 
 def utc_now() -> datetime:
@@ -26,6 +33,9 @@ class UserModel(Base):
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     full_name: Mapped[str] = mapped_column(String, nullable=False)
     phone: Mapped[str] = mapped_column(String, default="")
+    phone_hash: Mapped[str] = mapped_column(String, default="", index=True)
+    referral_code: Mapped[str] = mapped_column(String, unique=True, default=generate_referral_code, index=True)
+    referred_by: Mapped[Optional[str]] = mapped_column(String, ForeignKey("users.id"), nullable=True)
     photo_url: Mapped[str] = mapped_column(String, default="")
     bio: Mapped[str] = mapped_column(Text, default="")
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
@@ -40,6 +50,19 @@ class UserModel(Base):
     vehicles: Mapped[List["VehicleModel"]] = relationship("VehicleModel", back_populates="user", cascade="all, delete-orphan")
     rides: Mapped[List["RideModel"]] = relationship("RideModel", back_populates="user", cascade="all, delete-orphan")
     posts: Mapped[List["PostModel"]] = relationship("PostModel", back_populates="author", cascade="all, delete-orphan")
+    referrals_made: Mapped[List["ReferralModel"]] = relationship("ReferralModel", foreign_keys="ReferralModel.referrer_id", cascade="all, delete-orphan")
+
+
+class ReferralModel(Base):
+    __tablename__ = "referrals"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=generate_uuid)
+    referrer_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    referred_id: Mapped[str] = mapped_column(String, ForeignKey("users.id", ondelete="CASCADE"), unique=True, index=True)
+    referral_code: Mapped[str] = mapped_column(String, nullable=False)
+    status: Mapped[str] = mapped_column(String, default="converted")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
 
 
 # ── 2. Profiles & Preferences ───────────────────────────────────

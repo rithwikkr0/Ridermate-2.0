@@ -96,13 +96,12 @@ class AuthController extends BaseController {
     }
   }
 
-  // ── Register ─────────────────────────────────────────────────────────────
+  // ── Google Sign-In ───────────────────────────────────────────────────────
 
-  Future<Result<UserModel>> register(
-      String fullName, String email, String password, {String phone = ''}) async {
+  Future<Result<UserModel>> loginWithGoogle() async {
     setState(ViewState.loading);
     stateModel = AuthState.loading();
-    final result = await authService.register(fullName.trim(), email.trim(), password, phone: phone.trim());
+    final result = await authService.loginWithGoogle();
 
     if (result.isSuccess) {
       final user = result.dataOrNull!;
@@ -121,6 +120,49 @@ class AuthController extends BaseController {
       setState(ViewState.error, error: result.errorOrNull!);
       return Result.failure(result.errorOrNull!);
     }
+  }
+
+  // ── Register ─────────────────────────────────────────────────────────────
+
+  Future<Result<UserModel>> register(
+      String fullName, String email, String password, {String phone = '', String referralCode = ''}) async {
+    setState(ViewState.loading);
+    stateModel = AuthState.loading();
+    final result = await authService.register(
+      fullName.trim(),
+      email.trim(),
+      password,
+      phone: phone.trim(),
+      referralCode: referralCode.trim(),
+    );
+
+    if (result.isSuccess) {
+      final user = result.dataOrNull!;
+      final token = _generateToken(user.id);
+      await sessionService.saveSession(
+        accessToken: token,
+        refreshToken: token,
+        userId: user.id,
+      );
+      stateModel = AuthState.loggedIn(user, token);
+      onUserChanged?.call(user.id);
+      setState(ViewState.success);
+      return Result.success(user);
+    } else {
+      stateModel = AuthState.error(result.errorOrNull!);
+      setState(ViewState.error, error: result.errorOrNull!);
+      return Result.failure(result.errorOrNull!);
+    }
+  }
+
+  // ── Phone OTP Verification ─────────────────────────────────────────────────
+
+  Future<Result<bool>> sendPhoneOtp(String phone) async {
+    return await authService.sendPhoneOtp(phone.trim());
+  }
+
+  Future<Result<bool>> verifyPhoneOtp(String phone, String otpCode) async {
+    return await authService.verifyPhoneOtp(phone.trim(), otpCode.trim());
   }
 
   // ── Password Reset ────────────────────────────────────────────────────────

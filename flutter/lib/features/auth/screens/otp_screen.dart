@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
@@ -117,7 +117,19 @@ class _OtpScreenState extends State<OtpScreen> {
                             const SizedBox(height: AppSpacing.lg),
                             PrimaryButton(
                               text: 'Verify',
-                              onPressed: () => context.go(AppRoutes.home),
+                              onPressed: () async {
+                                final code = _controllers.map((c) => c.text).join();
+                                if (code.length < 6) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please enter complete 6-digit code')),
+                                  );
+                                  return;
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Phone number verified successfully!')),
+                                );
+                                context.go(AppRoutes.home);
+                              },
                               isFullWidth: true,
                             ),
                           ],

@@ -6,8 +6,11 @@ import '../../profile/models/emergency_contact_model.dart';
 
 abstract class AuthService {
   Future<Result<UserModel>> login(String email, String password);
-  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = ''});
+  Future<Result<UserModel>> loginWithGoogle();
+  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = '', String referralCode = ''});
   Future<Result<bool>> verifyOtp(String email, String otpCode);
+  Future<Result<bool>> sendPhoneOtp(String phone);
+  Future<Result<bool>> verifyPhoneOtp(String phone, String otpCode);
   Future<Result<bool>> sendPasswordReset(String email);
   Future<Result<void>> logout();
 }
@@ -58,13 +61,32 @@ class MockAuthService implements AuthService {
   }
 
   @override
-  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = ''}) async {
+  Future<Result<UserModel>> loginWithGoogle() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return Result.success(mockUser);
+  }
+
+  @override
+  Future<Result<UserModel>> register(String fullName, String email, String password, {String phone = '', String referralCode = ''}) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return Result.success(mockUser);
   }
 
   @override
   Future<Result<bool>> verifyOtp(String email, String otpCode) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (otpCode == '000000') return Result.failure(const ValidationError('Invalid OTP code'));
+    return Result.success(true);
+  }
+
+  @override
+  Future<Result<bool>> sendPhoneOtp(String phone) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return Result.success(true);
+  }
+
+  @override
+  Future<Result<bool>> verifyPhoneOtp(String phone, String otpCode) async {
     await Future.delayed(const Duration(milliseconds: 300));
     if (otpCode == '000000') return Result.failure(const ValidationError('Invalid OTP code'));
     return Result.success(true);

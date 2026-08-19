@@ -28,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+  final TextEditingController _referralController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
@@ -40,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
+    _referralController.dispose();
     super.dispose();
   }
 
@@ -51,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
     final confirm = _confirmController.text;
+    final referralCode = _referralController.text.trim();
 
     if (name.isEmpty) {
       setState(() => _errorMessage = 'Please enter your full name.');
@@ -79,6 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       email,
       password,
       phone: phone,
+      referralCode: referralCode,
     );
 
     if (!mounted) return;
@@ -89,10 +93,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
       profileController.updateRepository(
         SqliteUserRepository(DatabaseService.instance, userId: user.id),
       );
-      context.go(AppRoutes.home);
+      // Navigate to skippable bike setup step
+      context.go(AppRoutes.addBikeOnboarding);
     } else {
       setState(() {
         _errorMessage = result.errorOrNull?.message ?? 'Registration failed. Please try again.';
+      });
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => _errorMessage = null);
+    final authController = context.read<AuthController>();
+    final result = await authController.loginWithGoogle();
+
+    if (!mounted) return;
+
+    if (result.isSuccess && result.dataOrNull != null) {
+      final user = result.dataOrNull!;
+      final profileController = context.read<ProfileController>();
+      profileController.updateRepository(
+        SqliteUserRepository(DatabaseService.instance, userId: user.id),
+      );
+      context.go(AppRoutes.addBikeOnboarding);
+    } else {
+      setState(() {
+        _errorMessage = result.errorOrNull?.message ?? 'Google Sign-In failed.';
       });
     }
   }
@@ -225,6 +251,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
 
+                            const SizedBox(height: AppSpacing.sm),
+
+                            Text('INVITE / REFERRAL CODE (OPTIONAL)', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
+                            const SizedBox(height: AppSpacing.xs),
+                            RmTextField(
+                              controller: _referralController,
+                              hintText: 'e.g. RM-8K3X9L',
+                              prefixIcon: Icons.card_giftcard_rounded,
+                              textInputAction: TextInputAction.done,
+                            ),
+
                             if (_errorMessage != null) ...[
                               const SizedBox(height: AppSpacing.md),
                               Container(
@@ -254,6 +291,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               text: isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT',
                               onPressed: isLoading ? null : _handleRegister,
                               isFullWidth: true,
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // Divider
+                            Row(
+                              children: [
+                                Expanded(child: Divider(color: AppColors.glassBorder)),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text('OR', style: AppTextStyles.labelCaps(color: AppColors.onSurfaceVariant)),
+                                ),
+                                Expanded(child: Divider(color: AppColors.glassBorder)),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // Continue with Google
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(48),
+                                side: const BorderSide(color: AppColors.glassBorder),
+                                backgroundColor: AppColors.surfaceContainerHigh.withValues(alpha: 0.3),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              onPressed: isLoading ? null : _handleGoogleSignIn,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.account_circle_outlined, color: AppColors.circuitOrange, size: 20),
+                                  const SizedBox(width: 10),
+                                  Text('Continue with Google', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+                                ],
+                              ),
                             ),
                           ],
                         ),

@@ -1,10 +1,10 @@
-﻿\"\"\"initial schema
+"""initial schema
 
 Revision ID: 0001
 Revises: 
 Create Date: 2026-08-19 12:00:00.000000
 
-\"\"\"
+"""
 from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa

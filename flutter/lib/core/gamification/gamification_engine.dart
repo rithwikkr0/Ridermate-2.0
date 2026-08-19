@@ -46,6 +46,17 @@ class GamificationEngine {
     await repository.awardXP(userId, 'GROUP_RIDE_COMPLETED', XpConfig.groupRideCompleted, groupRideId);
   }
 
+  Future<void> onReferralConverted(String userId, String refereeId) async {
+    await repository.unlockAchievement(
+      userId,
+      'squad_recruiter',
+      'Squad Recruiter',
+      'Invited a new rider to RiderMate who joined your squad!',
+      0,
+      'group_add',
+    );
+  }
+
   Future<void> _checkMileageMilestones(String userId) async {
     // In a real app we'd query distance_km. We can approximate or just leave it for now.
     // If distance > 100km etc.
