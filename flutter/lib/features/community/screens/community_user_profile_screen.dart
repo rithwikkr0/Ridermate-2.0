@@ -229,7 +229,14 @@ class _CommunityUserProfileScreenState extends State<CommunityUserProfileScreen>
                 ),
                 icon: const Icon(Icons.check, color: Colors.green, size: 16),
                 label: const Text('FRIENDS', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('You are connected with this rider.'),
+                      backgroundColor: AppColors.surfaceContainerHigh,
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 8),
@@ -254,7 +261,14 @@ class _CommunityUserProfileScreenState extends State<CommunityUserProfileScreen>
             ),
             icon: const Icon(Icons.schedule, color: AppColors.circuitOrange, size: 16),
             label: const Text('REQUEST SENT', style: TextStyle(color: AppColors.circuitOrange)),
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Friend request is pending acceptance.'),
+                  backgroundColor: AppColors.surfaceContainerHigh,
+                ),
+              );
+            },
           ),
         );
 

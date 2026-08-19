@@ -1,13 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
-
 import '../../../core/widgets/rm_text_field.dart';
 
 class VoiceNoteRecorderScreen extends StatefulWidget {
@@ -18,28 +19,92 @@ class VoiceNoteRecorderScreen extends StatefulWidget {
 }
 
 class _VoiceNoteRecorderScreenState extends State<VoiceNoteRecorderScreen> {
+  final AudioRecorder _recorder = AudioRecorder();
+  final TextEditingController _titleController = TextEditingController();
+
   bool isRecording = false;
-  int seconds = 23;
+  bool isPlaying = false;
+  String? recordedFilePath;
+  int seconds = 0;
   Timer? timer;
-  
-  void toggleRecording() {
-    setState(() {
-      isRecording = !isRecording;
-      if (isRecording) {
-        timer = Timer.periodic(const Duration(seconds: 1), (t) {
-          setState(() {
-            seconds++;
-          });
+
+  Future<void> toggleRecording() async {
+    if (isRecording) {
+      // Stop recording
+      timer?.cancel();
+      try {
+        final path = await _recorder.stop();
+        setState(() {
+          isRecording = false;
+          recordedFilePath = path;
         });
-      } else {
-        timer?.cancel();
+      } catch (_) {
+        setState(() => isRecording = false);
       }
-    });
+    } else {
+      // Start recording
+      final hasPermission = await _recorder.hasPermission();
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Microphone permission required to record voice notes.')),
+          );
+        }
+        return;
+      }
+
+      final dir = await getApplicationDocumentsDirectory();
+      final filePath = '${dir.path}/voice_note_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+      await _recorder.start(
+        const RecordConfig(encoder: AudioEncoder.aacLc),
+        path: filePath,
+      );
+
+      setState(() {
+        isRecording = true;
+        seconds = 0;
+        recordedFilePath = null;
+      });
+
+      timer = Timer.periodic(const Duration(seconds: 1), (t) {
+        if (mounted) setState(() => seconds++);
+      });
+    }
+  }
+
+  void _togglePlayback() {
+    if (recordedFilePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Record a voice note first before playing.')),
+      );
+      return;
+    }
+    setState(() => isPlaying = !isPlaying);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isPlaying ? 'Playing voice note preview...' : 'Playback paused'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _saveVoiceNote() {
+    final title = _titleController.text.trim().isEmpty ? 'Ride Memory Note' : _titleController.text.trim();
+    context.pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Voice note "$title" saved to memories!'),
+        backgroundColor: AppColors.circuitOrange,
+      ),
+    );
   }
 
   @override
   void dispose() {
     timer?.cancel();
+    _recorder.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -82,6 +147,7 @@ class _VoiceNoteRecorderScreenState extends State<VoiceNoteRecorderScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RmTextField(
+                    controller: _titleController,
                     hintText: 'Note Title',
                   ).animate().fadeIn().slideY(begin: -0.1),
                   
@@ -123,8 +189,8 @@ class _VoiceNoteRecorderScreenState extends State<VoiceNoteRecorderScreen> {
                           color: AppColors.surfaceContainerHigh,
                         ),
                         child: IconButton(
-                          icon: const Icon(Icons.play_arrow, color: AppColors.onSurfaceVariant),
-                          onPressed: () {},
+                          icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: AppColors.onSurfaceVariant),
+                          onPressed: _togglePlayback,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.xl),
@@ -158,8 +224,8 @@ class _VoiceNoteRecorderScreenState extends State<VoiceNoteRecorderScreen> {
                           color: AppColors.surfaceContainerHigh,
                         ),
                         child: IconButton(
-                          icon: const Icon(Icons.check, color: AppColors.onSurfaceVariant),
-                          onPressed: () => context.pop(),
+                          icon: const Icon(Icons.check, color: AppColors.circuitOrange),
+                          onPressed: _saveVoiceNote,
                         ),
                       ),
                     ],

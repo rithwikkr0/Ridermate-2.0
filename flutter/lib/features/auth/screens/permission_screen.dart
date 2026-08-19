@@ -91,7 +91,28 @@ class PermissionScreen extends StatelessWidget {
                           ),
                           backgroundColor: Colors.white.withValues(alpha: 0.05),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: AppColors.surfaceContainerHigh,
+                              title: Text('Why RiderMate Needs Permissions', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
+                              content: Text(
+                                '• Location: For real-time GPS telemetry, speed tracking, and crash location broadcasting.\n\n'
+                                '• Notifications: For immediate emergency SOS alerts and ride milestones.\n\n'
+                                '• Activity & Sensors: For high-g crash impact detection heuristics.\n\n'
+                                '• Camera / Storage: For vehicle document photos and ride memory gallery.',
+                                style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: Text('Understood', style: AppTextStyles.button(color: AppColors.circuitOrange)),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         child: Text(
                           'LEARN MORE',
                           style: AppTextStyles.statLabel().copyWith(color: AppColors.onSurface),

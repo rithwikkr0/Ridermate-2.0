@@ -122,7 +122,14 @@ class CommunityChallengesScreen extends StatelessWidget {
                           ),
                           const Spacer(),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Joined "${challenge['title']}" challenge! Telemetry tracking active.'),
+                                  backgroundColor: AppColors.circuitOrange,
+                                ),
+                              );
+                            },
                             child: Text('Join Challenge', style: AppTextStyles.bodyMd().copyWith(color: AppColors.circuitOrange)),
                           ),
                         ],

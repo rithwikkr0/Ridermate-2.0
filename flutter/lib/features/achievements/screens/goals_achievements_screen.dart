@@ -57,8 +57,45 @@ class GoalsAchievementsScreen extends StatelessWidget {
                     _buildGoalCard('Complete 10 rides', 5, 10, 'rides', 'Aug 31'),
                   ].animate(interval: 100.ms).fadeIn(duration: 300.ms).slideY(begin: 0.1),
                   const SizedBox(height: AppSpacing.lg),
-                  PrimaryButton(label: '+ Add Goal',
-                    onPressed: () {},
+                  PrimaryButton(
+                    label: '+ Add Goal',
+                    onPressed: () {
+                      final controller = TextEditingController();
+                      showDialog<void>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          backgroundColor: AppColors.surfaceContainerHigh,
+                          title: Text('Set New Riding Goal', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
+                          content: TextField(
+                            controller: controller,
+                            style: AppTextStyles.bodyMd(color: AppColors.onSurface),
+                            decoration: const InputDecoration(
+                              hintText: 'e.g. Ride 200km this week',
+                              hintStyle: TextStyle(color: AppColors.onSurfaceVariant),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(),
+                              child: Text('Cancel', style: AppTextStyles.button(color: AppColors.onSurfaceVariant)),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: AppColors.circuitOrange),
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Goal "${controller.text.trim().isEmpty ? 'Ride More' : controller.text.trim()}" activated!'),
+                                    backgroundColor: AppColors.circuitOrange,
+                                  ),
+                                );
+                              },
+                              child: Text('Save Goal', style: AppTextStyles.button(color: Colors.black)),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ).animate().fadeIn(delay: 400.ms),
                   const SizedBox(height: AppSpacing.xl),
                   Text('Weekly Targets', style: AppTextStyles.headlineSm()),

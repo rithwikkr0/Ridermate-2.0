@@ -72,7 +72,28 @@ class HelpSupportScreen extends StatelessWidget {
                         side: const BorderSide(color: AppColors.circuitOrange),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog<void>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            backgroundColor: AppColors.surfaceContainerHigh,
+                            title: Text('RiderMate Support', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
+                            content: Text(
+                              'Need assistance with your rides, garage telemetry, or cloud sync?\n\n'
+                              '• Email: support@ridermate.app\n'
+                              '• Safety Hotline: 1800-RIDERMATE\n'
+                              '• Hours: 24/7 Rider Assistance',
+                              style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: Text('Close', style: AppTextStyles.button(color: AppColors.circuitOrange)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       child: Text('Contact Support', style: AppTextStyles.headlineSm(color: AppColors.circuitOrange)),
                     ),
                   ),
@@ -80,8 +101,22 @@ class HelpSupportScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(icon: const Icon(Icons.language, color: AppColors.onSurfaceVariant), onPressed: () {}),
-                      IconButton(icon: const Icon(Icons.mail, color: AppColors.onSurfaceVariant), onPressed: () {}),
+                      IconButton(
+                        icon: const Icon(Icons.language, color: AppColors.onSurfaceVariant),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Opening https://ridermate.app...')),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.mail, color: AppColors.onSurfaceVariant),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Email support: support@ridermate.app')),
+                          );
+                        },
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.md),

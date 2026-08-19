@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -9,20 +8,55 @@ import '../../../core/theme/app_spacing.dart';
 
 import '../../../core/widgets/rm_text_field.dart';
 
-class GroupChatScreen extends StatelessWidget {
+class GroupChatScreen extends StatefulWidget {
   const GroupChatScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final messages = [
-      {'text': 'Hey everyone, who is up for a ride this weekend?', 'isMe': false, 'sender': 'Arjun'},
-      {'text': 'I am in! Where to?', 'isMe': true, 'sender': 'You'},
-      {'text': 'Thinking of doing the Lonavala route early morning.', 'isMe': false, 'sender': 'Arjun'},
-      {'text': 'Sounds good. What time?', 'isMe': false, 'sender': 'Priya'},
-      {'text': 'Meet at 5:30 AM at the usual spot?', 'isMe': true, 'sender': 'You'},
-      {'text': 'Perfect! See you all then.', 'isMe': false, 'sender': 'Arjun'},
-    ];
+  State<GroupChatScreen> createState() => _GroupChatScreenState();
+}
 
+class _GroupChatScreenState extends State<GroupChatScreen> {
+  final List<Map<String, dynamic>> _messages = [
+    {'text': 'Hey everyone, who is up for a ride this weekend?', 'isMe': false, 'sender': 'Arjun'},
+    {'text': 'I am in! Where to?', 'isMe': true, 'sender': 'You'},
+    {'text': 'Thinking of doing the Lonavala route early morning.', 'isMe': false, 'sender': 'Arjun'},
+    {'text': 'Sounds good. What time?', 'isMe': false, 'sender': 'Priya'},
+    {'text': 'Meet at 5:30 AM at the usual spot?', 'isMe': true, 'sender': 'You'},
+    {'text': 'Perfect! See you all then.', 'isMe': false, 'sender': 'Arjun'},
+  ];
+
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final text = _textController.text.trim();
+    if (text.isEmpty) return;
+
+    setState(() {
+      _messages.add({'text': text, 'isMe': true, 'sender': 'You'});
+      _textController.clear();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surfaceContainerLowest,
       appBar: AppBar(
@@ -42,7 +76,7 @@ class GroupChatScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Mumbai Riders', style: AppTextStyles.headlineSm()),
-            Text('128 members', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
+            Text('${128 + _messages.length} messages', style: AppTextStyles.labelCaps().copyWith(color: AppColors.onSurfaceVariant)),
           ],
         ),
       ),
@@ -61,14 +95,15 @@ class GroupChatScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.separated(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.marginMobile,
                     vertical: AppSpacing.md,
                   ),
-                  itemCount: messages.length,
+                  itemCount: _messages.length,
                   separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.md),
                   itemBuilder: (context, index) {
-                    final msg = messages[index];
+                    final msg = _messages[index];
                     final isMe = msg['isMe'] as bool;
                     return Align(
                       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -101,7 +136,7 @@ class GroupChatScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ).animate().fadeIn(duration: 300.ms, delay: Duration(milliseconds: 100 * index)).slideY(begin: 0.1);
+                    );
                   },
                 ),
               ),
@@ -120,6 +155,7 @@ class GroupChatScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: RmTextField(
+                            controller: _textController,
                             hintText: 'Type a message...',
                           ),
                         ),
@@ -131,7 +167,7 @@ class GroupChatScreen extends StatelessWidget {
                           ),
                           child: IconButton(
                             icon: const Icon(Icons.send, color: Colors.white),
-                            onPressed: () {},
+                            onPressed: _sendMessage,
                           ),
                         ),
                       ],

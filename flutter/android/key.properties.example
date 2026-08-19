@@ -1,0 +1,10 @@
+﻿# RiderMate 2.0 - Android Release Keystore Configuration Template
+# Copy this file to key.properties in flutter/android/ (ignored by git) and set your real keystore credentials:
+#
+# Generate a new upload keystore using:
+# keytool -genkey -v -keystore flutter/android/app/upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=upload
+storeFile=app/upload-keystore.jks

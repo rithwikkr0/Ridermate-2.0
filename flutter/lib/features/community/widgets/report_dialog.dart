@@ -80,17 +80,15 @@ class _ReportDialogState extends State<ReportDialog> {
               return GestureDetector(
                 onTap: () => setState(() => _selectedReason = reason),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                   child: Row(
                     children: [
-                      Radio<String>(
-                        value: reason,
-                        groupValue: _selectedReason,
-                        activeColor: AppColors.circuitOrange,
-                        onChanged: (val) {
-                          if (val != null) setState(() => _selectedReason = val);
-                        },
+                      Icon(
+                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                        color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+                        size: 20,
                       ),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           reason,

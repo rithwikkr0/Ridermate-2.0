@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -6,6 +6,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_router.dart';
 
 class AnalyticsHubScreen extends StatelessWidget {
   const AnalyticsHubScreen({super.key});
@@ -45,7 +46,17 @@ class AnalyticsHubScreen extends StatelessWidget {
               itemBuilder: (ctx, i) {
                 final cat = _categories[i];
                 return GlassCard(
-                  onTap: () {},
+                  onTap: () {
+                    if (cat.title.toLowerCase().contains('safety')) {
+                      context.push(AppRoutes.safety);
+                    } else if (cat.title.toLowerCase().contains('fuel')) {
+                      context.push(AppRoutes.garage);
+                    } else if (cat.title.toLowerCase().contains('record')) {
+                      context.push(AppRoutes.personalRecords);
+                    } else {
+                      context.push(AppRoutes.perfTrends);
+                    }
+                  },
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Container(width: 40, height: 40,

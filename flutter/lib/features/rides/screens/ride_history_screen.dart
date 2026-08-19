@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -44,7 +44,39 @@ class RideHistoryScreen extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.filter_list, color: AppColors.onSurfaceVariant),
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                backgroundColor: AppColors.surfaceContainerHigh,
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                builder: (ctx) => Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Filter Rides', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
+                      const SizedBox(height: AppSpacing.md),
+                      ListTile(
+                        leading: const Icon(Icons.all_inclusive, color: AppColors.circuitOrange),
+                        title: Text('All Rides', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+                        onTap: () => Navigator.of(ctx).pop(),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.history, color: AppColors.circuitOrange),
+                        title: Text('Last 30 Days', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+                        onTap: () => Navigator.of(ctx).pop(),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.stars, color: AppColors.circuitOrange),
+                        title: Text('High Safety Score (>90)', style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
+                        onTap: () => Navigator.of(ctx).pop(),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

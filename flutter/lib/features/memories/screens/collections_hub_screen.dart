@@ -5,6 +5,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_router.dart';
 
 class CollectionsHubScreen extends StatelessWidget {
   const CollectionsHubScreen({super.key});
@@ -66,7 +67,7 @@ class CollectionsHubScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = _collections[index];
                       return GlassCard(
-                        onPressed: () {},
+                        onPressed: () => context.push(AppRoutes.mediaGallery),
                         child: Padding(
                           padding: const EdgeInsets.all(AppSpacing.md),
                           child: Column(

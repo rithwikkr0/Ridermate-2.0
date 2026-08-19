@@ -90,23 +90,24 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
                   GlassCard(
                     child: Column(
                       children: ['Standard Dark', 'Satellite', 'Terrain'].asMap().entries.map((e) {
+                    final isSelected = _selectedMapStyle == e.key;
                     return GestureDetector(
                       onTap: () => setState(() => _selectedMapStyle = e.key),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: AppSpacing.md),
                         child: Row(
                           children: [
-                            Radio<int>(
-                              value: e.key,
-                              groupValue: _selectedMapStyle,
-                              activeColor: AppColors.circuitOrange,
-                              onChanged: (val) => setState(() => _selectedMapStyle = val!),
+                            Icon(
+                              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                              color: isSelected ? AppColors.circuitOrange : AppColors.onSurfaceVariant,
+                              size: 20,
                             ),
+                            const SizedBox(width: AppSpacing.md),
                             Expanded(
                               child: Text(
                                 e.value,
                                 style: AppTextStyles.bodyMd(
-                                  color: _selectedMapStyle == e.key ? AppColors.circuitOrange : AppColors.onSurface,
+                                  color: isSelected ? AppColors.circuitOrange : AppColors.onSurface,
                                 ),
                               ),
                             ),

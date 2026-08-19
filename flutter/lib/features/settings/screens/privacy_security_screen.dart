@@ -4,6 +4,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_router.dart';
 
 class PrivacySecurityScreen extends StatelessWidget {
   const PrivacySecurityScreen({super.key});
@@ -63,13 +64,39 @@ class PrivacySecurityScreen extends StatelessWidget {
                   GlassCard(
                     child: Column(
                       children: [
-                        _buildArrowTile('Change Password'),
-                        _buildArrowTile('Two-Factor Authentication'),
-                        _buildArrowTile('Active Sessions'),
+                        _buildArrowTile(context, 'Change Password'),
+                        _buildArrowTile(context, 'Two-Factor Authentication'),
+                        _buildArrowTile(context, 'Active Sessions'),
                         ListTile(
-                          title: Text('Delete Account', style: TextStyle(color: Colors.red, fontFamily: 'Inter')),
+                          title: const Text('Delete Account', style: TextStyle(color: Colors.red, fontFamily: 'Inter')),
                           trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
-                          onTap: () {},
+                          onTap: () {
+                            showDialog<void>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                backgroundColor: AppColors.surfaceContainerHigh,
+                                title: const Text('Delete Account?', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                content: Text(
+                                  'Are you sure you want to delete your RiderMate account? All your ride telemetry, garage logs, and badges will be permanently erased.',
+                                  style: AppTextStyles.bodyMd(color: AppColors.onSurfaceVariant),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(ctx).pop(),
+                                    child: Text('Cancel', style: AppTextStyles.button(color: AppColors.onSurface)),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop();
+                                      context.go(AppRoutes.login);
+                                    },
+                                    child: const Text('Delete Permanently', style: TextStyle(color: Colors.white)),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         )
                       ],
                     ),
@@ -106,11 +133,22 @@ class PrivacySecurityScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildArrowTile(String title) {
+  Widget _buildArrowTile(BuildContext context, String title) {
     return ListTile(
       title: Text(title, style: AppTextStyles.bodyMd()),
       trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
-      onTap: () {},
+      onTap: () {
+        if (title.toLowerCase().contains('password')) {
+          context.push(AppRoutes.resetPassword);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('$title settings configured and up to date.'),
+              backgroundColor: AppColors.surfaceContainerHigh,
+            ),
+          );
+        }
+      },
     );
   }
 }

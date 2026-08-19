@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -25,6 +25,8 @@ class LoginRequest(BaseModel):
 
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     email: str
     username: str
@@ -36,9 +38,6 @@ class UserResponse(BaseModel):
     xp: int
     distance_km: float
     total_rides: int
-
-    class Config:
-        from_attributes = True
 
 
 class TokenResponse(BaseModel):

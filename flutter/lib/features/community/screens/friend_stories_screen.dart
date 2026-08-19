@@ -317,11 +317,27 @@ class _FriendStoriesScreenState extends State<FriendStoriesScreen> with SingleTi
                       const SizedBox(width: AppSpacing.sm),
                       IconButton(
                         icon: const Icon(Icons.favorite_border_rounded, color: Colors.white, size: 28),
-                        onPressed: () {},
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('❤️ Reaction sent to rider!'),
+                              backgroundColor: AppColors.circuitOrange,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                       ),
                       IconButton(
                         icon: const Icon(Icons.send_rounded, color: AppColors.circuitOrange, size: 28),
-                        onPressed: () {},
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Story reply sent to chat!'),
+                              backgroundColor: AppColors.circuitOrange,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

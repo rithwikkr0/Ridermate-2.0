@@ -10,11 +10,11 @@ import '../core/services/battery_service.dart';
 /// Singleton accessors for infrastructure services.
 class DI {
   static final LoggerService logger = AppLoggerService();
-  static final NetworkService network = MockNetworkService();
+  static final NetworkService network = HttpNetworkService();
   static final SharedPreferencesStorageService storage =
       SharedPreferencesStorageService();
   static final PermissionService permissions = AndroidPermissionService();
   static final LocationService location = const DeviceLocationService();
-  static final LegacyNotificationService notification = MockNotificationService();
-  static final BatteryService battery = MockBatteryService();
+  static final LegacyNotificationService notification = DeviceNotificationService();
+  static final BatteryService battery = DeviceBatteryService();
 }

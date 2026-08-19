@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -72,7 +72,14 @@ class RideStoryScreen extends StatelessWidget {
                     width: double.infinity,
                     child: PrimaryButton(
                       text: 'Share to Instagram',
-                      onPressed: () {},
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Preparing Ride Story for Instagram...'),
+                            backgroundColor: AppColors.circuitOrange,
+                          ),
+                        );
+                      },
                     ),
                   ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
                 ],

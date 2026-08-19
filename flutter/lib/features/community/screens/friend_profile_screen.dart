@@ -8,6 +8,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../../core/widgets/secondary_button.dart';
+import '../../../core/router/app_router.dart';
 
 class FriendProfileScreen extends StatelessWidget {
   const FriendProfileScreen({super.key});
@@ -87,15 +88,23 @@ class FriendProfileScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: PrimaryButton(label: 'Follow',
-                          onPressed: () {},
+                        child: PrimaryButton(
+                          label: 'Follow',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Now following this rider!'),
+                                backgroundColor: AppColors.circuitOrange,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: SecondaryButton(
                           text: 'Message',
-                          onPressed: () {},
+                          onPressed: () => context.push(AppRoutes.groupChat),
                         ),
                       ),
                     ],
