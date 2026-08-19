@@ -6,7 +6,19 @@
 
 ---
 
-## 1. System Architecture Diagram
+## 1. Overview
+Powered by OpenStreetMap (OSM) tile standards with `flutter_map` / `latlong2`, delivering vector/raster map rendering, offline tile caching, route planning via OSRM, and live group ride heatmaps.
+
+### Key Components
+- **MapConfig**: Central configuration for dark vector tiles, tile servers, and map styles.
+- **RoutePlanningService**: Calculates route options (Fastest, Scenic, Mountain) with elevation profiles.
+- **HeatmapService**: Renders popular rider routes using custom canvas heat dot overlays.
+- **LiveGroupMap**: Displays real-time locations of squad members during group rides.
+- **RealMapView**: Reusable embedded map widget for live tracking, navigation, and location selection.
+
+---
+
+## 2. System Architecture Diagram
 
 ```
 +-------------------------------------------------------------------------+

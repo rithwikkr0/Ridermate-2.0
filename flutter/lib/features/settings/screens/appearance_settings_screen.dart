@@ -90,15 +90,31 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
                   GlassCard(
                     child: Column(
                       children: ['Standard Dark', 'Satellite', 'Terrain'].asMap().entries.map((e) {
-                        // ignore: deprecated_member_use
-                        return RadioListTile<int>(
-                          title: Text(e.value, style: AppTextStyles.bodyMd(color: AppColors.onSurface)),
-                          value: e.key,
-                          groupValue: _selectedMapStyle,
-                          activeColor: AppColors.circuitOrange,
-                          onChanged: (val) => setState(() => _selectedMapStyle = val!),
-                        );
-                      }).toList(),
+                    return GestureDetector(
+                      onTap: () => setState(() => _selectedMapStyle = e.key),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Radio<int>(
+                              value: e.key,
+                              groupValue: _selectedMapStyle,
+                              activeColor: AppColors.circuitOrange,
+                              onChanged: (val) => setState(() => _selectedMapStyle = val!),
+                            ),
+                            Expanded(
+                              child: Text(
+                                e.value,
+                                style: AppTextStyles.bodyMd(
+                                  color: _selectedMapStyle == e.key ? AppColors.circuitOrange : AppColors.onSurface,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                     ),
                   ).animate().fadeIn(delay: 200.ms),
                   const SizedBox(height: AppSpacing.lg),

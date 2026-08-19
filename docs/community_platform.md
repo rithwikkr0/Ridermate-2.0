@@ -6,7 +6,19 @@
 
 ---
 
-## 1. System Architecture Diagram
+## 1. Overview
+The Community engine powers rider social feed, squad club management, weekly leaderboards, friends system, and group chat.
+
+### Key Features
+- **Social Feed**: Story reels and ride post cards with elevation stats and atomic like/comment interactions.
+- **Squad Clubs**: Create and join riding clubs with member rosters and scheduled group rides.
+- **Leaderboard Engine**: Tracks weekly distance, elevation, and average speed rankings across riders.
+- **Friend Management**: Bidirectional friend requests and friend profile views.
+- **Group Chat**: Real-time squad messaging interface with message history.
+
+---
+
+## 2. System Architecture Diagram
 
 ```
 +-------------------------------------------------------------------------+

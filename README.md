@@ -77,10 +77,10 @@ graph TD
 - **Design System**: Custom Dark Glassmorphism with Circuit Orange (`#FF6B00`) tokens
 - **State Management**: `provider` (MultiProvider pattern)
 - **Routing**: `go_router`
-- **Backend API**: FastAPI (Python)
-- **Database**: PostgreSQL (Supabase Free Tier)
-- **Authentication**: Supabase Auth + Mock Session Fallback
-- **Telemetry & Maps**: OpenWeather API, MapLibre GL, OpenStreetMap (OSM)
+- **Backend API**: FastAPI (Python 3.12/3.13) with JWT security & rate limiting
+- **Database**: SQLite (v11 schema offline-first) / PostgreSQL (Azure / Cloud)
+- **Cloud Storage**: Azure Blob Storage (`azure-storage-blob`) with signed SAS URLs
+- **Telemetry & Maps**: Open-Meteo API, OpenStreetMap (OSM), OSRM routing
 
 ---
 
@@ -92,56 +92,45 @@ Ridermate-2.0/
 ├── README.md
 ├── CHANGELOG.md
 ├── docs/
+│   ├── ai_engine.md
+│   ├── api_reference.md
 │   ├── architecture.md
-│   ├── ai.md
-│   ├── garage.md
-│   ├── maps.md
-│   ├── community.md
-│   ├── safety.md
-│   ├── testing.md
+│   ├── authentication.md
+│   ├── backend.md
+│   ├── community_platform.md
+│   ├── garage_management.md
+│   ├── maps_navigation.md
+│   ├── performance.md
+│   ├── release_checklist.md
 │   ├── release_notes.md
-│   └── api_reference.md
+│   ├── ride_engine.md
+│   ├── safety_engine.md
+│   ├── security.md
+│   └── testing.md
 ├── backend/
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── alembic/
 │   ├── app/
 │   │   ├── api/
 │   │   ├── core/
 │   │   ├── db/
 │   │   ├── models/
-│   │   ├── schemas/
-│   │   └── services/
-│   └── requirements.txt
+│   │   └── schemas/
+│   └── tests/
 └── flutter/
+    ├── pubspec.yaml
     ├── assets/
-    │   └── images/
     ├── lib/
     │   ├── main.dart
     │   ├── core/
-    │   │   ├── constants/
-    │   │   ├── errors/
-    │   │   ├── router/
-    │   │   ├── theme/
-    │   │   └── widgets/
-    │   └── features/
-    │       ├── ai/
-    │       ├── auth/
-    │       ├── community/
-    │       ├── garage/
-    │       ├── home/
-    │       ├── maps/
-    │       ├── profile/
-    │       ├── rides/
-    │       ├── safety/
-    │       └── weather/
+    │   ├── features/
+    │   └── providers/
     └── test/
-        ├── ai_engine_test.dart
-        ├── auth_profile_test.dart
-        ├── community_platform_test.dart
-        ├── garage_management_test.dart
-        ├── maps_navigation_test.dart
-        ├── ride_engine_test.dart
-        ├── safety_engine_test.dart
-        └── weather_service_test.dart
 ```
+
+> 💡 **Design Reference**: UI design screens, specs, and HTML prototypes are archived in the [`design-reference` branch](../../tree/design-reference).
 
 ---
 

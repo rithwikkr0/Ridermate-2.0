@@ -39,7 +39,12 @@ __pycache__/
 *.db
 *.sqlite3
 
-# Archives
+# Archives & Temporary Artifacts
 *.zip
 *.tar.gz
+backend_logs*/
+uploads/
+**/uploads/
+physical_device*.png
+analyze_out.txt
 

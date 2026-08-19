@@ -6,7 +6,18 @@
 
 ---
 
-## 1. System Architecture Diagram
+## 1. Overview
+The Garage Engine manages motorcycle telemetry, fuel efficiency, expense calculations, insurance/PUC validity, challan tracking, and automated maintenance reminders.
+
+### Key Features
+- **FuelManagerService**: Logs fuel fills, calculates average mileage (km/L), total fuel spent, and cost-per-km trends.
+- **MaintenanceService**: Tracks engine oil, chain lube, brake pads, and tire wear schedules based on odometer readings.
+- **GarageReminderEngine**: Triggers upcoming maintenance alerts when mileage thresholds are approached.
+- **Vehicle Intelligence & Challan Tracking**: Validates Indian registration number formats and tracks traffic challans with status badges.
+
+---
+
+## 2. System Architecture Diagram
 
 ```
 +-------------------------------------------------------------------------+

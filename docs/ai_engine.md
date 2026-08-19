@@ -6,7 +6,19 @@
 
 ---
 
-## 1. System Architecture Diagram
+## 1. Overview
+The RiderMate 2.0 AI Copilot engine provides real-time voice & text riding guidance, pre-ride readiness scoring, post-ride effort analysis, and smart route suggestions.
+
+### Key Components
+- **RiderMateAIProvider**: Domain-expert AI engine answering queries for Trip Planning, Route Suggestions, Motorcycle Maintenance, Riding Safety & Posture, Weather/Monsoon Prep, Emergency/SOS First Aid, and Nearby POIs.
+- **AzureSafetyCoachService**: Connects to the Azure backend to evaluate aggregated ride metrics with local fallback.
+- **PromptBuilder**: Enforces structured context injection (user metrics, current weather, ride history, fatigue indicators).
+- **ConversationMemory**: Preserves session chat history.
+- **RideCoachService**: Computes readiness scores (0–100%) and defensive riding insights.
+
+---
+
+## 2. System Architecture Diagram
 
 ```
 +-------------------------------------------------------------------------+

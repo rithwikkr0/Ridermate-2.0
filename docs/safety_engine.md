@@ -6,7 +6,18 @@
 
 ---
 
-## 1. System Architecture Diagram
+## 1. Overview
+Automated crash detection heuristics, high-g acceleration analysis, emergency contact broadcasting, and SOS countdown timer.
+
+### Key Components
+- **SosController**: Manages 5-second emergency countdown state lifecycle, contact dispatch, and user cancellation.
+- **CrashDetectionEngine**: Analyzes accelerometer & gyroscope vector magnitudes to detect sudden impact forces via `sensors_plus`.
+- **SafetyScoreCalculator & TrafficPointsEngine**: Computes rider safety rating based on cornering speed, hard braking events, overspeed events, and traffic law compliance.
+- **EmergencyContactRepository**: SQLite CRUD management for priority emergency contacts with direct phone dialer triggers.
+
+---
+
+## 2. System Architecture Diagram
 
 ```
 +-------------------------------------------------------------------------+
