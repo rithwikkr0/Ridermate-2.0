@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/errors/result.dart';
 import '../../../core/errors/app_error.dart';
 import '../../../core/services/database_service.dart';
+import '../../../core/config/google_auth_config.dart';
 import '../models/user_model.dart';
 import '../../profile/models/vehicle_model.dart';
 import '../../profile/models/emergency_contact_model.dart';
@@ -302,21 +304,50 @@ class SqliteAuthService implements AuthService {
   @override
   Future<Result<UserModel>> loginWithGoogle() async {
     try {
-      // Local SQLite fallback user creation for Google Auth
+      // Build GoogleSignIn with serverClientId so we receive an ID token
+      // that the backend can verify. serverClientId must be the WEB client ID,
+      // not the Android client ID.
+      final googleSignIn = GoogleSignIn(
+        serverClientId: GoogleAuthConfig.serverClientId.isNotEmpty
+            ? GoogleAuthConfig.serverClientId
+            : null,
+        scopes: ['email', 'profile'],
+      );
+
+      // Sign out first so the account picker always appears (avoids silent
+      // auto-sign-in to the last account without user confirmation).
+      await googleSignIn.signOut();
+
+      final account = await googleSignIn.signIn();
+      if (account == null) {
+        // User cancelled the account picker
+        return Result.failure(
+          const NetworkError('Google Sign-In was cancelled.'),
+        );
+      }
+
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+
+      // Persist the Google user locally so the app works even without a backend.
       final db = await _db.database;
-      final googleEmail = 'google.rider@ridermate.app';
+      final googleEmail = account.email;
       var user = await _loadUserByEmail(googleEmail);
 
       if (user == null) {
         final id = _generateId();
         final now = DateTime.now().toIso8601String();
+        final username = account.displayName
+                ?.toLowerCase()
+                .replaceAll(RegExp(r'[^a-z0-9]'), '') ??
+            'googlerider';
         await db.insert('users', {
           'id': id,
-          'username': 'googlerider',
-          'full_name': 'Google Rider',
+          'username': username.isEmpty ? 'googlerider' : username,
+          'full_name': account.displayName ?? 'Google Rider',
           'email': googleEmail,
           'phone': '',
-          'photo_url': '',
+          'photo_url': account.photoUrl ?? '',
           'bio': 'Signed in with Google',
           'rider_level': 'Novice',
           'xp': 0,
@@ -332,8 +363,18 @@ class SqliteAuthService implements AuthService {
       }
 
       if (user == null) {
-        return Result.failure(const StorageError('Failed to authenticate Google user.'));
+        return Result.failure(
+          const StorageError('Failed to authenticate Google user.'),
+        );
       }
+
+      // Log the idToken availability so we know if backend verification
+      // will work (it only works once GOOGLE_WEB_CLIENT_ID is configured).
+      if (kDebugMode) {
+        debugPrint('[GoogleSignIn] idToken present: ${idToken != null}');
+        debugPrint('[GoogleSignIn] serverClientId: ${GoogleAuthConfig.serverClientId.isNotEmpty ? "configured" : "NOT SET — backend verify will fail"}');
+      }
+
       return Result.success(user);
     } catch (e) {
       return Result.failure(StorageError('Google Sign-In failed: $e'));

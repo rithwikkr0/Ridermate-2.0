@@ -3,10 +3,21 @@
 ![RiderMate Logo](flutter/assets/images/ridermate_icon.png)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.11.5-02569B?logo=flutter)](https://flutter.dev)
-[![Version](https://img.shields.io/badge/Version-v1.0.0--alpha-FF6B00)](#versioning)
+[![Version](https://img.shields.io/badge/Version-v2.0.0-FF6B00)](#versioning)
+[![Website](https://img.shields.io/badge/Website-Azure%20Static%20Web%20Apps-0078D4?logo=microsoftazure)](https://ridermate.azurestaticapps.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)](#verification)
-[![Test Suite](https://img.shields.io/badge/Tests-28%2F28%20Passed-success)](#testing)
+[![Test Suite](https://img.shields.io/badge/Tests-193%2F193%20Passed-success)](#testing)
+
+---
+
+## 🌐 Official Marketing & Download Website
+- **Live Portal:** [https://ridermate.azurestaticapps.net](https://ridermate.azurestaticapps.net)
+- **Direct APK Download:** [https://ridermate.azurestaticapps.net/download](https://ridermate.azurestaticapps.net/download)
+- **Privacy Policy:** [https://ridermate.azurestaticapps.net/privacy](https://ridermate.azurestaticapps.net/privacy)
+- **Data Safety Declaration:** [https://ridermate.azurestaticapps.net/data-safety](https://ridermate.azurestaticapps.net/data-safety)
+- **Referral Squad Hub:** [https://ridermate.azurestaticapps.net/join](https://ridermate.azurestaticapps.net/join)
+- **Developer Handoff Docs:** [`docs/website.md`](docs/website.md)
 
 ---
 

@@ -464,7 +464,7 @@ class _FriendsHomeScreenState extends State<FriendsHomeScreen> with SingleTicker
         ? 'RM-${user!.id.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toUpperCase().padRight(6, 'X').substring(0, 6)}'
         : 'RM-PILOT1';
     final message =
-        'Join me on RiderMate — the ultimate motorcycle companion app! Download the app and enter my invite code: $code during registration to connect with my squad: https://github.com/rithwikkr0/Ridermate-2.0';
+        'Join me on RiderMate — the ultimate motorcycle companion app! Download the app and enter my invite code: $code during registration to connect with my squad: https://ridermate.azurestaticapps.net/join?ref=$code';
     Share.share(message, subject: 'Join my RiderMate 2.0 Motorcycle Squad');
   }
 

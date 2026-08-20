@@ -79,6 +79,7 @@ import '../../features/settings/screens/settings_home_screen.dart';
 import '../../features/settings/screens/appearance_settings_screen.dart';
 import '../../features/settings/screens/privacy_security_screen.dart';
 import '../../features/settings/screens/help_support_screen.dart';
+import '../../features/settings/screens/about_screen.dart';
 import '../widgets/rm_bottom_nav.dart';
 
 /// App route names — use these for navigation
@@ -171,6 +172,7 @@ class AppRoutes {
   static const appearance       = '/settings/appearance';
   static const privacySecurity  = '/settings/privacy';
   static const helpSupport      = '/settings/help';
+  static const about            = '/settings/about';
   static const gpsDebug         = '/gps-debug';
 }
 
@@ -417,7 +419,8 @@ final appRouter = GoRouter(
     GoRoute(path: AppRoutes.appearance, builder: (c, s) => const AppearanceSettingsScreen()),
     GoRoute(path: AppRoutes.privacySecurity, builder: (c, s) => const PrivacySecurityScreen()),
     GoRoute(path: AppRoutes.helpSupport, builder: (c, s) => const HelpSupportScreen()),
-    GoRoute(path: AppRoutes.gpsDebug, builder: (c, s) => const GpsDebugScreen()),
+    GoRoute(path: AppRoutes.about,       builder: (c, s) => const AboutScreen()),
+    GoRoute(path: AppRoutes.gpsDebug,    builder: (c, s) => const GpsDebugScreen()),
   ],
 );
 

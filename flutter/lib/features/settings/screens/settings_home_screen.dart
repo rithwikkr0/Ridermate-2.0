@@ -105,7 +105,7 @@ class SettingsHomeScreen extends StatelessWidget {
                     _buildTile(Icons.help_outline, 'Help & Support', () => context.push(AppRoutes.helpSupport)),
                     _buildTile(Icons.description_outlined, 'Terms of Service', () => context.push(AppRoutes.terms)),
                     _buildTile(Icons.privacy_tip_outlined, 'Privacy Policy', () => context.push(AppRoutes.privacyPolicy)),
-                    _buildTile(Icons.info_outline, 'About RiderMate 2.0', () => context.push(AppRoutes.helpSupport)),
+                    _buildTile(Icons.info_outline, 'About RiderMate 2.0', () => context.push(AppRoutes.about)),
                   ]),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSection('HARDWARE & TELEMETRY', [
