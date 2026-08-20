@@ -45,6 +45,11 @@ __pycache__/
 backend_logs*/
 uploads/
 **/uploads/
-physical_device*.png
-analyze_out.txt
+# Node & Web
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+*.tsbuildinfo
 
