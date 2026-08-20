@@ -189,10 +189,11 @@ def google_sign_in(body: GoogleAuthRequest, db: Session = Depends(get_db)):
         from google.oauth2 import id_token
         from google.auth.transport import requests as google_requests
 
-        # Verify Google Token
+        # Verify Google Token against Web Client ID audience
         id_info = id_token.verify_oauth2_token(
             body.id_token,
             google_requests.Request(),
+            audience=settings.GOOGLE_CLIENT_ID if settings.GOOGLE_CLIENT_ID else None,
         )
         google_email = id_info.get("email")
         google_name = id_info.get("name")

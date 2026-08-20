@@ -6,6 +6,8 @@ class GoogleAuthConfig {
   /// Required for backend ID-token verification via google-auth.
   /// This MUST be the Web client ID, NOT the Android client ID.
   /// See: docs/google_signin_setup.md
-  static const String serverClientId =
-      String.fromEnvironment('GOOGLE_WEB_CLIENT_ID', defaultValue: '');
+  static const String serverClientId = String.fromEnvironment(
+    'GOOGLE_WEB_CLIENT_ID',
+    defaultValue: '568128073681-39l950in9qgk3iqj0qn775qn9b7uni1v.apps.googleusercontent.com',
+  );
 }

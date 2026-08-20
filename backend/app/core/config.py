@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     AZURE_STORAGE_CONNECTION_STRING: str = ""
     AZURE_STORAGE_CONTAINER_NAME: str = "media"
 
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str = "568128073681-39l950in9qgk3iqj0qn775qn9b7uni1v.apps.googleusercontent.com"
+
     # CORS
     ALLOWED_ORIGINS: List[str] = ["*"]
 
