@@ -12,11 +12,11 @@
 ---
 
 ## 🌐 Official Marketing & Download Website
-- **Live Portal:** [https://ridermate.azurestaticapps.net](https://ridermate.azurestaticapps.net)
-- **Direct APK Download:** [https://ridermate.azurestaticapps.net/download](https://ridermate.azurestaticapps.net/download)
-- **Privacy Policy:** [https://ridermate.azurestaticapps.net/privacy](https://ridermate.azurestaticapps.net/privacy)
-- **Data Safety Declaration:** [https://ridermate.azurestaticapps.net/data-safety](https://ridermate.azurestaticapps.net/data-safety)
-- **Referral Squad Hub:** [https://ridermate.azurestaticapps.net/join](https://ridermate.azurestaticapps.net/join)
+- **Live Portal:** [https://green-coast-00868c100.7.azurestaticapps.net](https://green-coast-00868c100.7.azurestaticapps.net)
+- **Direct APK Download:** [https://green-coast-00868c100.7.azurestaticapps.net/download](https://green-coast-00868c100.7.azurestaticapps.net/download)
+- **Privacy Policy:** [https://green-coast-00868c100.7.azurestaticapps.net/privacy](https://green-coast-00868c100.7.azurestaticapps.net/privacy)
+- **Data Safety Declaration:** [https://green-coast-00868c100.7.azurestaticapps.net/data-safety](https://green-coast-00868c100.7.azurestaticapps.net/data-safety)
+- **Referral Squad Hub:** [https://green-coast-00868c100.7.azurestaticapps.net/join](https://green-coast-00868c100.7.azurestaticapps.net/join)
 - **Developer Handoff Docs:** [`docs/website.md`](docs/website.md)
 
 ---

@@ -47,7 +47,7 @@ export const downloadConfig: DownloadConfig = {
   },
 
   // Referral URL used in marketing and sharing
-  referralBaseUrl: "https://ridermate.azurestaticapps.net/join",
+  referralBaseUrl: "https://green-coast-00868c100.7.azurestaticapps.net/join",
 };
 
 /**
