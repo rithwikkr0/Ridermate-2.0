@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, CheckCircle2, ShieldCheck, Copy, Check, Smartphone, Terminal, ArrowDownCircle, AlertTriangle } from 'lucide-react';
+import { Download, CheckCircle2, ShieldCheck, Copy, Check, Smartphone, Terminal, ExternalLink, AlertTriangle } from 'lucide-react';
 import { downloadConfig, getActiveDownloadUrl, getDownloadButtonLabel } from '../config/downloadConfig';
 
 export const DownloadPage: React.FC = () => {
@@ -17,13 +17,13 @@ export const DownloadPage: React.FC = () => {
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-circuitOrange/30 text-xs font-mono text-circuitOrange">
           <Smartphone className="w-3.5 h-3.5" />
-          <span>OFFICIAL ANDROID RELEASE</span>
+          <span>OFFICIAL GITHUB RELEASE</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
           Download RiderMate 2.0
         </h1>
         <p className="text-sm sm:text-base text-onSurfaceVariant">
-          Install the high-performance motorcycle cockpit directly onto your Android device.
+          Install the high-performance motorcycle cockpit directly onto your Android device from official release assets.
         </p>
       </div>
 
@@ -36,23 +36,23 @@ export const DownloadPage: React.FC = () => {
           <div className="md:col-span-7 space-y-6">
             <div>
               <span className="text-xs font-mono text-circuitOrange uppercase tracking-wider block mb-1">
-                LATEST BUILD
+                LATEST PRODUCTION RELEASE
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold text-white">
                 RiderMate v{downloadConfig.version}
               </h2>
               <p className="text-xs sm:text-sm text-onSurfaceVariant mt-1">
-                Build Number: <span className="font-mono text-white">{downloadConfig.buildNumber}</span> • Commit: <span className="font-mono text-white">{downloadConfig.commitHash}</span>
+                Release Tag: <a href={downloadConfig.links.gitHubReleasePage} target="_blank" rel="noopener noreferrer" className="font-mono text-circuitOrange hover:underline">{downloadConfig.releaseTag}</a> • Build: <span className="font-mono text-white">{downloadConfig.buildNumber}</span>
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-xs font-mono">
               <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Package Name</span>
+                <span className="text-onSurfaceVariant block mb-1">Package ID</span>
                 <span className="text-white font-semibold">com.ridermate.ridermate</span>
               </div>
               <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">File Size</span>
+                <span className="text-onSurfaceVariant block mb-1">Asset Size</span>
                 <span className="text-white font-semibold">~{downloadConfig.apkSizeMB} MB</span>
               </div>
               <div className="p-3 rounded-xl bg-white/5 border border-white/5">
@@ -60,18 +60,28 @@ export const DownloadPage: React.FC = () => {
                 <span className="text-white font-semibold">{downloadConfig.minAndroidVersion}</span>
               </div>
               <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Release Date</span>
-                <span className="text-white font-semibold">{downloadConfig.releaseDate}</span>
+                <span className="text-onSurfaceVariant block mb-1">Build Commit</span>
+                <span className="text-white font-semibold">{downloadConfig.commitHash}</span>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="flex flex-wrap gap-4 pt-2">
               <a
                 href={getActiveDownloadUrl()}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-circuitOrange to-circuitOrangeGlow hover:scale-105 active:scale-95 transition-all shadow-xl shadow-circuitOrange/30 w-full sm:w-auto"
               >
                 <Download className="w-5 h-5" />
                 <span>{getDownloadButtonLabel()}</span>
+              </a>
+
+              <a
+                href={downloadConfig.links.gitHubReleasePage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl font-semibold text-xs text-onSurface glass-panel glass-panel-hover"
+              >
+                <span>View on GitHub</span>
+                <ExternalLink className="w-4 h-4 text-onSurfaceVariant" />
               </a>
             </div>
           </div>
@@ -82,9 +92,9 @@ export const DownloadPage: React.FC = () => {
               <ShieldCheck className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white">Virus & Malware Clean</h3>
+              <h3 className="font-bold text-sm text-white">Verified APK Binary</h3>
               <p className="text-xs text-onSurfaceVariant mt-1">
-                Signed directly with Android keystore and verified through automated test suites.
+                Hosted directly on GitHub Release asset storage with signed keystore hash.
               </p>
             </div>
           </div>
@@ -134,9 +144,9 @@ export const DownloadPage: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
               1
             </div>
-            <h3 className="font-bold text-white text-base">Download APK</h3>
+            <h3 className="font-bold text-white text-base">Download APK Asset</h3>
             <p className="text-xs text-onSurfaceVariant leading-relaxed">
-              Tap the download button above to save `app-debug.apk` directly to your phone's storage.
+              Tap the download button above to save `app-debug.apk` directly to your device from GitHub Releases.
             </p>
           </div>
 
@@ -144,7 +154,7 @@ export const DownloadPage: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
               2
             </div>
-            <h3 className="font-bold text-white text-base">Allow Installation</h3>
+            <h3 className="font-bold text-white text-base">Allow Unknown Apps</h3>
             <p className="text-xs text-onSurfaceVariant leading-relaxed">
               When prompted by Android, tap <strong>Settings</strong> and enable <em>"Allow from this source"</em> for your browser or file manager.
             </p>
@@ -154,9 +164,9 @@ export const DownloadPage: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
               3
             </div>
-            <h3 className="font-bold text-white text-base">Launch & Ride</h3>
+            <h3 className="font-bold text-white text-base">Launch Cockpit</h3>
             <p className="text-xs text-onSurfaceVariant leading-relaxed">
-              Open RiderMate 2.0, log in or create your pilot account, add your bike, and enter the cockpit!
+              Open RiderMate 2.0, log in with Google or email, configure your bike, and enter the cockpit!
             </p>
           </div>
         </div>

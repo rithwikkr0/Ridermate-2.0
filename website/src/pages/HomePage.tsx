@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Download,
@@ -15,141 +15,149 @@ import {
   ArrowRight,
   Radio,
   Lock,
-  BatteryCharging
+  BatteryCharging,
+  Gauge,
+  Layers,
+  FileCheck2
 } from 'lucide-react';
-import { Hero3D } from '../components/Hero3D';
+import { CinematicScrollCanvas } from '../components/CinematicScrollCanvas';
+import { InteractiveCockpitDemo } from '../components/InteractiveCockpitDemo';
 import { FeatureCard } from '../components/FeatureCard';
 import { getActiveDownloadUrl, getDownloadButtonLabel, downloadConfig } from '../config/downloadConfig';
 
 export const HomePage: React.FC = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const screenshots = [
+    {
+      src: '/screenshots/cockpit_dashboard.png',
+      title: 'Cockpit Dashboard',
+      subtitle: 'Live speedometer, battery telemetry, weather suitability score, and quick actions.',
+    },
+    {
+      src: '/screenshots/navigation_ride.png',
+      title: 'Turn Navigation & HUD',
+      subtitle: 'High-contrast CartoDB Dark Matter maps with speed alerts and GPX trail recording.',
+    },
+    {
+      src: '/screenshots/squads_community.png',
+      title: 'Squads & Contact Matching',
+      subtitle: 'Real-time pilot radar, group chats, and privacy-preserving SHA-256 phone matching.',
+    },
+    {
+      src: '/screenshots/pilot_profile.png',
+      title: 'Pilot Profile & Milestones',
+      subtitle: 'XP progression from Novice to Legend, achievement badges, and safety history.',
+    },
+    {
+      src: '/screenshots/memories_journal.png',
+      title: 'Memories Journal',
+      subtitle: 'Voice note captures, high-res ride photos, and interactive map memory pins.',
+    },
+  ];
+
   return (
     <div className="space-y-24 sm:space-y-32 pb-24 overflow-hidden">
-      {/* ── 1. Hero Section ─────────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center pt-28 sm:pt-32 lg:pt-36">
-        {/* Background ambient radial gradients */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-circuitOrange/15 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/3 right-10 w-[350px] h-[350px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* ── 1. Hero & Cinematic Scroll Section ───────────────────────────── */}
+      <section className="relative">
+        <CinematicScrollCanvas
+          onProgressUpdate={(p) => setScrollProgress(p)}
+        />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Headlines & CTA */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-circuitOrange/30 text-xs font-mono text-circuitOrange shadow-inner">
-                <span className="w-2 h-2 rounded-full bg-circuitOrange animate-pulse" />
-                <span>RIDERMATE 2.0 IS LIVE</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
-                Your High-Performance <br />
-                <span className="bg-gradient-to-r from-circuitOrange via-circuitOrangeGlow to-amber-400 bg-clip-text text-transparent">
-                  Motorcycle Cockpit.
-                </span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-onSurfaceVariant max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Engineered for serious riders. Offline-first turn-by-turn navigation, real-time g-force crash detection SOS, Azure AI safety coaching, group squad radar, and comprehensive garage telemetry.
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                <a
-                  href={getActiveDownloadUrl()}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-circuitOrange to-circuitOrangeGlow hover:scale-105 active:scale-95 transition-all shadow-xl shadow-circuitOrange/30 hover:shadow-circuitOrange/50"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>{getDownloadButtonLabel()}</span>
-                </a>
-
-                <Link
-                  to="/download"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-sm text-onSurface glass-panel glass-panel-hover"
-                >
-                  <span>Installation & Checksum</span>
-                  <ArrowRight className="w-4 h-4 text-circuitOrange" />
-                </Link>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="pt-6 border-t border-white/5 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-left">
-                <div>
-                  <span className="block font-mono text-xl font-bold text-white">100%</span>
-                  <span className="text-xs text-onSurfaceVariant">Offline Capable</span>
-                </div>
-                <div>
-                  <span className="block font-mono text-xl font-bold text-white">0 ms</span>
-                  <span className="text-xs text-onSurfaceVariant">Background Crash SOS</span>
-                </div>
-                <div>
-                  <span className="block font-mono text-xl font-bold text-white">Zero</span>
-                  <span className="text-xs text-onSurfaceVariant">Ad-Tracking</span>
-                </div>
-              </div>
+        {/* Floating Hero Content Overlay */}
+        <div className="absolute top-28 sm:top-36 left-0 right-0 z-20 pointer-events-none">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-circuitOrange/40 text-xs font-mono text-circuitOrange shadow-2xl pointer-events-auto">
+              <span className="w-2 h-2 rounded-full bg-circuitOrange animate-ping" />
+              <span>CIRCUITRIDER 2.0 • HIGH-PERFORMANCE COCKPIT</span>
             </div>
 
-            {/* Right Column: 3D Interactive Centerpiece */}
-            <div className="lg:col-span-5 relative">
-              <div className="glass-panel rounded-3xl p-3 border border-white/10 relative overflow-hidden shadow-2xl">
-                <Hero3D />
-              </div>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.05] drop-shadow-2xl">
+              Engineered for the Open Road. <br />
+              <span className="bg-gradient-to-r from-circuitOrange via-circuitOrangeGlow to-amber-400 bg-clip-text text-transparent">
+                RiderMate 2.0
+              </span>
+            </h1>
+
+            <p className="text-base sm:text-xl text-onSurfaceVariant max-w-2xl mx-auto leading-relaxed drop-shadow">
+              Turn-by-turn vector navigation, multi-axis crash detection SOS, Azure AI safety coaching, and privacy-preserving squad radar.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 pointer-events-auto">
+              <a
+                href={getActiveDownloadUrl()}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-circuitOrange to-circuitOrangeGlow hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-circuitOrange/50 hover:shadow-circuitOrange/70"
+              >
+                <Download className="w-5 h-5" />
+                <span>{getDownloadButtonLabel()}</span>
+              </a>
+
+              <Link
+                to="/download"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-sm text-onSurface glass-panel glass-panel-hover"
+              >
+                <span>Release Info & Checksum</span>
+                <ArrowRight className="w-4 h-4 text-circuitOrange" />
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 2. Live Telemetry Strip ────────────────────────────────────── */}
+      {/* ── 2. Interactive Cockpit Simulator ────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-circuitOrange/20 shadow-xl relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-2 text-circuitOrange mb-1">
-                <Navigation className="w-5 h-5" />
-                <span className="text-xs font-mono uppercase tracking-wider text-onSurfaceVariant">Navigation</span>
-              </div>
-              <p className="text-2xl font-bold text-white font-mono">CartoDB Dark</p>
-              <p className="text-xs text-onSurfaceVariant">Dynamic theme-aware vector tiles</p>
-            </div>
+        <InteractiveCockpitDemo />
+      </section>
 
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-2 text-circuitOrange mb-1">
-                <ShieldAlert className="w-5 h-5" />
-                <span className="text-xs font-mono uppercase tracking-wider text-onSurfaceVariant">Crash Detection</span>
-              </div>
-              <p className="text-2xl font-bold text-white font-mono">4.5G Threshold</p>
-              <p className="text-xs text-onSurfaceVariant">Multi-axis sensor telemetry</p>
-            </div>
+      {/* ── 3. Real In-App Screenshots Gallery ───────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <span className="text-xs font-mono uppercase tracking-widest text-circuitOrange">
+            DESIGNED FOR GLOVES & SUNLIGHT
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
+            High-Contrast Dark Glassmorphism
+          </h2>
+          <p className="text-sm sm:text-base text-onSurfaceVariant">
+            Real production screens optimized for helmet visor glare and high-speed glanceability.
+          </p>
+        </div>
 
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-2 text-circuitOrange mb-1">
-                <Bot className="w-5 h-5" />
-                <span className="text-xs font-mono uppercase tracking-wider text-onSurfaceVariant">AI Safety Coach</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {screenshots.map((s, idx) => (
+            <div
+              key={idx}
+              className="glass-panel glass-panel-hover rounded-2xl p-4 sm:p-5 border border-white/10 space-y-4 group overflow-hidden"
+            >
+              <div className="relative rounded-xl overflow-hidden bg-black/60 aspect-[9/16] max-h-96 flex items-center justify-center">
+                <img
+                  src={s.src}
+                  alt={s.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
-              <p className="text-2xl font-bold text-white font-mono">Azure OpenAI</p>
-              <p className="text-xs text-onSurfaceVariant">Pre-ride briefings & readiness</p>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center justify-center gap-2 text-circuitOrange mb-1">
-                <Radio className="w-5 h-5" />
-                <span className="text-xs font-mono uppercase tracking-wider text-onSurfaceVariant">Squad Radar</span>
+              <div>
+                <h3 className="text-base font-bold text-white group-hover:text-circuitOrange transition-colors">
+                  {s.title}
+                </h3>
+                <p className="text-xs text-onSurfaceVariant mt-1 leading-relaxed">
+                  {s.subtitle}
+                </p>
               </div>
-              <p className="text-2xl font-bold text-white font-mono">Live Sync</p>
-              <p className="text-xs text-onSurfaceVariant">P2P contact match via SHA-256</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ── 3. Core Capabilities Deep Dive ──────────────────────────────── */}
+      {/* ── 4. Core Capabilities Deep Dive ──────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <h2 className="text-xs font-mono uppercase tracking-widest text-circuitOrange">
-            Feature Deep Dive
+            FEATURE HIGHLIGHTS
           </h2>
           <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Built from scratch for the demands of motorcycle riding.
-          </p>
-          <p className="text-sm sm:text-base text-onSurfaceVariant leading-relaxed">
-            Every screen, algorithm, and background service is tailored for vibration resistance, glove touch ergonomics, and instant high-contrast readability.
+            Engineered from ground up for motorcycle riders.
           </p>
         </div>
 
@@ -157,24 +165,24 @@ export const HomePage: React.FC = () => {
           <FeatureCard
             icon={Navigation}
             badge="OFFLINE MAPS"
-            title="Turn-by-Turn Real Navigation"
-            description="High-contrast CartoDB Dark Matter tiles optimized for sunlight readability and dark helmet visors with offline route caching."
+            title="Turn Navigation & Vector HUD"
+            description="Dynamic CartoDB Dark tiles with offline route caching, speed limit alerts, and GPX trail export."
             benefits={[
-              "Instant dynamic dark / light mode tile switching",
-              "Speed limit alerts & real-time telemetry HUD",
-              "GPX ride export & GPX trail import"
+              "Instant theme-aware dark / light tile switching",
+              "Live Haversine distance telemetry",
+              "Turn-by-turn guidance banner"
             ]}
           />
 
           <FeatureCard
             icon={ShieldAlert}
-            badge="REAL SENSORS"
-            title="Emergency SOS & Crash Detection"
-            description="Accelerometer-driven multi-axis high-G impact heuristics that automatically broadcast live GPS coordinates to emergency contacts."
+            badge="HARDWARE SENSORS"
+            title="Emergency SOS & Crash Heuristics"
+            description="Multi-axis accelerometer impact detection with 15-second cancellable audio alarm and automated Azure SMS broadcast."
             benefits={[
               "15-second cancellable audio countdown",
-              "Automated Azure Communication Services SMS broadcast",
-              "Instant 108 / 112 direct emergency dialer"
+              "Automated SMS dispatch with GPS location",
+              "Direct 108 / 112 medical emergency dialer"
             ]}
             gradient="from-red-500/20 to-transparent"
           />
@@ -183,34 +191,34 @@ export const HomePage: React.FC = () => {
             icon={Bot}
             badge="AZURE AI"
             title="AI Pre-Ride & Safety Coach"
-            description="Real-time ride intelligence that evaluates tire temperatures, weather telemetry, riding habits, and previous safety violations."
+            description="Real-time cockpit readiness scoring (0-100), weather suitability assessment, and defensive riding voice briefings."
             benefits={[
               "Dynamic cockpit readiness score (0-100)",
               "Voice briefing before departure",
-              "Tailored riding tips after every trip"
+              "Defensive coaching tips after every ride"
             ]}
             gradient="from-blue-500/20 to-transparent"
           />
 
           <FeatureCard
             icon={Wrench}
-            badge="GARAGE COCKPIT"
-            title="Vehicle Intelligence & Reminders"
-            description="Full lifecycle management for your motorcycle. Track maintenance logs, service intervals, fuel logs, and official challans."
+            badge="GARAGE INTELLIGENCE"
+            title="Vehicle Lifecycle & Reminders"
+            description="Motorcycle garage manager with automated Insurance and PUC expiry countdowns, service logs, and official challan tracking."
             benefits={[
-              "Automated Insurance and PUC expiry countdowns",
-              "Document vault for RC & policy storage",
-              "Fuel mileage and cost telemetry analytics"
+              "Insurance & PUC expiry countdowns",
+              "Digital document vault for RC and policies",
+              "Fuel mileage and cost analytics"
             ]}
           />
 
           <FeatureCard
             icon={Users}
-            badge="PRIVACY-FIRST"
-            title="Squads & Contact-Based Matching"
-            description="Find riders and join squads using cryptographic SHA-256 phone hashing. Your phone book never leaves your device in raw text."
+            badge="PRIVACY MESH"
+            title="Squads & Cryptographic Matching"
+            description="Discover fellow riders and coordinate group rides using cryptographic SHA-256 on-device phone hashing."
             benefits={[
-              "Invite friends with personal referral code",
+              "Share referral codes with 1-click links",
               "Earn the 'Squad Recruiter' achievement badge",
               "Group chat & real-time squad map tracking"
             ]}
@@ -218,11 +226,11 @@ export const HomePage: React.FC = () => {
 
           <FeatureCard
             icon={Award}
-            badge="GAMIFICATION"
-            title="Rider Milestones & Achievements"
-            description="Level up your pilot profile from Novice to Legend as you complete safe rides, mileage milestones, and community challenges."
+            badge="PILOT ROSTER"
+            title="Rider Milestones & Leveling"
+            description="Advance your pilot rank from Novice to Legend as you log safe rides, distance milestones, and community challenges."
             benefits={[
-              "No double-awarding idempotency engine",
+              "Idempotency engine prevents duplicate XP",
               "Weekly & weekend warrior challenges",
               "Local leaderboard & XP tracking"
             ]}
@@ -231,7 +239,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── 4. Architecture & Security Guarantee ────────────────────────── */}
+      {/* ── 5. Trust, Privacy & Local-First Architecture ────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="glass-panel rounded-3xl p-8 sm:p-12 border border-white/10 relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -241,10 +249,10 @@ export const HomePage: React.FC = () => {
                 <span>Zero-Trust Privacy Standard</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-                Your riding telemetry stays in your hands.
+                Your riding telemetry stays on your phone.
               </h3>
               <p className="text-sm sm:text-base text-onSurfaceVariant leading-relaxed">
-                RiderMate 2.0 utilizes an encrypted SQLite local-first database on your phone. When connected, synchronization with Microsoft Azure Cloud uses TLS 1.3 in-transit and AES-256 encryption at rest. We never sell riding location habits or personal profiles to data brokers.
+                RiderMate 2.0 utilizes an encrypted SQLite local-first database on your device. When cloud sync is enabled, data transmitted to RiderMate Cloud (Microsoft Azure App Service and Azure Database for PostgreSQL) is secured via TLS 1.3 in-transit and AES-256 encryption at rest. We never sell riding location habits or personal profiles to data brokers.
               </p>
               <div className="flex flex-wrap gap-4 pt-2">
                 <Link
@@ -275,17 +283,17 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── 5. Final CTA Banner ────────────────────────────────────────── */}
+      {/* ── 6. Final Call to Action ─────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl bg-gradient-to-br from-surfaceContainerHigh to-surface border border-circuitOrange/30 p-8 sm:p-14 text-center space-y-6 overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-circuitOrange/10 rounded-full blur-3xl pointer-events-none" />
-          
+
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Ready to elevate your motorcycle experience?
+            Ready to mount your high-performance cockpit?
           </h2>
-          
+
           <p className="text-sm sm:text-base text-onSurfaceVariant max-w-xl mx-auto">
-            Download the Android APK now. Connect your bike, monitor service schedules, and explore routes with your squad.
+            Download the official Android release directly from GitHub Releases. Connect your bike and ride with your squad.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -296,7 +304,7 @@ export const HomePage: React.FC = () => {
               <Download className="w-5 h-5" />
               <span>{getDownloadButtonLabel()}</span>
             </a>
-            
+
             <Link
               to="/join"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-sm text-onSurface glass-panel glass-panel-hover"
