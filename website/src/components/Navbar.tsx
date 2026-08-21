@@ -34,10 +34,12 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-circuitOrange rounded-lg p-1"
             aria-label="RiderMate 2.0 Home"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-circuitOrange to-circuitOrangeGlow p-0.5 shadow-lg shadow-circuitOrange/25 group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full bg-surface rounded-[10px] flex items-center justify-center">
-                <Zap className="w-5 h-5 text-circuitOrange" />
-              </div>
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-surface p-0.5 border border-circuitOrange/40 shadow-lg shadow-circuitOrange/25 group-hover:scale-105 transition-transform duration-300">
+              <img
+                src="/app_icon.png"
+                alt="RiderMate 2.0 App Icon"
+                className="w-full h-full object-cover rounded-[8px]"
+              />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">

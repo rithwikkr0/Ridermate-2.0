@@ -14,8 +14,12 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand & Tagline */}
           <div className="md:col-span-1 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-circuitOrange flex items-center justify-center shadow-lg shadow-circuitOrange/30">
-                <Zap className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-surface border border-circuitOrange/40 shadow-lg shadow-circuitOrange/30">
+                <img
+                  src="/app_icon.png"
+                  alt="RiderMate 2.0 Icon"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span className="font-extrabold text-lg tracking-tight text-white">
                 RiderMate <span className="text-xs text-circuitOrange font-mono">2.0</span>
