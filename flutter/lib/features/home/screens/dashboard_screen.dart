@@ -218,32 +218,41 @@ class DashboardScreen extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.circuitOrange,
-                                            shape: BoxShape.circle,
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.circuitOrange,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(Icons.psychology, color: Colors.white, size: 22),
                                           ),
-                                          child: const Icon(Icons.psychology, color: Colors.white, size: 22),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'RiderMate AI Copilot',
-                                              style: AppTextStyles.headlineSm(color: Colors.white),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'RiderMate AI Copilot',
+                                                  style: AppTextStyles.headlineSm(color: Colors.white),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                                Text(
+                                                  'Smart trip planning & riding telemetry',
+                                                  style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              'Smart trip planning & riding telemetry intelligence',
-                                              style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                    const SizedBox(width: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
@@ -447,6 +456,9 @@ class DashboardScreen extends StatelessWidget {
                             StatsCard(label: 'Avg Speed', value: '31.2', unit: 'KM/H', icon: Icons.speed),
                           ],
                         ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1),
+
+                        // Bottom clearance for floating nav bar and FABs
+                        const SizedBox(height: 120),
                       ],
                     ),
                   ),

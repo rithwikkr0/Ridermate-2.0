@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -59,6 +62,32 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     super.dispose();
   }
 
+  static const _presetPhotos = [
+    'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800', // Highway cruiser
+    'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800', // Off-road mountain
+    'https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=800', // Cockpit handlebar
+    'https://images.unsplash.com/photo-1558980664-769d59546b3d?w=800', // Convoy
+  ];
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: source, imageQuality: 85);
+      if (picked != null) {
+        setState(() {
+          _mediaUrlController.text = picked.path;
+          _selectedType = PostType.photo;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not access media: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _publish() async {
     final caption = _captionController.text.trim();
     if (caption.isEmpty && _selectedRide == null && _selectedMemory == null && _mediaUrlController.text.trim().isEmpty) {
@@ -109,7 +138,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.onSurface),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.social);
+            }
+          },
         ),
         title: Text('Create Post', style: AppTextStyles.headlineSm(color: AppColors.onSurface)),
         actions: [
@@ -124,8 +159,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               onPressed: _isPublishing ? null : _publish,
               child: _isPublishing
-                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : Text('PUBLISH', style: AppTextStyles.button(color: Colors.white).copyWith(fontSize: 13)),
+                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : Text('PUBLISH', style: AppTextStyles.labelCapsSm()),
             ),
           ),
         ],
@@ -135,17 +170,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // User Header & Privacy Selector
+            // User Header Row
             Row(
               children: [
                 CircleAvatar(
-                  radius: 22,
-                  backgroundColor: AppColors.surfaceContainerHigh,
-                  backgroundImage: (user?.photoUrl != null && user!.photoUrl.isNotEmpty)
-                      ? NetworkImage(user.photoUrl)
-                      : null,
-                  child: (user?.photoUrl == null || user!.photoUrl.isEmpty)
-                      ? const Icon(Icons.person, color: AppColors.onSurface)
+                  radius: 20,
+                  backgroundColor: AppColors.circuitOrange,
+                  backgroundImage: user?.photoUrl.isNotEmpty == true ? NetworkImage(user!.photoUrl) : null,
+                  child: user?.photoUrl.isEmpty != false
+                      ? Text(
+                          (user?.fullName.isNotEmpty == true ? user!.fullName[0] : 'R').toUpperCase(),
+                          style: AppTextStyles.headlineXs(color: Colors.white),
+                        )
                       : null,
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -215,11 +251,77 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             // Photo Input (if photo mode)
             if (_selectedType == PostType.photo) ...[
               const SizedBox(height: AppSpacing.sm),
+              // Action buttons: Camera, Gallery
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.circuitOrange,
+                        side: const BorderSide(color: AppColors.circuitOrange),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                      icon: const Icon(Icons.camera_alt, size: 16),
+                      label: const Text('Take Photo', style: TextStyle(fontWeight: FontWeight.bold)),
+                      onPressed: () => _pickImage(ImageSource.camera),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: AppColors.glassBorder),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                      ),
+                      icon: const Icon(Icons.photo_library, size: 16),
+                      label: const Text('Gallery', style: TextStyle(fontWeight: FontWeight.bold)),
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+
+              // Preset rider photo quick pickers
+              Text('Quick Rider Presets:', style: AppTextStyles.caption(color: AppColors.onSurfaceVariant)),
+              const SizedBox(height: 6),
+              SizedBox(
+                height: 55,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _presetPhotos.length,
+                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  itemBuilder: (ctx, i) {
+                    final url = _presetPhotos[i];
+                    return GestureDetector(
+                      onTap: () => setState(() => _mediaUrlController.text = url),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          width: 55,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _mediaUrlController.text == url ? AppColors.circuitOrange : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Image.network(url, fit: BoxFit.cover),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+
               TextField(
                 controller: _mediaUrlController,
                 style: AppTextStyles.bodySm(color: AppColors.onSurface),
                 decoration: InputDecoration(
-                  labelText: 'Image / Media URL',
+                  labelText: 'Image / Media URL (or local file path)',
                   labelStyle: AppTextStyles.bodySm(color: AppColors.onSurfaceVariant),
                   prefixIcon: const Icon(Icons.link, color: AppColors.circuitOrange),
                   filled: true,
@@ -232,17 +334,29 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    _mediaUrlController.text.trim(),
-                    height: 180,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, _) => Container(
-                      height: 100,
-                      color: AppColors.surfaceContainerHigh,
-                      child: const Center(child: Text('Invalid image preview URL')),
-                    ),
-                  ),
+                  child: _mediaUrlController.text.startsWith('http')
+                      ? Image.network(
+                          _mediaUrlController.text.trim(),
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, _) => Container(
+                            height: 100,
+                            color: AppColors.surfaceContainerHigh,
+                            child: const Center(child: Text('Invalid image preview URL')),
+                          ),
+                        )
+                      : Image.file(
+                          File(_mediaUrlController.text.trim()),
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, _) => Container(
+                            height: 100,
+                            color: AppColors.surfaceContainerHigh,
+                            child: const Center(child: Text('Could not load local file')),
+                          ),
+                        ),
                 ),
               ],
             ],

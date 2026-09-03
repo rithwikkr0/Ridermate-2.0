@@ -76,7 +76,13 @@ class SettingsHomeScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
-                        onPressed: () => context.pop(),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go(AppRoutes.profile);
+                          }
+                        },
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text('Settings', style: AppTextStyles.headlineMd()),

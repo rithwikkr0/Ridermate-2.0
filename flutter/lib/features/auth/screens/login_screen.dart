@@ -12,6 +12,7 @@ import '../../../core/widgets/rm_text_field.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/services/database_service.dart';
 import '../controllers/auth_controller.dart';
+import '../../garage/controllers/garage_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../profile/repositories/sqlite_user_repository.dart';
 
@@ -66,7 +67,14 @@ class _LoginScreenState extends State<LoginScreen> {
       profileController.updateRepository(
         SqliteUserRepository(DatabaseService.instance, userId: user.id),
       );
-      context.go(AppRoutes.home);
+      final garageController = context.read<GarageController>();
+      await garageController.loadGarageData();
+      if (!mounted) return;
+      if (garageController.vehicles.isEmpty) {
+        context.go(AppRoutes.addBikeOnboarding);
+      } else {
+        context.go(AppRoutes.home);
+      }
     } else {
       setState(() {
         _errorMessage = result.errorOrNull?.message ?? 'Incorrect email or password.';
@@ -87,7 +95,14 @@ class _LoginScreenState extends State<LoginScreen> {
       profileController.updateRepository(
         SqliteUserRepository(DatabaseService.instance, userId: user.id),
       );
-      context.go(AppRoutes.home);
+      final garageController = context.read<GarageController>();
+      await garageController.loadGarageData();
+      if (!mounted) return;
+      if (garageController.vehicles.isEmpty) {
+        context.go(AppRoutes.addBikeOnboarding);
+      } else {
+        context.go(AppRoutes.home);
+      }
     } else {
       setState(() {
         _errorMessage = result.errorOrNull?.message ?? 'Google Sign-In failed.';
@@ -285,7 +300,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: AppSpacing.md),
+                              const SizedBox(height: AppSpacing.sm),
+
+                              // Quick Demo Rider Access
+                              Center(
+                                child: TextButton.icon(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.circuitOrange,
+                                  ),
+                                  icon: const Icon(Icons.two_wheeler, size: 16),
+                                  label: const Text(
+                                    'Explore Cockpit as Demo Rider',
+                                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          _emailController.text = 'rider@ridermate.com';
+                                          _passwordController.text = 'ridermate2026';
+                                          await _handleLogin();
+                                        },
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
 
                               // Navigation to Register
                               Center(

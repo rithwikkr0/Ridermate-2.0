@@ -1,49 +1,56 @@
 import React, { useState } from 'react';
-import { Smartphone, Sparkles, Eye, Shield, Compass, Users, Wrench, Award } from 'lucide-react';
 
 export const ScreenshotShowcase: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'cockpit' | 'community' | 'profile'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'cockpit' | 'community' | 'profile' | 'garage'>('all');
 
   const items = [
     {
       id: 'dashboard',
       category: 'cockpit',
-      title: 'Cockpit Dashboard',
-      subtitle: 'Real-time telemetry, weather readiness index, battery health & quick actions.',
+      title: 'Kinetic Cockpit HUD',
+      subtitle: 'Real-time 118 km/h telemetry, lean angle gauges, dynamic G-force, and SOS readiness.',
       image: '/screenshots/cockpit_dashboard.png',
       tag: 'HUD & TELEMETRY'
     },
     {
       id: 'nav',
       category: 'cockpit',
-      title: 'Turn Navigation & Vector Map',
-      subtitle: 'Dynamic CartoDB Dark Matter tiles, speed limit alerts, and GPX trail recording.',
+      title: 'Turn Navigation & Vector Radar',
+      subtitle: 'Expressway guidance, real-time speed limit advisory, and live trajectory routing.',
       image: '/screenshots/navigation_ride.png',
       tag: 'MAPS & GPS'
     },
     {
       id: 'squads',
       category: 'community',
-      title: 'Squads & Contact Matching',
-      subtitle: 'Live pilot radar, group chats, and privacy-preserving SHA-256 phone matching.',
+      title: 'Tactical Squad Convoy Radar',
+      subtitle: 'Live proximity radar (500m), echelon convoy spacing, and encrypted mesh voice comms.',
       image: '/screenshots/squads_community.png',
-      tag: 'P2P SQUADS'
+      tag: 'SQUAD CONVOY'
+    },
+    {
+      id: 'garage',
+      category: 'garage',
+      title: 'Digital Motorcycle Vault',
+      subtitle: 'RC legal records (KA 04 EL 274), active insurance validity, PUC expiry & service countdown.',
+      image: '/screenshots/garage_management.png',
+      tag: 'MY GARAGE'
     },
     {
       id: 'profile',
       category: 'profile',
       title: 'Pilot Profile & XP Leveling',
-      subtitle: 'XP milestones from Novice to Legend, achievement badges, and safety logs.',
+      subtitle: 'Level 7 Touring Legend rank, 18,450 XP, 4,820 km logged, and unlocked trophy badges.',
       image: '/screenshots/pilot_profile.png',
-      tag: 'GAMIFICATION'
+      tag: 'ACHIEVEMENTS'
     },
     {
       id: 'memories',
       category: 'profile',
-      title: 'Ride Memories & Voice Notes',
-      subtitle: 'Voice note captures, high-res ride photos, and interactive map memory pins.',
+      title: 'Ride Memories & Telemetry Logs',
+      subtitle: 'Western Ghats Monsoon pass highlight, elevation profile (1,420m), and voice memos.',
       image: '/screenshots/memories_journal.png',
-      tag: 'MEMORIES'
+      tag: 'JOURNAL'
     },
   ];
 
@@ -55,46 +62,25 @@ export const ScreenshotShowcase: React.FC = () => {
     <div className="w-full max-w-6xl mx-auto space-y-8">
       {/* Category Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <button
-          onClick={() => setSelectedCategory('all')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            selectedCategory === 'all'
-              ? 'bg-circuitOrange text-white shadow-lg shadow-circuitOrange/30'
-              : 'glass-panel text-onSurfaceVariant hover:text-white'
-          }`}
-        >
-          All Screens
-        </button>
-        <button
-          onClick={() => setSelectedCategory('cockpit')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            selectedCategory === 'cockpit'
-              ? 'bg-circuitOrange text-white shadow-lg shadow-circuitOrange/30'
-              : 'glass-panel text-onSurfaceVariant hover:text-white'
-          }`}
-        >
-          Cockpit & Navigation
-        </button>
-        <button
-          onClick={() => setSelectedCategory('community')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            selectedCategory === 'community'
-              ? 'bg-circuitOrange text-white shadow-lg shadow-circuitOrange/30'
-              : 'glass-panel text-onSurfaceVariant hover:text-white'
-          }`}
-        >
-          Squads & Community
-        </button>
-        <button
-          onClick={() => setSelectedCategory('profile')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            selectedCategory === 'profile'
-              ? 'bg-circuitOrange text-white shadow-lg shadow-circuitOrange/30'
-              : 'glass-panel text-onSurfaceVariant hover:text-white'
-          }`}
-        >
-          Profile & Milestones
-        </button>
+        {[
+          { id: 'all', label: 'All Screens' },
+          { id: 'cockpit', label: 'Cockpit & Radar' },
+          { id: 'community', label: 'Squads & Convoy' },
+          { id: 'garage', label: 'Garage & Vault' },
+          { id: 'profile', label: 'Profile & Memories' },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSelectedCategory(tab.id as any)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              selectedCategory === tab.id
+                ? 'bg-circuitOrange text-white shadow-lg shadow-circuitOrange/30'
+                : 'glass-panel text-onSurfaceVariant hover:text-white'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Grid */}
@@ -104,20 +90,24 @@ export const ScreenshotShowcase: React.FC = () => {
             key={item.id}
             className="glass-panel glass-panel-hover rounded-3xl p-4 sm:p-5 border border-white/10 flex flex-col justify-between group overflow-hidden"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-circuitOrange px-2.5 py-0.5 rounded-full bg-circuitOrange/10 border border-circuitOrange/30">
                   {item.tag}
                 </span>
               </div>
 
-              {/* High-res Screenshot Frame */}
-              <div className="relative rounded-2xl overflow-hidden bg-black/80 aspect-[9/16] max-h-[380px] flex items-center justify-center border border-white/5">
+              {/* Smartphone Frame - True 19.5:9 Uncropped Portrait Orientation */}
+              <div className="relative rounded-[32px] overflow-hidden bg-[#07080B] aspect-[1080/2340] max-h-[460px] mx-auto border-[4px] border-[#1E232E] group-hover:border-circuitOrange/60 transition-all duration-300 shadow-2xl flex items-center justify-center">
+                {/* Speaker Notch */}
+                <div className="absolute top-2 z-20 w-16 h-3 bg-black rounded-full border border-white/10" />
+
+                {/* Full Uncropped High-Res Screen */}
                 <img
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
 

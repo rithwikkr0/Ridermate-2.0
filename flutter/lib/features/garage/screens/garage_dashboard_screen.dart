@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/router/app_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -48,7 +49,13 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.onSurfaceVariant),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.profile);
+            }
+          },
         ),
         title: Text(
           'My Garage',
@@ -64,6 +71,8 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
         ],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
           indicatorColor: AppColors.circuitOrange,
           labelColor: AppColors.circuitOrange,
           unselectedLabelColor: AppColors.onSurfaceVariant,
@@ -184,7 +193,7 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
                     children: [
                       _buildQuickMetric('ODOMETER', '${vehicle.odometerKm.toStringAsFixed(0)} km'),
                       _buildQuickMetric('SERVICE DUE', '${vehicle.serviceKmRemaining.toStringAsFixed(0)} km'),
-                      _buildQuickMetric('ENGINE', '${vehicle.engineCc} cc'),
+                      _buildQuickMetric('ENGINE', '${vehicle.displayEngineCc} cc'),
                     ],
                   ),
                 ],
@@ -472,8 +481,9 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
   void _showAddVehicleDialog(BuildContext context) {
     final brandCtrl = TextEditingController(text: 'Royal Enfield');
     final modelCtrl = TextEditingController(text: 'Classic 350');
-    final regCtrl = TextEditingController(text: 'KA01AB1234');
+    final regCtrl = TextEditingController(text: 'KA04EL274');
     final odoCtrl = TextEditingController(text: '12450');
+    int detectedCc = 349;
 
     showDialog(
       context: context,
@@ -490,64 +500,161 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.15),
+                  color: AppColors.circuitOrange.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.amber),
+                  border: Border.all(color: AppColors.circuitOrange.withValues(alpha: 0.4)),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.info_outline, color: Colors.amber, size: 20),
+                    Icon(Icons.two_wheeler, color: AppColors.circuitOrange, size: 20),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Enter registration number to auto-fetch details (if available), or enter manually.',
-                        style: TextStyle(color: Colors.amber, fontSize: 12),
+                        'Enter registration plate or tap any brand below to auto-fetch motorcycle specifications.',
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
+
+              // Registration plate lookup
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: regCtrl,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(labelText: 'Reg Number (e.g. KA01AB1234)', labelStyle: TextStyle(color: Colors.white70)),
+                      textCapitalization: TextCapitalization.characters,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
+                      decoration: const InputDecoration(
+                        labelText: 'Reg Number (e.g. KA04EL274)',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        hintText: 'KA04EL274',
+                        hintStyle: TextStyle(color: Colors.white30),
+                      ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.search, color: AppColors.circuitOrange),
+                  const SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.circuitOrange,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    icon: const Icon(Icons.search, size: 16, color: Colors.white),
+                    label: const Text('Lookup', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      // Perform lookup
                       final service = VehicleIntelligenceService();
-                      if (service.isValidIndianRegNumber(regCtrl.text)) {
-                        final data = await service.lookupVehicle(regCtrl.text);
+                      final cleanReg = regCtrl.text.trim().toUpperCase();
+                      if (cleanReg.isNotEmpty) {
+                        final data = await service.lookupVehicle(cleanReg);
                         if (data != null) {
                           setStateBuilder(() {
-                            brandCtrl.text = data.makerModel.split(' ').first;
-                            modelCtrl.text = data.makerModel.replaceFirst(brandCtrl.text, '').trim();
+                            regCtrl.text = cleanReg;
+                            brandCtrl.text = data.brand;
+                            modelCtrl.text = data.modelName;
+                            detectedCc = data.engineCc;
                           });
+                          if (ctx.mounted) {
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              SnackBar(
+                                content: Text('Found: ${data.makerModel} (${data.engineCc} cc) • ${data.source}'),
+                                backgroundColor: Colors.green.shade800,
+                              ),
+                            );
+                          }
                         } else {
-                          if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('No details found. Enter manually.')));
+                          if (ctx.mounted) {
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              const SnackBar(content: Text('No RTO records found. Enter details manually.')),
+                            );
+                          }
                         }
                       } else {
-                        if (ctx.mounted) ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Invalid Registration Number format.')));
+                        if (ctx.mounted) {
+                          ScaffoldMessenger.of(ctx).showSnackBar(
+                            const SnackBar(content: Text('Please enter a registration plate number.')),
+                          );
+                        }
                       }
                     },
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+
+              // Popular Brand Selector Chips
+              const Text('Quick Select Brand:', style: TextStyle(color: Colors.white60, fontSize: 11)),
+              const SizedBox(height: 6),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: VehicleIntelligenceService.popularBrands.map((brandName) {
+                    final isSelected = brandCtrl.text.toLowerCase() == brandName.toLowerCase();
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: FilterChip(
+                        selected: isSelected,
+                        label: Text(brandName, style: TextStyle(fontSize: 12, color: isSelected ? Colors.white : Colors.white70)),
+                        backgroundColor: Colors.white10,
+                        selectedColor: AppColors.circuitOrange,
+                        checkmarkColor: Colors.white,
+                        onSelected: (selected) {
+                          setStateBuilder(() {
+                            brandCtrl.text = brandName;
+                            final models = VehicleIntelligenceService.getModelsForBrand(brandName);
+                            if (models.isNotEmpty) {
+                              modelCtrl.text = models.first.model;
+                              detectedCc = models.first.engineCc;
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Matching Models Chips
+              if (brandCtrl.text.isNotEmpty) ...[
+                const Text('Popular Models:', style: TextStyle(color: Colors.white60, fontSize: 11)),
+                const SizedBox(height: 6),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: VehicleIntelligenceService.getModelsForBrand(brandCtrl.text).map((spec) {
+                      final isSelected = modelCtrl.text.toLowerCase() == spec.model.toLowerCase();
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: ActionChip(
+                          backgroundColor: isSelected ? AppColors.circuitOrange.withValues(alpha: 0.3) : Colors.white10,
+                          side: BorderSide(color: isSelected ? AppColors.circuitOrange : Colors.white24),
+                          label: Text('${spec.model} (${spec.engineCc} cc)', style: TextStyle(fontSize: 11, color: isSelected ? AppColors.circuitOrange : Colors.white)),
+                          onPressed: () {
+                            setStateBuilder(() {
+                              modelCtrl.text = spec.model;
+                              detectedCc = spec.engineCc;
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+
               TextField(
                 controller: brandCtrl,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Brand (e.g. Royal Enfield)', labelStyle: TextStyle(color: Colors.white70)),
+                decoration: const InputDecoration(labelText: 'Brand (e.g. KTM, Royal Enfield, Yamaha)', labelStyle: TextStyle(color: Colors.white70)),
               ),
               TextField(
                 controller: modelCtrl,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Model (e.g. Classic 350)', labelStyle: TextStyle(color: Colors.white70)),
+                decoration: const InputDecoration(labelText: 'Model (e.g. Duke 390, Classic 350, MT-15)', labelStyle: TextStyle(color: Colors.white70)),
               ),
               TextField(
                 controller: odoCtrl,
@@ -567,11 +674,22 @@ class _GarageDashboardScreenState extends State<GarageDashboardScreen> with Sing
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.circuitOrange),
             onPressed: () {
+              final brand = brandCtrl.text.trim().isEmpty ? 'Royal Enfield' : brandCtrl.text.trim();
+              final model = modelCtrl.text.trim().isEmpty ? 'Classic 350' : modelCtrl.text.trim();
+
+              int finalCc = detectedCc;
+              final matchingSpec = VehicleIntelligenceService.catalogue.firstWhere(
+                (s) => s.brand.toLowerCase() == brand.toLowerCase() && s.model.toLowerCase() == model.toLowerCase(),
+                orElse: () => MotorcycleSpec(brand: brand, model: model, engineCc: detectedCc),
+              );
+              finalCc = matchingSpec.engineCc;
+
               final newVehicle = VehicleModel(
                 id: 'veh_${DateTime.now().millisecondsSinceEpoch}',
                 userId: '',
-                brand: brandCtrl.text.trim(),
-                model: modelCtrl.text.trim(),
+                brand: brand,
+                model: model,
+                engineCc: finalCc,
                 year: 2024,
                 registrationNumber: regCtrl.text.trim().toUpperCase(),
                 odometerKm: double.tryParse(odoCtrl.text.trim()) ?? 0.0,

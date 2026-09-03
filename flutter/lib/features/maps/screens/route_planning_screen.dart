@@ -12,6 +12,8 @@ import '../../../core/widgets/real_map_view.dart';
 import '../../../core/widgets/rm_scroll_body.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/services/location_service.dart';
+import '../../../core/errors/result.dart';
+import '../../../core/errors/app_error.dart';
 import '../models/navigation_route_model.dart';
 import '../models/group_ride_model.dart';
 import '../services/osrm_routing_service.dart';
@@ -91,43 +93,59 @@ class _RoutePlanningScreenState extends State<RoutePlanningScreen> {
     double actualStartLat = _startLat;
     double actualStartLng = _startLng;
 
-    if (_isStartCurrentLocation || (actualStartLat == 0.0 && actualStartLng == 0.0)) {
-      final currentPos = await _locationService.getCurrentLocation();
-      if (currentPos.isSuccess && currentPos.dataOrNull != null && currentPos.dataOrNull!.isValid) {
-        actualStartLat = currentPos.dataOrNull!.latitude;
-        actualStartLng = currentPos.dataOrNull!.longitude;
-      } else {
-        actualStartLat = 12.971598;
-        actualStartLng = 77.594566;
+    try {
+      if (_isStartCurrentLocation || (actualStartLat == 0.0 && actualStartLng == 0.0)) {
+        try {
+          final currentPos = await _locationService.getCurrentLocation().timeout(
+            const Duration(seconds: 4),
+            onTimeout: () => Result.failure(const LocationError('Location timeout')),
+          );
+          if (currentPos.isSuccess && currentPos.dataOrNull != null && currentPos.dataOrNull!.isValid) {
+            actualStartLat = currentPos.dataOrNull!.latitude;
+            actualStartLng = currentPos.dataOrNull!.longitude;
+          } else {
+            actualStartLat = 12.971598;
+            actualStartLng = 77.594566;
+          }
+        } catch (_) {
+          actualStartLat = 12.971598;
+          actualStartLng = 77.594566;
+        }
       }
-    }
 
-    final routes = await _routingService.planRoutes(
-      startLat: actualStartLat,
-      startLng: actualStartLng,
-      destLat: _destLat,
-      destLng: _destLng,
-    );
+      final routes = await _routingService.planRoutes(
+        startLat: actualStartLat,
+        startLng: actualStartLng,
+        destLat: _destLat,
+        destLng: _destLng,
+      ).timeout(
+        const Duration(seconds: 6),
+        onTimeout: () => [],
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (routes.isNotEmpty) {
-      final primaryRoute = routes.first;
-      final polyline = primaryRoute.points
-          .map((p) => LatLng(p.latitude, p.longitude))
-          .toList();
+      if (routes.isNotEmpty) {
+        final primaryRoute = routes.first;
+        final polyline = primaryRoute.points
+            .map((p) => LatLng(p.latitude, p.longitude))
+            .toList();
 
-      setState(() {
-        _startLat = actualStartLat;
-        _startLng = actualStartLng;
-        _calculatedRoute = primaryRoute;
-        _routePolyline = polyline;
-        _isLoadingRoute = false;
-      });
-    } else {
-      setState(() {
-        _isLoadingRoute = false;
-      });
+        setState(() {
+          _startLat = actualStartLat;
+          _startLng = actualStartLng;
+          _calculatedRoute = primaryRoute;
+          _routePolyline = polyline;
+        });
+      }
+    } catch (e) {
+      debugPrint('[RoutePlanning] Route calculation error: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingRoute = false;
+        });
+      }
     }
   }
 

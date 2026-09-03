@@ -40,7 +40,13 @@ class PrivacySecurityScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
-                        onPressed: () => context.pop(),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go(AppRoutes.settings);
+                          }
+                        },
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text('Privacy & Security', style: AppTextStyles.headlineMd()),

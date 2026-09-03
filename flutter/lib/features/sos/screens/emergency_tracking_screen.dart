@@ -196,19 +196,48 @@ class _EmergencyTrackingScreenState extends State<EmergencyTrackingScreen>
                       ],
                     ),
                     const Divider(color: AppColors.glassBorder, height: 20),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on, color: Colors.redAccent, size: 18),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            currentEvent?.latitude != null
-                                ? 'GPS: ${currentEvent!.latitude!.toStringAsFixed(4)}, ${currentEvent.longitude!.toStringAsFixed(4)} (±${currentEvent.accuracy?.toStringAsFixed(0) ?? '?'}m)'
-                                : 'Acquiring high-accuracy GPS...',
-                            style: AppTextStyles.bodyXs(color: AppColors.onSurface),
+                    // Live Compass & High-Accuracy Coordinates Box
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.circuitOrange.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.circuitOrange.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.explore, color: AppColors.circuitOrange, size: 22),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  currentEvent?.latitude != null
+                                      ? 'LAT: ${currentEvent!.latitude!.toStringAsFixed(5)}°  LNG: ${currentEvent.longitude!.toStringAsFixed(5)}°'
+                                      : 'ACQUIRING GPS FIX...',
+                                  style: AppTextStyles.labelCapsSm(color: Colors.white).copyWith(
+                                    fontFamily: 'monospace',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Accuracy ±${currentEvent?.accuracy?.toStringAsFixed(0) ?? "15"}m • Offline Compass Active',
+                                  style: AppTextStyles.caption(color: AppColors.onSurfaceVariant),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -238,54 +267,54 @@ class _EmergencyTrackingScreenState extends State<EmergencyTrackingScreen>
                         ),
                       ),
                     ],
-                    if (primary != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFCC0000),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              ),
-                              icon: const Icon(Icons.send_rounded, size: 16),
-                              label: const Text('SMS Draft', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                              onPressed: () => sosController.dispatchSmsOnly(),
+
+                    // Distress Dispatch Buttons (Always available even without saved contacts)
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFCC0000),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
+                            icon: const Icon(Icons.send_rounded, size: 16),
+                            label: const Text('SMS Draft', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            onPressed: () => sosController.dispatchSmsOnly(),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF25D366),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              ),
-                              icon: const Icon(Icons.chat_bubble_rounded, size: 16),
-                              label: const Text('WhatsApp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                              onPressed: () => sosController.dispatchWhatsAppOnly(),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF25D366),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
+                            icon: const Icon(Icons.chat_bubble_rounded, size: 16),
+                            label: const Text('WhatsApp', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            onPressed: () => sosController.dispatchWhatsAppOnly(),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              ),
-                              icon: const Icon(Icons.phone_in_talk, size: 16),
-                              label: const Text('Call', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                              onPressed: () => sosController.dispatchCallOnly(),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             ),
+                            icon: const Icon(Icons.phone_in_talk, size: 16),
+                            label: const Text('Call 112', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            onPressed: () => sosController.dispatchCallOnly(),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     SizedBox(
                       width: double.infinity,

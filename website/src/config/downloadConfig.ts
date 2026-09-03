@@ -1,8 +1,7 @@
 /**
  * RiderMate 2.0 — Central Download & Distribution Configuration
  * 
- * Verified Direct Download URL:
- * https://github.com/rithwikkr0/Ridermate-2.0/releases/download/v2.0.0-tester/app-debug.apk
+ * Direct APK hosted on Azure Static Web App (/downloads/RiderMate-2.0.apk)
  */
 
 export interface DownloadConfig {
@@ -31,30 +30,25 @@ export const downloadConfig: DownloadConfig = {
   appName: "RiderMate 2.0",
   brandTagline: "CircuitRider — The High-Performance Motorcycle Cockpit",
   version: "2.0.0",
-  buildNumber: 51530205,
-  commitHash: "362cb936",
-  releaseTag: "v2.0.0-tester",
-  releaseDate: "August 21, 2026",
-  apkSizeMB: 160.4,
-  sha256Checksum: "fa472922ce479155620fd71bf4e976b87ff489108730269d68116888cecf0686",
+  buildNumber: 20260901,
+  commitHash: "release",
+  releaseTag: "v2.0.0-release",
+  releaseDate: "September 1, 2026",
+  apkSizeMB: 67.7,
+  sha256Checksum: "B73A43D912FCA47B7348DFCB6DF06F304D405F61749A311D8D053CD6EF502BFC",
   minAndroidVersion: "Android 8.0 (Oreo) or higher",
   
-  // Set to 'play_store' once published to Google Play
-  activeDistribution: 'github_release',
+  // Hosted direct on the website
+  activeDistribution: 'direct_apk',
 
   links: {
-    // Verified working direct APK download link
-    githubRelease: "https://github.com/rithwikkr0/Ridermate-2.0/releases/download/v2.0.0-tester/app-debug.apk",
-    // Google Play Store URL
+    githubRelease: "/downloads/RiderMate-2.0.apk",
     playStore: "https://play.google.com/store/apps/details?id=com.ridermate.ridermate",
-    // Fallback APK
-    directApk: "https://github.com/rithwikkr0/Ridermate-2.0/releases/download/v2.0.0-tester/app-debug.apk",
-    // GitHub Repo & Release Page
+    directApk: "/downloads/RiderMate-2.0.apk",
     gitHubRepo: "https://github.com/rithwikkr0/Ridermate-2.0",
-    gitHubReleasePage: "https://github.com/rithwikkr0/Ridermate-2.0/releases/tag/v2.0.0-tester",
+    gitHubReleasePage: "https://github.com/rithwikkr0/Ridermate-2.0/releases",
   },
 
-  // Live Azure Static Web App URL
   referralBaseUrl: "https://green-coast-00868c100.7.azurestaticapps.net/join",
 };
 
@@ -62,17 +56,22 @@ export function getActiveDownloadUrl(): string {
   switch (downloadConfig.activeDistribution) {
     case 'play_store':
       return downloadConfig.links.playStore;
-    case 'direct_apk':
-      return downloadConfig.links.directApk;
     case 'github_release':
-    default:
       return downloadConfig.links.githubRelease;
+    case 'direct_apk':
+    default:
+      return downloadConfig.links.directApk;
   }
 }
 
 export function getDownloadButtonLabel(): string {
-  if (downloadConfig.activeDistribution === 'play_store') {
-    return 'Get it on Google Play';
+  switch (downloadConfig.activeDistribution) {
+    case 'play_store':
+      return 'Get on Google Play';
+    case 'direct_apk':
+      return 'Download APK (v2.0.0)';
+    case 'github_release':
+    default:
+      return 'Download Release APK';
   }
-  return `Download APK (v${downloadConfig.version})`;
 }

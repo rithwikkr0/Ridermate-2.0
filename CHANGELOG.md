@@ -5,6 +5,39 @@ All notable changes to the RiderMate 2.0 project will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.1.0] - 2026-09-03
+
+### Added
+- **Google Account Auto-Fill with Full Editing Freedom**:
+  - Integrated 1-tap Google account details retrieval (`GoogleSignIn`) on registration.
+  - Automatically populates pilot Display Name and Email into the registration form.
+  - Fields remain 100% editable so riders can review, customize, or add phone number/password before creating their account.
+- **Vehicle Intelligence & Comprehensive Indian Motorcycle Catalogue (50+ Bikes)**:
+  - Built-in motorcycle database covering 50+ popular Indian motorcycles across 11 brands (Royal Enfield, KTM, Yamaha, Triumph, Honda, Kawasaki, BMW, TVS, Bajaj, Suzuki, and Ultraviolette EV).
+  - Flexible Indian RTO registration lookup matching standard plates (e.g. `KA04EL274` series with 1 to 4 digits) and Bharat Series (`BH`).
+  - Interactive Brand & Model quick-selector chips in My Garage and onboarding with exact engine displacement badges (`engineCc`).
+- **AI-Generated Cinematic Slideshow**:
+  - 3 high-definition 9:16 vertical slideshow visuals (`onboard_telemetry.jpg`, `onboard_ai_coach.jpg`, `onboard_squad.jpg`) with smooth cross-fading `AnimatedSwitcher` transitions.
+- **Marketing Website Visual Overhaul & True 19.5:9 Device Frames**:
+  - Upgraded marketing website (`website/`) with 3D motorcycle model canvas (`Hero3DCanvas`), particle dust background, and GSAP scroll animations.
+  - Authentic modern smartphone frames with titanium bezels, dynamic island pill, and true 19.5:9 portrait mobile aspect ratio (`aspect-[1080/2340]`), eliminating awkward cropping.
+  - Categorized **Screen Explorer** showcase (`All Screens`, `Cockpit & Radar`, `Squads & Convoy`, `Garage & Vault`, `Profile & Memories`).
+  - High-resolution 1080×2340 mobile screenshots rendered via headless Chrome.
+- **Release Distribution**:
+  - Production release APK (70.1 MB) deployed to live Azure Static Web Apps endpoint and copied to user Desktop (`C:\Users\rithw\OneDrive\Desktop\RiderMate-2.0.apk`).
+  - Fully tested and verified on physical Android device (`Vivo V2437`).
+
+### Changed
+- Standardized onboarding journey to flow seamlessly from slideshow into profile registration and motorcycle garage setup.
+- Updated website and app download URLs to the active Azure Static Web Apps production domain: `https://green-coast-00868c100.7.azurestaticapps.net`.
+
+### Verified
+- `flutter analyze`: 0 issues found.
+- Production build: `assembleRelease` succeeded (70.1 MB APK, Vulkan Impeller backend).
+- Azure Static Web Apps deployment: live and verified.
+
+---
+
 ## [v2.0.0] - 2026-08-19
 
 ### Added

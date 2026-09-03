@@ -309,40 +309,44 @@ class SosController extends BaseController {
     await _callService.placeCall(targetContact.phoneNumber);
   }
 
-  /// One-click draft SMS dispatch
+  /// One-click draft SMS dispatch (falls back to 112 if no contact configured)
   Future<void> dispatchSmsOnly() async {
     await loadContacts();
     final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
-    if (targetContact == null) return;
+    final phone = targetContact?.phoneNumber ?? '112';
 
     final msg = _smsService.buildEmergencyMessage(
       riderName: _cachedUserName,
       latitude: currentSosEvent?.latitude,
       longitude: currentSosEvent?.longitude,
       timestamp: DateTime.now(),
-      emergencyContactName: targetContact.name,
-      emergencyContactPhone: targetContact.phoneNumber,
-      emergencyContactRelationship: targetContact.relationship,
+      emergencyContactName: targetContact?.name ?? 'Emergency Dispatch',
+      emergencyContactPhone: phone,
+      emergencyContactRelationship: targetContact?.relationship ?? 'Emergency Services',
     );
-    await _smsService.sendSms(targetContact.phoneNumber, msg);
+    await _smsService.sendSms(phone, msg);
   }
 
   /// One-click WhatsApp dispatch
   Future<void> dispatchWhatsAppOnly() async {
     await loadContacts();
     final targetContact = primaryContact ?? (contacts.isNotEmpty ? contacts.first : null);
-    if (targetContact == null) return;
+    final phone = targetContact?.phoneNumber ?? '';
 
     final msg = _smsService.buildEmergencyMessage(
       riderName: _cachedUserName,
       latitude: currentSosEvent?.latitude,
       longitude: currentSosEvent?.longitude,
       timestamp: DateTime.now(),
-      emergencyContactName: targetContact.name,
-      emergencyContactPhone: targetContact.phoneNumber,
-      emergencyContactRelationship: targetContact.relationship,
+      emergencyContactName: targetContact?.name ?? 'Emergency Dispatch',
+      emergencyContactPhone: phone.isNotEmpty ? phone : '112',
+      emergencyContactRelationship: targetContact?.relationship ?? 'Emergency Services',
     );
-    await _smsService.sendWhatsApp(targetContact.phoneNumber, msg);
+    if (phone.isNotEmpty) {
+      await _smsService.sendWhatsApp(phone, msg);
+    } else {
+      await _smsService.sendSms('112', msg);
+    }
   }
 
   /// One-click direct call

@@ -61,6 +61,20 @@ class VehicleModel {
     return '$prefix****$suffix';
   }
 
+  /// Real or inferred engine displacement in cc (never 0)
+  int get displayEngineCc {
+    if (engineCc > 0) return engineCc;
+    final combined = '$brand $model'.toLowerCase();
+    if (combined.contains('350')) return 349;
+    if (combined.contains('himalayan') || combined.contains('450')) return 452;
+    if (combined.contains('390')) return 373;
+    if (combined.contains('650') || combined.contains('interceptor') || combined.contains('continental')) return 648;
+    if (combined.contains('200') || combined.contains('ns200')) return 199;
+    if (combined.contains('250')) return 248;
+    if (combined.contains('150') || combined.contains('160') || combined.contains('mt-15') || combined.contains('r15')) return 155;
+    return 350;
+  }
+
   /// Calculates days remaining until insurance expires.
   int? get insuranceDaysRemaining {
     if (insuranceExpiry == null) return null;

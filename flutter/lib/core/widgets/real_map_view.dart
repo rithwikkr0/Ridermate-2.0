@@ -12,6 +12,7 @@ import '../widgets/glass_card.dart';
 import '../services/location_service.dart';
 import '../models/ride_point_model.dart';
 import '../errors/app_error.dart';
+import '../../features/maps/models/map_theme.dart';
 
 /// RiderMate 2.0 — Real Map Component powered by OpenStreetMap & FlutterMap.
 /// Displays real hardware GPS device location marker, heading arrow, accuracy circle,
@@ -217,13 +218,13 @@ class _RealMapViewState extends State<RealMapView> with WidgetsBindingObserver {
             },
           ),
           children: [
-            // Theme-Aware Map Tiles (CartoDB Dark Matter / Positron)
+            // Theme-Aware Map Tiles (Clean & Watermark-Free Esri Canvas Tiles)
             Builder(
               builder: (ctx) {
                 final isDark = Theme.of(ctx).brightness == Brightness.dark;
                 final tileUrl = isDark
-                    ? 'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
-                    : 'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png';
+                    ? MapConfig.darkTileUrl
+                    : MapConfig.lightTileUrl;
 
                 return TileLayer(
                   urlTemplate: tileUrl,

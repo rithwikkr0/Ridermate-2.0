@@ -3,8 +3,8 @@
 ![RiderMate Logo](flutter/assets/images/ridermate_icon.png)
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.11.5-02569B?logo=flutter)](https://flutter.dev)
-[![Version](https://img.shields.io/badge/Version-v2.0.0-FF6B00)](#versioning)
-[![Website](https://img.shields.io/badge/Website-Azure%20Static%20Web%20Apps-0078D4?logo=microsoftazure)](https://ridermate.azurestaticapps.net)
+[![Version](https://img.shields.io/badge/Version-v2.1.0-FF6B00)](#versioning)
+[![Website](https://img.shields.io/badge/Website-Azure%20Static%20Web%20Apps-0078D4?logo=microsoftazure)](https://green-coast-00868c100.7.azurestaticapps.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)](#verification)
 [![Test Suite](https://img.shields.io/badge/Tests-193%2F193%20Passed-success)](#testing)
@@ -13,7 +13,7 @@
 
 ## 🌐 Official Marketing & Download Website
 - **Live Portal:** [https://green-coast-00868c100.7.azurestaticapps.net](https://green-coast-00868c100.7.azurestaticapps.net)
-- **Direct APK Download:** [https://green-coast-00868c100.7.azurestaticapps.net/download](https://green-coast-00868c100.7.azurestaticapps.net/download)
+- **Direct APK Download:** [https://green-coast-00868c100.7.azurestaticapps.net/downloads/RiderMate-2.0.apk](https://green-coast-00868c100.7.azurestaticapps.net/downloads/RiderMate-2.0.apk)
 - **Privacy Policy:** [https://green-coast-00868c100.7.azurestaticapps.net/privacy](https://green-coast-00868c100.7.azurestaticapps.net/privacy)
 - **Data Safety Declaration:** [https://green-coast-00868c100.7.azurestaticapps.net/data-safety](https://green-coast-00868c100.7.azurestaticapps.net/data-safety)
 - **Referral Squad Hub:** [https://green-coast-00868c100.7.azurestaticapps.net/join](https://green-coast-00868c100.7.azurestaticapps.net/join)
@@ -32,14 +32,16 @@ Built with a dark glassmorphic design system using **Circuit Orange (`#FF6B00`)*
 
 | Feature Module | Description | State |
 | :--- | :--- | :--- |
+| **⚡ Google Account Auto-Fill** | 1-tap Google account details retrieval into form fields with full freedom to edit and customize name, email, phone, and password before saving. | **Live & Connected** |
+| **🏍️ 50+ Motorcycle Intelligence** | Comprehensive Indian motorcycle catalogue across 11 brands, flexible Indian RTO plate lookup (supporting 1-4 trailing digits like `KA04EL274` and `BH` series), and brand/model selector chips with exact CC badges. | **Live & Connected** |
 | **☀️ Live Weather Engine** | Real-time OpenWeather API integration, wind & humidity metrics, hourly forecasts, and automated Ride Suitability Score calculation (0-100%). | **Live Telemetry** |
-| **🏍️ Ride Engine** | High-precision Haversine distance telemetry, speed monitoring, elevation tracking, calories burned, and GPX/PDF export. | **Connected** |
+| **🏎️ Ride Engine** | High-precision Haversine distance telemetry, speed monitoring, elevation tracking, calories burned, and GPX/PDF export. | **Connected** |
 | **🤖 AI Copilot** | Natural language riding assistant, pulsing voice orb, pre-ride readiness scoring, and defensive coaching insights. | **Connected** |
 | **🚨 SOS Emergency Engine** | Automated crash detection heuristics, accelerometer vector analysis, emergency contact alerts, and 5-second countdown safety system. | **Connected** |
-| **🗺️ Maps & Navigation** | MapLibre GL vector maps, OpenStreetMap integration, route options (Fastest/Scenic/Mountain), saved routes, and heatmap explorer. | **Connected** |
+| **🗺️ Maps & Navigation** | Dynamic Dark Matter maps, OpenStreetMap integration, route options (Fastest/Scenic/Mountain), saved routes, and heatmap explorer. | **Connected** |
 | **👥 Community Platform** | Rider social feed, squad club management, member rosters, group chat, and weekly rankings leaderboards. | **Connected** |
-| **🔧 Garage Management** | Motorcycle profiles, fuel log tracker, mileage calculator (km/L), maintenance log records, and automated service reminders. | **Connected** |
-| **👤 Auth & Profile** | MultiProvider user session management, profile stats overview, achievement badges, and settings customization. | **Connected** |
+| **🔧 Garage & Challan Vault** | Motorcycle profiles, fuel log tracker, mileage calculator (km/L), maintenance log records, automated service reminders, and traffic challan vault. | **Connected** |
+| **👤 Auth, Profile & Gamification** | MultiProvider user session management, profile stats overview, XP leveling (Novice to Legend), and achievement badges. | **Connected** |
 
 ---
 
@@ -192,9 +194,10 @@ Ridermate-2.0/
 ## 📌 Project Status & Roadmap
 
 - [x] **v1.0.0-alpha**: Complete 32+ Glassmorphic screens, MultiProvider state wiring across all 9 features, Live OpenWeather API integration, unit test suite (28/28 PASS), clean release APK (50.6 MB).
-- [ ] **v1.1.0-beta**: Real-time Firebase Cloud Messaging (FCM) push notifications integration.
-- [ ] **v1.2.0**: SQLite local offline database sync for Memories & Ride Journal entries.
-- [ ] **v2.0.0**: Supabase live cloud database synchronization & real-time squad telemetry socket streaming.
+- [x] **v2.0.0**: Azure Cloud Sync, SQLite v11 schema with Gamification & Challan management, real AI Safety Coach integration, and dark glassmorphic UI overhaul.
+- [x] **v2.1.0**: Google Account Auto-fill with post-fill editing, 50+ Indian motorcycle catalogue with flexible RTO plate lookup, cinematic AI onboarding visuals, website 3D model & 19.5:9 smartphone frame showcase, and verified 70.1 MB release APK.
+- [ ] **v2.2.0**: Real-time Firebase Cloud Messaging (FCM) push notifications integration.
+- [ ] **v3.0.0**: Multi-rider mesh convoy socket streaming & MapLibre offline vector tile packs.
 
 ---
 

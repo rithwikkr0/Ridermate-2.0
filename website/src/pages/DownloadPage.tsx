@@ -1,175 +1,226 @@
 import React, { useState } from 'react';
-import { Download, CheckCircle2, ShieldCheck, Copy, Check, Smartphone, Terminal, ExternalLink, AlertTriangle } from 'lucide-react';
-import { downloadConfig, getActiveDownloadUrl, getDownloadButtonLabel } from '../config/downloadConfig';
+import { downloadConfig, getActiveDownloadUrl } from '../config/downloadConfig';
+
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4 text-green-400 flex-shrink-0">
+    <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const AndroidIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+    <path d="M17.523 15.34a1 1 0 11-2 0 1 1 0 012 0zm-9 0a1 1 0 11-2 0 1 1 0 012 0zM6.116 6.832l-1.69-2.923a.5.5 0 01.866-.5l1.714 2.967A9.965 9.965 0 0112 5.5c1.74 0 3.376.445 4.794 1.226l1.714-2.968a.5.5 0 01.866.5l-1.69 2.924A9.995 9.995 0 0122 15.5H2a9.995 9.995 0 014.116-8.668z" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ExternalIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const steps = [
+  'Tap the download button below',
+  'Open your browser downloads or Files app',
+  'Tap the RiderMate .apk file',
+  'If prompted, allow "Install from unknown sources" in Settings',
+  'Tap Install and enjoy your cockpit',
+];
+
+const features = [
+  'Real-time cockpit HUD',
+  'Crash detection & SOS alerts',
+  'Squad rides & live convoy tracking',
+  'Route intelligence & offline maps',
+  'Ride memories & replay',
+  'Works offline — no server required',
+];
 
 export const DownloadPage: React.FC = () => {
-  const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const handleCopyChecksum = () => {
-    navigator.clipboard.writeText(downloadConfig.sha256Checksum);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+  const handleDownload = () => {
+    setDownloading(true);
+    setError(false);
+
+    // Primary: GitHub Release direct asset URL
+    const primaryUrl = downloadConfig.links.githubRelease;
+    // Fallback: GitHub release page (user can manually click)
+    const fallbackUrl = downloadConfig.links.gitHubReleasePage;
+
+    try {
+      const link = document.createElement('a');
+      link.href = primaryUrl;
+      link.setAttribute('download', 'RiderMate-2.0.apk');
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => setDownloading(false), 3000);
+    } catch {
+      setError(true);
+      setDownloading(false);
+      // Open release page as fallback
+      window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
-    <div className="pt-28 sm:pt-36 pb-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      {/* Header */}
-      <div className="text-center space-y-4 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel border border-circuitOrange/30 text-xs font-mono text-circuitOrange">
-          <Smartphone className="w-3.5 h-3.5" />
-          <span>OFFICIAL GITHUB RELEASE</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Download RiderMate 2.0
-        </h1>
-        <p className="text-sm sm:text-base text-onSurfaceVariant">
-          Install the high-performance motorcycle cockpit directly onto your Android device from official release assets.
-        </p>
-      </div>
+    <div className="min-h-screen py-24 px-6">
+      <div className="max-w-4xl mx-auto">
 
-      {/* Main Download Card */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-circuitOrange/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          {/* Left info */}
-          <div className="md:col-span-7 space-y-6">
-            <div>
-              <span className="text-xs font-mono text-circuitOrange uppercase tracking-wider block mb-1">
-                LATEST PRODUCTION RELEASE
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                RiderMate v{downloadConfig.version}
-              </h2>
-              <p className="text-xs sm:text-sm text-onSurfaceVariant mt-1">
-                Release Tag: <a href={downloadConfig.links.gitHubReleasePage} target="_blank" rel="noopener noreferrer" className="font-mono text-circuitOrange hover:underline">{downloadConfig.releaseTag}</a> • Build: <span className="font-mono text-white">{downloadConfig.buildNumber}</span>
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Package ID</span>
-                <span className="text-white font-semibold">com.ridermate.ridermate</span>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Asset Size</span>
-                <span className="text-white font-semibold">~{downloadConfig.apkSizeMB} MB</span>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Target Platform</span>
-                <span className="text-white font-semibold">{downloadConfig.minAndroidVersion}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                <span className="text-onSurfaceVariant block mb-1">Build Commit</span>
-                <span className="text-white font-semibold">{downloadConfig.commitHash}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-4 pt-2">
-              <a
-                href={getActiveDownloadUrl()}
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-circuitOrange to-circuitOrangeGlow hover:scale-105 active:scale-95 transition-all shadow-xl shadow-circuitOrange/30 w-full sm:w-auto"
-              >
-                <Download className="w-5 h-5" />
-                <span>{getDownloadButtonLabel()}</span>
-              </a>
-
-              <a
-                href={downloadConfig.links.gitHubReleasePage}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl font-semibold text-xs text-onSurface glass-panel glass-panel-hover"
-              >
-                <span>View on GitHub</span>
-                <ExternalLink className="w-4 h-4 text-onSurfaceVariant" />
-              </a>
-            </div>
+        {/* Page header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-3 mb-6">
+            <img src="/app_icon.png" alt="RiderMate" className="w-16 h-16 rounded-2xl shadow-lg shadow-circuitOrange/20" />
           </div>
-
-          {/* Right badge */}
-          <div className="md:col-span-5 flex flex-col items-center justify-center p-6 rounded-2xl bg-surfaceContainerHigh/60 border border-white/5 text-center space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <ShieldCheck className="w-8 h-8" />
-            </div>
-            <div>
-              <h3 className="font-bold text-sm text-white">Verified APK Binary</h3>
-              <p className="text-xs text-onSurfaceVariant mt-1">
-                Hosted directly on GitHub Release asset storage with signed keystore hash.
-              </p>
-            </div>
-          </div>
+          <h1 className="text-5xl font-extrabold gradient-text-white mb-3">
+            Download RiderMate
+          </h1>
+          <p className="text-onSurfaceVariant text-lg">
+            Version {downloadConfig.version} · {downloadConfig.apkSizeMB} MB · Free
+          </p>
         </div>
 
-        {/* Checksum Bar */}
-        <div className="mt-8 pt-6 border-t border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-black/40 p-4 rounded-xl border border-white/5">
-            <div className="space-y-1 overflow-hidden">
-              <span className="text-[11px] font-mono text-onSurfaceVariant uppercase tracking-wider block">
-                SHA-256 Checksum (Integrity Verification)
-              </span>
-              <p className="font-mono text-xs text-circuitOrange truncate select-all">
-                {downloadConfig.sha256Checksum}
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Download Card */}
+          <div className="glass rounded-3xl p-8 border border-white/6 relative overflow-hidden">
+            <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-circuitOrange/8 blur-3xl" />
+            <div className="relative z-10">
+
+              {/* Platform badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 glass-orange rounded-full border border-circuitOrange/30 mb-6">
+                <AndroidIcon />
+                <span className="text-sm font-medium text-circuitOrange">Android</span>
+              </div>
+
+              <h2 className="text-2xl font-bold text-onSurface mb-1">APK Direct Download</h2>
+              <p className="text-sm text-onSurfaceVariant mb-6">
+                {downloadConfig.minAndroidVersion} required
               </p>
-            </div>
-            <button
-              onClick={handleCopyChecksum}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white transition-colors shrink-0"
-              aria-label="Copy SHA-256 checksum to clipboard"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Hash</span>
-                </>
+
+              {/* Release info */}
+              <div className="glass rounded-xl p-4 mb-6 space-y-2 font-mono text-xs text-onSurfaceVariant">
+                <div className="flex justify-between">
+                  <span>Release</span>
+                  <span className="text-onSurface">{downloadConfig.releaseTag}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Date</span>
+                  <span className="text-onSurface">{downloadConfig.releaseDate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Size</span>
+                  <span className="text-onSurface">{downloadConfig.apkSizeMB} MB</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Build</span>
+                  <span className="text-onSurface">#{downloadConfig.buildNumber}</span>
+                </div>
+              </div>
+
+              {/* SHA checksum */}
+              <div className="flex items-start gap-2 mb-6 p-3 rounded-xl bg-green-500/5 border border-green-500/15">
+                <ShieldIcon />
+                <div>
+                  <p className="text-xs font-medium text-green-400 mb-0.5">SHA-256 Verified</p>
+                  <p className="text-xs text-onSurfaceVariant font-mono break-all leading-relaxed">
+                    {downloadConfig.sha256Checksum}
+                  </p>
+                </div>
+              </div>
+
+              {/* Primary download button */}
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="shimmer-btn w-full flex items-center justify-center gap-3 py-4 px-6 bg-circuitOrange text-white font-bold rounded-2xl text-base glow-orange hover:bg-circuitOrangeGlow transition-all duration-300 disabled:opacity-70 disabled:cursor-wait"
+              >
+                {downloading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Starting download…
+                  </>
+                ) : (
+                  <>
+                    <DownloadIcon />
+                    Download APK Free
+                  </>
+                )}
+              </button>
+
+              {/* Fallback link */}
+              <div className="mt-4 text-center">
+                <a
+                  href={downloadConfig.links.gitHubReleasePage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-onSurfaceVariant hover:text-circuitOrange transition-colors duration-200"
+                >
+                  Can't download? Open GitHub Releases page
+                  <ExternalIcon />
+                </a>
+              </div>
+
+              {error && (
+                <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 text-center">
+                  Download redirect opened. If it didn't work, use the GitHub link above.
+                </div>
               )}
-            </button>
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <div className="space-y-6">
+            {/* Included features */}
+            <div className="glass rounded-3xl p-6 border border-white/6">
+              <h3 className="font-semibold text-onSurface mb-4">What's included</h3>
+              <ul className="space-y-3">
+                {features.map(f => (
+                  <li key={f} className="flex items-center gap-3 text-sm text-onSurfaceVariant">
+                    <CheckIcon />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Installation steps */}
+            <div className="glass rounded-3xl p-6 border border-white/6">
+              <h3 className="font-semibold text-onSurface mb-4">Installation steps</h3>
+              <ol className="space-y-3">
+                {steps.map((step, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-onSurfaceVariant">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-circuitOrange/20 border border-circuitOrange/30 text-circuitOrange text-xs flex items-center justify-center font-bold">
+                      {i + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Installation Steps */}
-      <div className="space-y-6">
-        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-          <Terminal className="w-5 h-5 text-circuitOrange" />
-          <span>How to Install on Android</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-panel p-6 rounded-2xl space-y-3">
-            <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
-              1
-            </div>
-            <h3 className="font-bold text-white text-base">Download APK Asset</h3>
-            <p className="text-xs text-onSurfaceVariant leading-relaxed">
-              Tap the download button above to save `app-debug.apk` directly to your device from GitHub Releases.
-            </p>
-          </div>
-
-          <div className="glass-panel p-6 rounded-2xl space-y-3">
-            <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
-              2
-            </div>
-            <h3 className="font-bold text-white text-base">Allow Unknown Apps</h3>
-            <p className="text-xs text-onSurfaceVariant leading-relaxed">
-              When prompted by Android, tap <strong>Settings</strong> and enable <em>"Allow from this source"</em> for your browser or file manager.
-            </p>
-          </div>
-
-          <div className="glass-panel p-6 rounded-2xl space-y-3">
-            <div className="w-8 h-8 rounded-lg bg-circuitOrange/20 text-circuitOrange font-mono font-bold flex items-center justify-center">
-              3
-            </div>
-            <h3 className="font-bold text-white text-base">Launch Cockpit</h3>
-            <p className="text-xs text-onSurfaceVariant leading-relaxed">
-              Open RiderMate 2.0, log in with Google or email, configure your bike, and enter the cockpit!
-            </p>
-          </div>
-        </div>
+        {/* Footer disclaimer */}
+        <p className="text-center text-xs text-onSurfaceVariant mt-12">
+          RiderMate is free and open-source. No subscription, no tracking, no ads. Ride free. 🏍️
+        </p>
       </div>
     </div>
   );

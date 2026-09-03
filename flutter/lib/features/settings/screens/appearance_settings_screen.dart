@@ -5,6 +5,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/glass_card.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_router.dart';
 
 class AppearanceSettingsScreen extends StatefulWidget {
   const AppearanceSettingsScreen({super.key});
@@ -48,7 +49,13 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
-                        onPressed: () => context.pop(),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go(AppRoutes.settings);
+                          }
+                        },
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text('Appearance', style: AppTextStyles.headlineMd(color: AppColors.onSurface)),

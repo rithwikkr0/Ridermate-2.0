@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/router/app_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -86,7 +87,13 @@ class _CreateMemoryScreenState extends State<CreateMemoryScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
-                        onPressed: () => context.pop(),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go(AppRoutes.memories);
+                          }
+                        },
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
@@ -168,9 +175,11 @@ class _CreateMemoryScreenState extends State<CreateMemoryScreen> {
                               color: AppColors.surfaceContainerHigh,
                               border: Border.all(color: AppColors.glassBorder),
                             ),
-                            child: memoryCtrl.draftImagePath!.startsWith('assets/')
-                                ? Image.asset(memoryCtrl.draftImagePath!, fit: BoxFit.cover)
-                                : Image.file(File(memoryCtrl.draftImagePath!), fit: BoxFit.cover),
+                            child: memoryCtrl.draftImagePath!.startsWith('http')
+                                ? Image.network(memoryCtrl.draftImagePath!, fit: BoxFit.cover)
+                                : memoryCtrl.draftImagePath!.startsWith('assets/')
+                                    ? Image.asset(memoryCtrl.draftImagePath!, fit: BoxFit.cover)
+                                    : Image.file(File(memoryCtrl.draftImagePath!), fit: BoxFit.cover),
                           ),
                           Positioned(
                             top: 12,

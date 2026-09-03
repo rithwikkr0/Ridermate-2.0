@@ -198,6 +198,13 @@ class _MainShellState extends State<_MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    final currentPath = GoRouterState.of(context).uri.path;
+    final isRootTab = currentPath == AppRoutes.home ||
+        currentPath == AppRoutes.nav ||
+        currentPath == AppRoutes.memories ||
+        currentPath == AppRoutes.social ||
+        currentPath == AppRoutes.profile;
+
     return RmNavScope(
       controller: _navCtrl,
       child: ListenableBuilder(
@@ -211,7 +218,7 @@ class _MainShellState extends State<_MainShell> {
 
                 RmBottomNav(
                   currentIndex: widget.navigationShell.currentIndex,
-                  visible: _navCtrl.visible,
+                  visible: _navCtrl.visible && isRootTab,
                   onTap: (i) {
                     // Always restore nav on explicit tab tap
                     _navCtrl.forceShow();
