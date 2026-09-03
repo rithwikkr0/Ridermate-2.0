@@ -48,21 +48,21 @@ Built with a dark glassmorphic design system using **Circuit Orange (`#FF6B00`)*
 ## 🏗️ System Architecture
 
 ```mermaid
-graph TD
-    subgraph Presentation Layer
+flowchart TD
+    subgraph Presentation["Presentation Layer"]
         UI["Flutter UI (32+ Glassmorphic Screens)"]
         Widgets["Reusable Glass Cards & Controls"]
     end
 
-    subgraph State Management
+    subgraph StateLayer["State Management"]
         Controllers["Provider Controllers (ChangeNotifier)"]
     end
 
-    subgraph Repository Abstraction
+    subgraph RepoLayer["Repository Abstraction"]
         Repos["Data Repositories"]
     end
 
-    subgraph Service & Telemetry Layer
+    subgraph ServiceLayer["Service & Telemetry Layer"]
         WeatherService["OpenWeather API Service"]
         RideEngine["Haversine & Statistics Engine"]
         SafetyEngine["Crash Detection & SOS Countdown"]
@@ -70,16 +70,20 @@ graph TD
         GarageEngine["Fuel & Maintenance Engine"]
     end
 
-    subgraph Data Sources
-        LocalMock["Local Mock & Offline Fallback Engine"]
-        RemoteBackend["FastAPI + Supabase Backend"]
+    subgraph DataLayer["Data Sources"]
+        LocalMock["Local SQLite v11 (Offline-First)"]
+        RemoteBackend["FastAPI + Azure Cloud Backend"]
     end
 
     UI --> Controllers
     Controllers --> Repos
-    Repos --> Service & Telemetry Layer
-    Service & Telemetry Layer --> LocalMock
-    Service & Telemetry Layer --> RemoteBackend
+    Repos --> WeatherService
+    Repos --> RideEngine
+    Repos --> SafetyEngine
+    Repos --> AiEngine
+    Repos --> GarageEngine
+    WeatherService & RideEngine & SafetyEngine & AiEngine & GarageEngine --> LocalMock
+    WeatherService & RideEngine & SafetyEngine & AiEngine & GarageEngine --> RemoteBackend
 ```
 
 ---
