@@ -299,6 +299,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 ),
                                 const Divider(color: AppColors.glassBorder, height: 1),
                                 _buildNavTile(
+                                  icon: Icons.workspace_premium_rounded,
+                                  iconColor: AppColors.circuitOrange,
+                                  title: 'RiderMate Pro',
+                                  subtitle: 'Advanced analytics, AI insights & vehicle intelligence',
+                                  onTap: () => context.push(AppRoutes.riderPro),
+                                ),
+                                const Divider(color: AppColors.glassBorder, height: 1),
+                                _buildNavTile(
                                   icon: Icons.notifications_active_rounded,
                                   iconColor: AppColors.circuitOrange,
                                   title: 'Notification Preferences',
