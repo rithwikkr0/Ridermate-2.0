@@ -15,6 +15,8 @@ import 'core/gamification/gamification_controller.dart';
 import 'core/gamification/challenge_seeder.dart';
 import 'core/sync/offline_sync_engine.dart';
 import 'core/services/live_location_service.dart';
+import 'core/monetization/revenuecat_service.dart';
+import 'core/monetization/revenuecat_controller.dart';
 
 // Auth
 import 'features/auth/controllers/auth_controller.dart';
@@ -154,12 +156,16 @@ void main() async {
 
   // Build AuthController with onUserChanged callback.
   // This keeps NotificationController, RideController, GarageController, SosController, and CommunityController in sync.
+  final revenueCatController = RevenueCatController(RevenueCatService.instance);
+  await revenueCatController.initialize();
+
   final authController = AuthController(
     authService,
     sessionService,
     databaseService: databaseService,
     onUserChanged: (userId) {
       notificationController.refreshForUser(userId);
+      revenueCatController.identify(userId);
       rideController.setUserId(userId);
       garageController.refreshForUser(userId);
       sosController.refreshForUser(userId);
@@ -174,6 +180,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ChangeNotifierProvider(create: (_) => authController),
+        ChangeNotifierProvider.value(value: revenueCatController),
         ChangeNotifierProvider(create: (_) => profileController),
         ChangeNotifierProvider(create: (_) => rideController),
         ChangeNotifierProvider(create: (_) => sosController),
