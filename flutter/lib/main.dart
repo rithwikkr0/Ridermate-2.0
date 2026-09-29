@@ -165,7 +165,11 @@ void main() async {
     databaseService: databaseService,
     onUserChanged: (userId) {
       notificationController.refreshForUser(userId);
-      revenueCatController.identify(userId);
+      if (userId == 'user_guest') {
+        revenueCatController.logout();
+      } else {
+        revenueCatController.identify(userId);
+      }
       rideController.setUserId(userId);
       garageController.refreshForUser(userId);
       sosController.refreshForUser(userId);
